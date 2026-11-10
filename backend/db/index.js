@@ -5,6 +5,7 @@ let isConnected = false;
 // Seed initial memory store for zero-friction local execution without MongoDB
 const memoryStore = {
   users: [],
+  chatMessages: [],
   analyses: [
     {
       _id: "demo-analysis-1",

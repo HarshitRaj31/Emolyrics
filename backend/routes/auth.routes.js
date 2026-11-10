@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { getIsConnected, memoryStore } = require("../db");
 const User = require("../models/User");
-const { authenticateJWT, JWT_SECRET } = require("../middleware/auth.middleware");
+const { authenticateJWT, optionalJWT, JWT_SECRET } = require("../middleware/auth.middleware");
 const { authLimiter } = require("../middleware/rateLimiter");
 
 const router = express.Router();
@@ -18,10 +18,17 @@ router.post("/register", authLimiter, async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
+    if (
+      !name ||
+      typeof name !== "string" ||
+      !email ||
+      typeof email !== "string" ||
+      !password ||
+      typeof password !== "string"
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Name, email, and password are all required."
+        message: "Valid string values for name, email, and password are all required."
       });
     }
 
@@ -110,10 +117,10 @@ router.post("/login", authLimiter, async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || typeof email !== "string" || !password || typeof password !== "string") {
       return res.status(400).json({
         success: false,
-        message: "Please provide both email and password."
+        message: "Valid email and password strings are required."
       });
     }
 
@@ -189,7 +196,13 @@ router.post("/login", authLimiter, async (req, res, next) => {
 });
 
 // GET /api/auth/me
-router.get("/me", authenticateJWT, async (req, res) => {
+router.get("/me", optionalJWT, async (req, res) => {
+  if (!req.user) {
+    return res.json({
+      success: true,
+      user: null
+    });
+  }
   res.json({
     success: true,
     user: {

@@ -1,6 +1,19 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+const SavedSongSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  artist: { type: String, default: "Unknown Artist" },
+  album: { type: String, default: "" },
+  mood: { type: String, required: true },
+  confidence: { type: Number, default: 0 },
+  coverArtUrl: { type: String, default: "" },
+  spotifyUrl: { type: String, default: "" },
+  youtubeUrl: { type: String, default: "" },
+  lyrics: { type: String, default: "" },
+  savedAt: { type: Date, default: Date.now }
+});
+
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -38,7 +51,8 @@ const UserSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "Analysis"
       }
-    ]
+    ],
+    savedSongs: [SavedSongSchema]
   },
   { timestamps: true }
 );
@@ -53,5 +67,7 @@ UserSchema.pre("save", async function (next) {
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
+
+UserSchema.index({ createdAt: -1 });
 
 module.exports = mongoose.model("User", UserSchema);

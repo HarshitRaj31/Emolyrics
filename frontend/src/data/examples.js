@@ -114,12 +114,49 @@ export const EXAMPLE_LYRICS = [
     language: "English"
   },
   {
+    mood: "Romantic",
+    title: "Kesariya (Hindi Devanagari)",
+    artist: "Arijit Singh",
+    image: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80",
+    lyrics: "केसरिया तेरा इश्क़ है पिया, रंग जाऊं जो मैं हाथ लगाऊं\nदिन बीते सारा तेरी फ़िक्र में, रैन सारी तेरी खैर मनाऊं\nदिल की चाहत में डूबा हमसफ़र, सनम तेरे प्यार का दीवाना",
+    language: "Hindi",
+    flag: "🇮🇳"
+  },
+  {
+    mood: "Happy",
+    title: "Anondodhārā (Bengali)",
+    artist: "Rabindranath Tagore",
+    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=80",
+    lyrics: "আনন্দধারা বহিছে ভুবনে, দিন রজনী কত অমৃতা রসধারা\nহাসিমুখ উল্লাস আর সুখের মিষ্টি আলো\nসকল ভুবনে গান বাজে আনন্দের",
+    language: "Bengali",
+    flag: "🇧🇩"
+  },
+  {
+    mood: "Happy",
+    title: "Fiesta y Sol (Spanish)",
+    artist: "Sol Latino",
+    image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&w=600&q=80",
+    lyrics: "Qué alegría y felicidad bailar bajo el sol brillante\nCantar celebrar el gozo de la fiesta con una gran sonrisa\nDisfrutar de la vida hermosa todos juntos",
+    language: "Spanish",
+    flag: "🇪🇸"
+  },
+  {
+    mood: "Romantic",
+    title: "La Vie En Rose (French)",
+    artist: "Édith Piaf",
+    image: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80",
+    lyrics: "Quand il me prend dans ses bras, il me parle tout bas\nC'est l'amour de ma vie et la tendresse de mon cœur\nDes mots d'amour de tous les jours, et ça me fait quelque chose",
+    language: "French",
+    flag: "🇫🇷"
+  },
+  {
     mood: "Patriotic",
     title: "Watan Ke Geet (Hindi)",
     artist: "Desh Ke Sipahi",
     image: "https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80",
     lyrics: "Tiranga lehraye aasmaan me shaan se\nDesh hamara sabse pyara jaan se\nVeer jawan karenge watan ki hifazat\nHindustan ki mitti me basi hai virasat",
-    language: "Hindi (Hinglish)"
+    language: "Hindi (Hinglish)",
+    flag: "🇮🇳"
   },
   {
     mood: "Thrilling",

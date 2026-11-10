@@ -68,6 +68,8 @@ const AnalysisSchema = new mongoose.Schema(
 );
 
 AnalysisSchema.index({ mood: 1, createdAt: -1 });
-AnalysisSchema.index({ user: 1 });
+AnalysisSchema.index({ user: 1, createdAt: -1 });
+AnalysisSchema.index({ user: 1, mood: 1 });
+AnalysisSchema.index({ title: 1, artist: 1 });
 
 module.exports = mongoose.model("Analysis", AnalysisSchema);

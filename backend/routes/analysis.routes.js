@@ -1,5 +1,6 @@
 const express = require("express");
 const { classifyLyrics } = require("../nlp/emotionClassifier");
+const { advancedEmotionService } = require("../services/advancedEmotionService");
 const { getIsConnected, memoryStore } = require("../db");
 const Analysis = require("../models/Analysis");
 const { optionalJWT, authenticateJWT } = require("../middleware/auth.middleware");
@@ -64,6 +65,73 @@ router.post("/analyze-mood", optionalJWT, async (req, res, next) => {
       emoji: classification.emoji,
       gradient: classification.gradient,
       color: classification.color,
+      savedId: savedRecord ? savedRecord._id : null
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/analyze-advanced
+ * Advanced Multi-Emotion Detection, Line-by-Line Analysis & Ollama Deep Interpretation
+ */
+router.post("/analyze-advanced", optionalJWT, async (req, res, next) => {
+  try {
+    const { lyrics, title, artist, autoSave } = req.body;
+
+    if (!lyrics || typeof lyrics !== "string" || !lyrics.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Lyrics text is required for advanced mood analysis."
+      });
+    }
+
+    if (lyrics.length > 25000) {
+      return res.status(400).json({
+        success: false,
+        message: "Lyrics exceed maximum supported size of 25,000 characters."
+      });
+    }
+
+    const result = await advancedEmotionService.analyzeAdvanced({
+      lyrics,
+      title,
+      artist
+    });
+
+    let savedRecord = null;
+    if (autoSave) {
+      const recordData = {
+        title: title?.trim() || "Untitled Lyrics",
+        artist: artist?.trim() || "Independent / Unknown",
+        lyrics: lyrics.trim(),
+        mood: result.primaryEmotion,
+        confidence: result.confidence,
+        explanation:
+          result.aiInterpretation?.overallMeaning ||
+          `Advanced multi-emotion analysis with ${result.primaryEmotion} as primary mood.`,
+        language: result.metadata.language,
+        scores: result.emotionDistribution,
+        detectedKeywords: result.primaryEmotionMeta?.keywords?.slice(0, 5) || [],
+        user: req.user ? req.user._id : null,
+        isPublic: true
+      };
+
+      if (getIsConnected()) {
+        savedRecord = await Analysis.create(recordData);
+      } else {
+        savedRecord = {
+          _id: "analysis-adv-" + Date.now(),
+          ...recordData,
+          createdAt: new Date().toISOString()
+        };
+        memoryStore.analyses.unshift(savedRecord);
+      }
+    }
+
+    return res.json({
+      ...result,
       savedId: savedRecord ? savedRecord._id : null
     });
   } catch (error) {
@@ -193,7 +261,7 @@ router.post("/analyses", optionalJWT, async (req, res, next) => {
 /**
  * DELETE /api/analyses/:id
  */
-router.delete("/analyses/:id", authenticateJWT, async (req, res, next) => {
+router.delete("/analyses/:id", optionalJWT, async (req, res, next) => {
   try {
     const { id } = req.params;
     if (getIsConnected()) {

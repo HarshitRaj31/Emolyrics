@@ -1,52 +1,96 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, lazy, Suspense } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { PluginProvider } from "./context/PluginContext";
+import { PersonalizationProvider } from "./context/PersonalizationContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import AuthModal from "./components/AuthModal";
 import ResearchModal from "./components/ResearchModal";
+import PageLoadingSkeleton from "./components/PageLoadingSkeleton";
+import MarketplaceSkeleton from "./components/plugins/MarketplaceSkeleton";
+
+// Eager landing page for instant first contentful paint (FCP)
 import AnalyzerPage from "./pages/AnalyzerPage";
-import ExplorePage from "./pages/ExplorePage";
-import PlaylistsPage from "./pages/PlaylistsPage";
+
+// Code-Split Dynamic Route Chunks for optimal performance & minimal initial payload
+const ExplorePage = lazy(() => import("./pages/ExplorePage"));
+const PlaylistsPage = lazy(() => import("./pages/PlaylistsPage"));
+const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
+const AssistantPage = lazy(() => import("./pages/AssistantPage"));
+const PluginMarketplacePage = lazy(() => import("./pages/PluginMarketplacePage"));
+
+function AppLayout({ researchModalOpen, setResearchModalOpen }) {
+  const location = useLocation();
+  const isAssistant = location.pathname === "/assistant";
+
+  return (
+    <div
+      className={`flex flex-col bg-neutral-950 dark:bg-neutral-950 light:bg-slate-50 text-slate-100 dark:text-slate-100 light:text-slate-900 font-sans selection:bg-purple-600 selection:text-white transition-colors duration-200 ${
+        isAssistant ? "h-[100dvh] overflow-hidden" : "min-h-screen"
+      }`}
+    >
+      <Navbar
+        onOpenResearch={() => setResearchModalOpen(true)}
+      />
+
+      <main className={`flex-1 flex flex-col ${isAssistant ? "min-h-0 overflow-hidden" : ""}`}>
+        <Suspense fallback={<PageLoadingSkeleton />}>
+          <Routes>
+            <Route path="/" element={<AnalyzerPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/playlists" element={<PlaylistsPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/assistant" element={<AssistantPage />} />
+            <Route
+              path="/plugins"
+              element={
+                <Suspense fallback={<MarketplaceSkeleton />}>
+                  <PluginMarketplacePage />
+                </Suspense>
+              }
+            />
+
+            {/* Redirect legacy authentication & profile routes directly to home */}
+            <Route path="/login" element={<Navigate to="/" replace />} />
+            <Route path="/register" element={<Navigate to="/" replace />} />
+            <Route path="/signin" element={<Navigate to="/" replace />} />
+            <Route path="/signup" element={<Navigate to="/" replace />} />
+            <Route path="/auth" element={<Navigate to="/" replace />} />
+            <Route path="/profile" element={<Navigate to="/" replace />} />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
+      </main>
+
+      {!isAssistant && <Footer onOpenResearch={() => setResearchModalOpen(true)} />}
+
+      <ResearchModal
+        isOpen={researchModalOpen}
+        onClose={() => setResearchModalOpen(false)}
+      />
+    </div>
+  );
+}
 
 export default function App() {
-  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [researchModalOpen, setResearchModalOpen] = useState(false);
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <div className="min-h-screen flex flex-col bg-neutral-950 text-white font-sans selection:bg-purple-600 selection:text-white">
-          <Navbar
-            onOpenAuth={() => setAuthModalOpen(true)}
-            onOpenResearch={() => setResearchModalOpen(true)}
-          />
-
-          <main className="flex-1">
-            <Routes>
-              <Route
-                path="/"
-                element={<AnalyzerPage onOpenAuth={() => setAuthModalOpen(true)} />}
+    <ThemeProvider>
+      <AuthProvider>
+        <PluginProvider>
+          <PersonalizationProvider>
+            <BrowserRouter>
+              <AppLayout
+                researchModalOpen={researchModalOpen}
+                setResearchModalOpen={setResearchModalOpen}
               />
-              <Route path="/explore" element={<ExplorePage />} />
-              <Route path="/playlists" element={<PlaylistsPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </main>
-
-          <Footer onOpenResearch={() => setResearchModalOpen(true)} />
-
-          <AuthModal
-            isOpen={authModalOpen}
-            onClose={() => setAuthModalOpen(false)}
-          />
-
-          <ResearchModal
-            isOpen={researchModalOpen}
-            onClose={() => setResearchModalOpen(false)}
-          />
-        </div>
-      </BrowserRouter>
-    </AuthProvider>
+            </BrowserRouter>
+          </PersonalizationProvider>
+        </PluginProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
