@@ -101,17 +101,18 @@ export default function PluginMarketplacePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white font-sans pb-24">
+    <div className="min-h-screen bg-surface-page text-ink-main font-sans pb-24">
       {/* Toast Notification Banner */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 animate-slideUp">
-          <div className="bg-neutral-900 border border-white/20 shadow-2xl rounded-2xl p-4 flex items-center gap-3 max-w-md text-sm backdrop-blur-xl">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-            <span className="text-neutral-200 text-xs font-medium">{toast.message}</span>
+          <div className="theme-modal shadow-2xl rounded-2xl p-4 flex items-center gap-3 max-w-md text-sm">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400 light:text-emerald-600 shrink-0" />
+            <span className="text-ink-secondary text-xs font-medium">{toast.message}</span>
             <button
               type="button"
               onClick={dismissToast}
-              className="p-1 rounded-lg hover:bg-white/10 text-neutral-400 hover:text-white ml-auto"
+              aria-label="Dismiss notification"
+              className="p-1 rounded-lg hover:bg-white/10 light:hover:bg-slate-200 text-ink-muted hover:text-ink-main ml-auto"
             >
               <X className="w-4 h-4" />
             </button>
@@ -120,37 +121,37 @@ export default function PluginMarketplacePage() {
       )}
 
       {/* Hero Header */}
-      <section className="relative overflow-hidden pt-12 pb-10 px-4 sm:px-6 lg:px-8 border-b border-white/5">
+      <section className="relative overflow-hidden pt-12 pb-10 px-4 sm:px-6 lg:px-8 border-b border-white/10 light:border-slate-200/80">
         {/* Subtle Ambient Background Lighting */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[280px] bg-gradient-to-b from-purple-600/15 via-amber-500/10 to-transparent blur-3xl pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto text-center">
           {/* Eyebrow Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-semibold mb-4 shadow-sm">
-            <Blocks className="w-3.5 h-3.5 text-purple-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 light:bg-purple-50 border border-purple-500/30 text-purple-300 light:text-purple-700 text-xs font-semibold mb-4 shadow-sm">
+            <Blocks className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
             <span>EmoLyrics Integration Ecosystem</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight text-white mb-3">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold tracking-tight text-ink-main mb-3">
             Plugin Marketplace
           </h1>
-          <p className="text-sm sm:text-base text-neutral-400 max-w-2xl mx-auto leading-relaxed font-sans">
+          <p className="text-sm sm:text-base text-ink-muted max-w-2xl mx-auto leading-relaxed font-sans">
             Extend your lyric emotion intelligence with verified open-source integrations, licensed lyrics providers, and audio-visual discovery plugins.
           </p>
 
           {/* Quick Stats Bar */}
           <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto mt-8">
-            <div className="p-3.5 rounded-2xl bg-neutral-900/60 border border-white/5 text-center">
-              <span className="block text-2xl font-display font-bold text-white">{stats.total}</span>
-              <span className="text-[11px] text-neutral-400 font-medium">Catalog Plugins</span>
+            <div className="p-3.5 rounded-2xl theme-card text-center">
+              <span className="block text-2xl font-display font-bold text-ink-main">{stats.total}</span>
+              <span className="text-[11px] text-ink-muted font-medium">Catalog Plugins</span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-neutral-900/60 border border-white/5 text-center">
-              <span className="block text-2xl font-display font-bold text-amber-400">{stats.installed}</span>
-              <span className="text-[11px] text-neutral-400 font-medium">Installed</span>
+            <div className="p-3.5 rounded-2xl theme-card text-center">
+              <span className="block text-2xl font-display font-bold text-amber-400 light:text-amber-600">{stats.installed}</span>
+              <span className="text-[11px] text-ink-muted font-medium">Installed</span>
             </div>
-            <div className="p-3.5 rounded-2xl bg-neutral-900/60 border border-white/5 text-center">
-              <span className="block text-2xl font-display font-bold text-emerald-400">{stats.active}</span>
-              <span className="text-[11px] text-neutral-400 font-medium">Active Integrations</span>
+            <div className="p-3.5 rounded-2xl theme-card text-center">
+              <span className="block text-2xl font-display font-bold text-emerald-400 light:text-emerald-600">{stats.active}</span>
+              <span className="text-[11px] text-ink-muted font-medium">Active Integrations</span>
             </div>
           </div>
         </div>
@@ -162,19 +163,20 @@ export default function PluginMarketplacePage() {
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between mb-6">
           {/* Debounced Search Bar */}
           <div className="relative flex-1 max-w-lg">
-            <Search className="w-4 h-4 text-neutral-500 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-ink-dim absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search plugins by name, category, or capability..."
-              className="w-full bg-neutral-900/90 border border-white/10 rounded-2xl pl-11 pr-10 py-2.5 text-xs sm:text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-purple-500/60 focus:ring-1 focus:ring-purple-500/30 transition-all shadow-inner"
+              className="w-full glass-input rounded-2xl pl-11 pr-10 py-2.5 text-xs sm:text-sm text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 transition-all shadow-inner"
             />
             {searchInput && (
               <button
                 type="button"
                 onClick={() => setSearchInput("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                aria-label="Clear plugin search"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-muted hover:text-ink-main"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -182,7 +184,7 @@ export default function PluginMarketplacePage() {
           </div>
 
           {/* Status Navigation Tabs */}
-          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-neutral-900/80 border border-white/10 self-start lg:self-auto overflow-x-auto max-w-full">
+          <div className="flex items-center gap-1.5 p-1.5 rounded-2xl theme-card self-start lg:self-auto overflow-x-auto max-w-full">
             {[
               { id: "all", label: "All Plugins", count: stats.total },
               { id: "featured", label: "Featured", count: featuredPlugins.length },
@@ -197,14 +199,14 @@ export default function PluginMarketplacePage() {
                   onClick={() => setStatusFilter(tab.id)}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all ${
                     isSelected
-                      ? "bg-white text-black shadow-md"
-                      : "text-neutral-400 hover:text-white hover:bg-white/5"
+                      ? "bg-white text-black light:bg-slate-900 light:text-white shadow-md"
+                      : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
                   }`}
                 >
                   <span>{tab.label}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                      isSelected ? "bg-black/10 text-neutral-800" : "bg-white/10 text-neutral-400"
+                    className={`text-[10px] px-1.5 py-0.5 rounded-full font-mono ${
+                      isSelected ? "bg-black/10 text-neutral-800 light:bg-white/20 light:text-white" : "bg-white/10 light:bg-slate-200 text-ink-muted"
                     }`}
                   >
                     {tab.count}
@@ -217,7 +219,7 @@ export default function PluginMarketplacePage() {
 
         {/* Categories Horizontal Scroll / Filter Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-8 no-scrollbar">
-          <div className="flex items-center gap-1.5 text-xs text-neutral-400 pr-2 shrink-0">
+          <div className="flex items-center gap-1.5 text-xs text-ink-muted pr-2 shrink-0">
             <Filter className="w-3.5 h-3.5" />
             <span className="font-medium">Category:</span>
           </div>
@@ -231,7 +233,7 @@ export default function PluginMarketplacePage() {
                 className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
                   isCurrent
                     ? "bg-purple-600 text-white font-semibold shadow-sm"
-                    : "bg-neutral-900/70 text-neutral-400 hover:text-white hover:bg-neutral-800 border border-white/5"
+                    : "theme-well text-ink-muted hover:text-ink-main"
                 }`}
               >
                 {cat}
@@ -245,10 +247,10 @@ export default function PluginMarketplacePage() {
           <div className="mb-12">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <h2 className="font-display font-bold text-lg text-white">Featured Integrations</h2>
+                <Sparkles className="w-4 h-4 text-amber-400 light:text-amber-600" />
+                <h2 className="font-display font-bold text-lg text-ink-main">Featured Integrations</h2>
               </div>
-              <span className="text-xs text-neutral-400 font-sans">Handpicked verified plugins</span>
+              <span className="text-xs text-ink-muted font-sans">Handpicked verified plugins</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -270,7 +272,7 @@ export default function PluginMarketplacePage() {
         {/* All Filtered Plugins Section */}
         <div>
           <div className="flex items-center justify-between mb-5">
-            <h2 className="font-display font-bold text-lg text-white">
+            <h2 className="font-display font-bold text-lg text-ink-main">
               {statusFilter === "featured"
                 ? "Featured Plugins"
                 : statusFilter === "installed"
@@ -281,7 +283,7 @@ export default function PluginMarketplacePage() {
                 ? `${selectedCategory} Plugins`
                 : "All Catalog Integrations"}
             </h2>
-            <span className="text-xs text-neutral-400 font-mono">
+            <span className="text-xs text-ink-muted font-mono">
               Showing {filteredPlugins.length} of {plugins.length}
             </span>
           </div>
@@ -302,18 +304,18 @@ export default function PluginMarketplacePage() {
             </div>
           ) : (
             /* Empty State */
-            <div className="text-center py-16 px-4 rounded-3xl bg-neutral-900/30 border border-white/5 max-w-lg mx-auto">
-              <div className="w-14 h-14 rounded-2xl bg-neutral-800 flex items-center justify-center mx-auto mb-4 text-neutral-400">
+            <div className="text-center py-16 px-4 rounded-3xl theme-card max-w-lg mx-auto">
+              <div className="w-14 h-14 rounded-2xl theme-well flex items-center justify-center mx-auto mb-4 text-ink-muted">
                 <Puzzle className="w-7 h-7" />
               </div>
-              <h3 className="font-display font-bold text-lg text-white mb-2">No Matching Plugins Found</h3>
-              <p className="text-xs text-neutral-400 leading-relaxed mb-6">
+              <h3 className="font-display font-bold text-lg text-ink-main mb-2">No Matching Plugins Found</h3>
+              <p className="text-xs text-ink-muted leading-relaxed mb-6">
                 No integrations matched your current filter criteria &quot;{debouncedSearch || statusFilter}&quot;.
               </p>
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl theme-well hover:border-purple-500/40 text-ink-main text-xs font-semibold transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset All Filters</span>

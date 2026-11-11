@@ -27,7 +27,9 @@ function YoutubeIcon({ className = "w-3.5 h-3.5" }) {
 }
 import { api } from "../services/api";
 import { usePersonalization } from "../context/PersonalizationContext";
+import { useTheme } from "../context/ThemeContext";
 import { MOOD_DEFINITIONS } from "../data/examples";
+import { getEmotionBadgeStyle, getEmotionToken } from "../utils/emotionTheme";
 
 const CANONICAL_MOOD_MAP = {
   happy: "Happiness",
@@ -88,6 +90,7 @@ export default function MoodRecommendations({
   overallTone = "",
   onSelectSongForAnalysis = null
 }) {
+  const { isDark } = useTheme();
   const {
     recentlyAnalyzed,
     recentlyRecommended,
@@ -160,36 +163,34 @@ export default function MoodRecommendations({
   }, [activeMood, seedSong?.title]);
 
   const activeMoodInfo = MOOD_DEFINITIONS[activeMood] || MOOD_DEFINITIONS.Happy;
+  const activeToken = getEmotionToken(activeMood);
+  const activeMoodTextColor = isDark ? (activeMoodInfo?.color || activeToken.color) : activeToken.lightText;
 
   return (
     <section className="mt-14 relative space-y-6">
       {/* 1. Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/10 light:border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-2xl select-none">{activeMoodInfo?.emoji}</span>
-            <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-white tracking-tight">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="text-2xl select-none">{activeMoodInfo?.emoji || activeToken.emoji}</span>
+            <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-ink-main tracking-tight">
               Personalized {activeMood} Recommendations
             </h2>
             <span
               className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border"
-              style={{
-                backgroundColor: `${activeMoodInfo?.color}20`,
-                color: activeMoodInfo?.color,
-                borderColor: `${activeMoodInfo?.color}40`
-              }}
+              style={getEmotionBadgeStyle(activeMood, isDark)}
             >
               Emotion-Aligned
             </span>
           </div>
 
-          <p className="text-xs sm:text-sm text-neutral-400 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-ink-muted max-w-2xl leading-relaxed">
             {seedSong?.title ? (
               <>
                 Curated based on the lyrical emotional fingerprint of{" "}
-                <span className="text-neutral-200 font-semibold">"{seedSong.title}"</span>
+                <span className="text-ink-main font-semibold">"{seedSong.title}"</span>
                 {seedSong.artist ? ` by ${seedSong.artist}` : ""} to match its{" "}
-                <span className="font-semibold" style={{ color: activeMoodInfo?.color }}>
+                <span className="font-semibold" style={{ color: activeMoodTextColor }}>
                   {activeMood}
                 </span>{" "}
                 mood profile.
@@ -197,7 +198,7 @@ export default function MoodRecommendations({
             ) : (
               <>
                 Discover hand-picked tracks matching the{" "}
-                <span className="font-semibold" style={{ color: activeMoodInfo?.color }}>
+                <span className="font-semibold" style={{ color: activeMoodTextColor }}>
                   {activeMood}
                 </span>{" "}
                 emotional spectrum with Spotify and YouTube listening links.
@@ -212,10 +213,10 @@ export default function MoodRecommendations({
           <Link
             to="/recommendations"
             state={{ mood: activeMood, seedSong }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/30 text-xs font-semibold transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/45 light:bg-purple-50 light:hover:bg-purple-100 text-purple-200 light:text-purple-700 border border-purple-500/30 text-xs font-semibold transition-all"
             title="Open Dedicated Music Recommendation Studio"
           >
-            <Compass className="w-3.5 h-3.5 text-purple-400" />
+            <Compass className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
             <span className="hidden sm:inline">Discovery Studio</span>
           </Link>
 
@@ -224,10 +225,10 @@ export default function MoodRecommendations({
             type="button"
             onClick={() => fetchRecommendations(true)}
             disabled={loading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-xs font-semibold text-white transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 light:bg-white light:hover:bg-slate-100 border border-white/10 light:border-slate-300 active:scale-95 text-xs font-semibold text-ink-main transition-all disabled:opacity-50 shadow-sm"
             title="Fetch new recommendations without repeats"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-amber-400" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-amber-400 light:text-amber-600" : ""}`} />
             <span>Explore More</span>
           </button>
 
@@ -235,13 +236,13 @@ export default function MoodRecommendations({
           <button
             type="button"
             onClick={() => setShowHistoryModal(!showHistoryModal)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-neutral-300 hover:text-white transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 light:bg-slate-100 light:hover:bg-slate-200 border border-white/10 light:border-slate-200 text-xs font-semibold text-ink-secondary hover:text-ink-main transition-all"
             title="View personal analyzed and recommended history"
           >
-            <History className="w-3.5 h-3.5 text-purple-400" />
+            <History className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
             <span className="hidden sm:inline">Personal History</span>
             {recentlyAnalyzed.length > 0 && (
-              <span className="w-4 h-4 rounded-full bg-purple-500/30 text-purple-200 text-[10px] flex items-center justify-center font-bold">
+              <span className="w-4 h-4 rounded-full bg-purple-500/30 light:bg-purple-100 text-purple-200 light:text-purple-700 text-[10px] flex items-center justify-center font-bold">
                 {recentlyAnalyzed.length}
               </span>
             )}
@@ -251,15 +252,15 @@ export default function MoodRecommendations({
 
       {/* 2. Mood Explorer Chips (Switch to any of the 10 emotions) */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs text-neutral-400">
+        <div className="flex items-center justify-between text-xs text-ink-muted">
           <span className="flex items-center gap-1.5 font-medium">
-            <Layers className="w-3.5 h-3.5 text-neutral-400" />
+            <Layers className="w-3.5 h-3.5 text-ink-muted" />
             Explore Recommendations by Detected Emotion:
           </span>
-          <span className="text-[11px] text-neutral-500">10 Core Emotion Spectrums</span>
+          <span className="text-[11px] text-ink-dim">10 Core Emotion Spectrums</span>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/10">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
           {ALL_MOODS.map((mood) => {
             const def = MOOD_META[mood] || MOOD_DEFINITIONS[mood];
             const isSelected = activeMood === mood;
@@ -270,8 +271,8 @@ export default function MoodRecommendations({
                 onClick={() => setActiveMood(mood)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold shrink-0 transition-all ${
                   isSelected
-                    ? "bg-white text-black shadow-lg scale-102"
-                    : "bg-neutral-900/80 border border-white/5 text-neutral-400 hover:text-white hover:bg-white/5"
+                    ? "bg-white text-black light:bg-slate-900 light:text-white shadow-lg scale-102"
+                    : "theme-well text-ink-muted hover:text-ink-main"
                 }`}
               >
                 <span>{def?.emoji || "🎵"}</span>
@@ -284,8 +285,8 @@ export default function MoodRecommendations({
 
       {/* 3. Personalized Journey Banner (Recently Analyzed Songs) */}
       {recentlyAnalyzed.length > 0 && (
-        <div className="p-3 rounded-2xl bg-white/[0.03] border border-white/5 flex items-center gap-3 overflow-x-auto">
-          <span className="text-[11px] uppercase tracking-wider font-bold text-neutral-500 shrink-0 flex items-center gap-1">
+        <div className="p-3 rounded-2xl theme-well flex items-center gap-3 overflow-x-auto">
+          <span className="text-[11px] uppercase tracking-wider font-bold text-ink-dim shrink-0 flex items-center gap-1">
             <Clock className="w-3 h-3" /> Recent:
           </span>
           <div className="flex items-center gap-2 shrink-0">
@@ -299,11 +300,11 @@ export default function MoodRecommendations({
                     onSelectSongForAnalysis(item);
                   }
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-xs text-neutral-300 hover:text-white transition-all shrink-0"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 light:bg-white light:hover:bg-slate-100 border border-white/10 light:border-slate-200 text-xs text-ink-secondary hover:text-ink-main transition-all shrink-0"
               >
                 <span>{item.emoji}</span>
                 <span className="font-medium max-w-[120px] truncate">{item.title}</span>
-                <span className="text-[10px] text-neutral-500">({item.mood})</span>
+                <span className="text-[10px] text-ink-dim">({item.mood})</span>
               </button>
             ))}
           </div>
@@ -317,35 +318,35 @@ export default function MoodRecommendations({
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="glass-panel rounded-3xl p-5 border border-white/10 animate-pulse space-y-4"
+              className="theme-card rounded-3xl p-5 animate-pulse space-y-4"
             >
               <div className="flex gap-4">
-                <div className="w-20 h-20 rounded-2xl bg-white/10 shrink-0" />
+                <div className="w-20 h-20 rounded-2xl bg-white/10 light:bg-slate-200 shrink-0" />
                 <div className="space-y-2 flex-1">
-                  <div className="h-4 bg-white/10 rounded w-3/4" />
-                  <div className="h-3 bg-white/5 rounded w-1/2" />
-                  <div className="h-3 bg-white/5 rounded w-1/4" />
+                  <div className="h-4 bg-white/10 light:bg-slate-200 rounded w-3/4" />
+                  <div className="h-3 bg-white/5 light:bg-slate-100 rounded w-1/2" />
+                  <div className="h-3 bg-white/5 light:bg-slate-100 rounded w-1/4" />
                 </div>
               </div>
-              <div className="h-12 bg-white/5 rounded-xl" />
-              <div className="h-9 bg-white/10 rounded-xl" />
+              <div className="h-12 bg-white/5 light:bg-slate-100 rounded-xl" />
+              <div className="h-9 bg-white/10 light:bg-slate-200 rounded-xl" />
             </div>
           ))}
         </div>
       ) : error ? (
-        <div className="glass-panel rounded-3xl p-8 border border-red-500/20 text-center space-y-3">
-          <p className="text-sm text-red-300">{error}</p>
+        <div className="theme-card rounded-3xl p-8 border-red-500/20 text-center space-y-3">
+          <p className="text-sm text-red-300 light:text-red-700">{error}</p>
           <button
             type="button"
             onClick={() => fetchRecommendations(false)}
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white"
+            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 light:bg-slate-100 light:hover:bg-slate-200 text-xs font-semibold text-ink-main"
           >
             Retry Recommendations
           </button>
         </div>
       ) : recommendations.length === 0 ? (
-        <div className="glass-panel rounded-3xl p-8 border border-white/10 text-center space-y-2">
-          <p className="text-sm text-neutral-400">
+        <div className="theme-card rounded-3xl p-8 text-center space-y-2">
+          <p className="text-sm text-ink-muted">
             No recommendations found for this mood yet. Try exploring another emotion.
           </p>
         </div>
@@ -359,13 +360,13 @@ export default function MoodRecommendations({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.35, delay: idx * 0.05 }}
-                className="group glass-panel rounded-3xl p-5 border border-white/10 hover:border-white/25 hover:shadow-2xl hover:shadow-purple-500/10 transition-all flex flex-col justify-between"
+                className="group theme-card rounded-3xl p-5 hover:border-purple-500/40 hover:shadow-2xl hover:shadow-purple-500/10 transition-all flex flex-col justify-between"
               >
                 {/* Top Section: Artwork + Info */}
                 <div>
                   <div className="flex items-start gap-4 mb-3.5">
                     {/* Album Artwork */}
-                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 bg-neutral-900 border border-white/10 shadow-md">
+                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden shrink-0 theme-well shadow-md">
                       <img
                         src={song.coverArtUrl}
                         alt={song.title}
@@ -373,7 +374,7 @@ export default function MoodRecommendations({
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                      <div className="absolute bottom-1 right-1 text-[10px] font-mono text-neutral-300 bg-black/70 px-1.5 py-0.2 rounded">
+                      <div className="absolute bottom-1 right-1 text-[10px] font-mono text-white bg-black/75 px-1.5 py-0.5 rounded">
                         {song.duration}
                       </div>
                     </div>
@@ -383,47 +384,43 @@ export default function MoodRecommendations({
                       <div className="flex items-center gap-1.5 mb-1">
                         <span
                           className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border"
-                          style={{
-                            backgroundColor: `${activeMoodInfo?.color}15`,
-                            color: activeMoodInfo?.color,
-                            borderColor: `${activeMoodInfo?.color}30`
-                          }}
+                          style={getEmotionBadgeStyle(song.mood || activeMood, isDark)}
                         >
                           {song.mood || activeMood}
                         </span>
                         {song.language && (
-                          <span className="text-[10px] text-neutral-500 font-medium">
+                          <span className="text-[10px] text-ink-dim font-medium">
                             • {song.language}
                           </span>
                         )}
                       </div>
 
-                      <h3 className="font-display font-bold text-base text-white truncate group-hover:text-amber-300 transition-colors">
+                      <h3 className="font-display font-bold text-base text-ink-main truncate group-hover:text-amber-300 light:group-hover:text-amber-700 transition-colors">
                         {song.title}
                       </h3>
-                      <p className="text-xs text-neutral-300 truncate font-medium">
+                      <p className="text-xs text-ink-secondary truncate font-medium">
                         {song.artist}
                       </p>
-                      <p className="text-[11px] text-neutral-500 truncate mt-0.5">
+                      <p className="text-[11px] text-ink-dim truncate mt-0.5">
                         {song.album}
                       </p>
                     </div>
                   </div>
 
                   {/* Why Recommended Reason Box */}
-                  <div className="p-3 rounded-2xl bg-white/[0.04] border border-white/5 space-y-1 mb-4">
-                    <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-amber-300">
-                      <Sparkles className="w-3 h-3 text-amber-400" />
+                  <div className="p-3 rounded-2xl theme-well space-y-1 mb-4">
+                    <div className="flex items-center gap-1.5 text-[10px] uppercase font-bold text-amber-300 light:text-amber-700">
+                      <Sparkles className="w-3 h-3 text-amber-400 light:text-amber-600" />
                       <span>Why Recommended</span>
                     </div>
-                    <p className="text-xs text-neutral-300 leading-relaxed font-sans">
+                    <p className="text-xs text-ink-secondary leading-relaxed font-sans">
                       {song.reason}
                     </p>
                   </div>
                 </div>
 
                 {/* Bottom Section: Listening & Action Links */}
-                <div className="pt-3 border-t border-white/5 space-y-2">
+                <div className="pt-3 border-t border-white/10 light:border-slate-200 space-y-2">
                   <div className="grid grid-cols-2 gap-2">
                     {/* Spotify Listen Link */}
                     {song.spotifyUrl && (
@@ -431,9 +428,9 @@ export default function MoodRecommendations({
                         href={song.spotifyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-sm"
+                        className="py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 light:bg-emerald-50 light:hover:bg-emerald-100 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-sm"
                       >
-                        <Headphones className="w-3.5 h-3.5 text-emerald-400" />
+                        <Headphones className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
                         <span>Spotify</span>
                         <ArrowUpRight className="w-3 h-3 opacity-60" />
                       </a>
@@ -445,9 +442,9 @@ export default function MoodRecommendations({
                         href={song.youtubeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-sm"
+                        className="py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 light:bg-rose-50 light:hover:bg-rose-100 text-rose-300 light:text-rose-700 border border-rose-500/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-sm"
                       >
-                        <YoutubeIcon className="w-3.5 h-3.5 text-rose-400" />
+                        <YoutubeIcon className="w-3.5 h-3.5 text-rose-400 light:text-rose-600" />
                         <span>YouTube</span>
                         <ArrowUpRight className="w-3 h-3 opacity-60" />
                       </a>
@@ -459,7 +456,7 @@ export default function MoodRecommendations({
                     <button
                       type="button"
                       onClick={() => onSelectSongForAnalysis(song)}
-                      className="w-full py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-[11px] font-medium text-neutral-400 hover:text-white transition-colors flex items-center justify-center gap-1"
+                      className="w-full py-1.5 rounded-xl bg-white/5 hover:bg-white/10 light:bg-slate-100 light:hover:bg-slate-200 text-[11px] font-medium text-ink-muted hover:text-ink-main transition-colors flex items-center justify-center gap-1"
                     >
                       <Music2 className="w-3 h-3" />
                       <span>Analyze Lyrics of this Song</span>
@@ -479,25 +476,27 @@ export default function MoodRecommendations({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/80 light:bg-slate-900/50 backdrop-blur-md flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-neutral-900 border border-white/10 rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-6 shadow-2xl"
+              role="dialog"
+              aria-modal="true"
+              className="theme-modal rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto space-y-6 shadow-2xl"
             >
-              <div className="flex items-center justify-between pb-4 border-b border-white/10">
+              <div className="flex items-center justify-between pb-4 border-b border-white/10 light:border-slate-200">
                 <div className="flex items-center gap-2.5">
-                  <History className="w-5 h-5 text-purple-400" />
-                  <h3 className="font-display font-bold text-xl text-white">
+                  <History className="w-5 h-5 text-purple-400 light:text-purple-600" />
+                  <h3 className="font-display font-bold text-xl text-ink-main">
                     Personalized Music Journey
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setShowHistoryModal(false)}
-                  className="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold text-white"
+                  className="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 light:bg-slate-100 light:hover:bg-slate-200 text-xs font-semibold text-ink-main"
                 >
                   Close
                 </button>
@@ -506,14 +505,14 @@ export default function MoodRecommendations({
               {/* Analyzed Songs History */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-ink-muted">
                     Recently Analyzed Songs ({recentlyAnalyzed.length})
                   </h4>
                   {recentlyAnalyzed.length > 0 && (
                     <button
                       type="button"
                       onClick={clearPersonalizationHistory}
-                      className="flex items-center gap-1 text-[11px] text-red-400 hover:text-red-300"
+                      className="flex items-center gap-1 text-[11px] text-red-400 hover:text-red-300 light:text-red-600 light:hover:text-red-700"
                     >
                       <Trash2 className="w-3 h-3" />
                       Clear History
@@ -522,28 +521,25 @@ export default function MoodRecommendations({
                 </div>
 
                 {recentlyAnalyzed.length === 0 ? (
-                  <p className="text-xs text-neutral-500 py-3">No analyzed songs yet.</p>
+                  <p className="text-xs text-ink-dim py-3">No analyzed songs yet.</p>
                 ) : (
                   <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
                     {recentlyAnalyzed.map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between p-3 rounded-2xl bg-white/5 border border-white/5 text-xs"
+                        className="flex items-center justify-between p-3 rounded-2xl theme-well text-xs"
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-lg">{item.emoji}</span>
                           <div>
-                            <div className="font-semibold text-white">{item.title}</div>
-                            <div className="text-[11px] text-neutral-400">{item.artist}</div>
+                            <div className="font-semibold text-ink-main">{item.title}</div>
+                            <div className="text-[11px] text-ink-muted">{item.artist}</div>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           <span
-                            className="text-[10px] font-bold px-2 py-0.5 rounded"
-                            style={{
-                              backgroundColor: `${item.color}20`,
-                              color: item.color
-                            }}
+                            className="text-[10px] font-bold px-2 py-0.5 rounded border"
+                            style={getEmotionBadgeStyle(item.mood, isDark)}
                           >
                             {item.mood} ({item.confidence}%)
                           </span>
@@ -553,7 +549,7 @@ export default function MoodRecommendations({
                               setActiveMood(item.mood);
                               setShowHistoryModal(false);
                             }}
-                            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white"
+                            className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 light:bg-white light:hover:bg-slate-200 border border-transparent light:border-slate-200 text-ink-main"
                             title="Explore Recommendations for this Mood"
                           >
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -566,12 +562,12 @@ export default function MoodRecommendations({
               </div>
 
               {/* Past Recommendation Batches */}
-              <div className="space-y-3 pt-2 border-t border-white/10">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+              <div className="space-y-3 pt-2 border-t border-white/10 light:border-slate-200">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-ink-muted">
                   Past Recommendation Sessions ({recommendationHistory.length})
                 </h4>
                 {recommendationHistory.length === 0 ? (
-                  <p className="text-xs text-neutral-500 py-3">
+                  <p className="text-xs text-ink-dim py-3">
                     Recommendations will be saved here as you explore.
                   </p>
                 ) : (
@@ -579,10 +575,10 @@ export default function MoodRecommendations({
                     {recommendationHistory.map((batch, idx) => (
                       <div
                         key={idx}
-                        className="p-3 rounded-2xl bg-white/5 border border-white/5 text-xs space-y-2"
+                        className="p-3 rounded-2xl theme-well text-xs space-y-2"
                       >
-                        <div className="flex items-center justify-between text-neutral-400 text-[11px]">
-                          <span className="font-semibold text-white">
+                        <div className="flex items-center justify-between text-ink-muted text-[11px]">
+                          <span className="font-semibold text-ink-main">
                             Mood: {batch.mood}
                           </span>
                           <span>{new Date(batch.timestamp).toLocaleDateString()}</span>
@@ -594,7 +590,7 @@ export default function MoodRecommendations({
                               href={s.spotifyUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-[11px] text-neutral-300 hover:text-white"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 light:bg-white border border-transparent light:border-slate-200 text-[11px] text-ink-secondary hover:text-ink-main"
                             >
                               <span>{s.title}</span>
                               <ExternalLink className="w-2.5 h-2.5 opacity-60" />

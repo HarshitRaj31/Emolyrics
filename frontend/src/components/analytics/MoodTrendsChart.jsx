@@ -86,21 +86,21 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
   const yTicks = [0, Math.round(maxTotal / 2), maxTotal];
 
   return (
-    <div className="glass-panel rounded-3xl p-6 border border-white/10 shadow-xl space-y-6">
+    <div className="glass-panel rounded-3xl p-6 space-y-6">
       {/* Top Header & Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10 light:border-slate-900/10">
         <div>
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-sky-400" />
-            <h3 className="font-display font-bold text-lg text-white">Mood Analysis Trends</h3>
+            <TrendingUp className="w-4 h-4 text-sky-400 light:text-sky-600" />
+            <h3 className="font-display font-bold text-lg text-ink-main">Mood Analysis Trends</h3>
           </div>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-ink-muted">
             Temporal activity volume showing lyrical analysis frequency over time
           </p>
         </div>
 
         {/* View Mode Switcher */}
-        <div className="flex p-1 bg-neutral-900 border border-white/10 rounded-xl text-xs font-semibold self-start sm:self-auto">
+        <div className="flex p-1 theme-well rounded-xl text-xs font-semibold self-start sm:self-auto">
           <button
             type="button"
             onClick={() => {
@@ -110,7 +110,7 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
             className={`px-3 py-1.5 rounded-lg transition-all ${
               viewMode === "daily"
                 ? "bg-purple-600 text-white shadow-sm"
-                : "text-neutral-400 hover:text-white"
+                : "text-ink-muted hover:text-ink-main"
             }`}
           >
             Daily
@@ -124,7 +124,7 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
             className={`px-3 py-1.5 rounded-lg transition-all ${
               viewMode === "weekly"
                 ? "bg-purple-600 text-white shadow-sm"
-                : "text-neutral-400 hover:text-white"
+                : "text-ink-muted hover:text-ink-main"
             }`}
           >
             Weekly
@@ -138,7 +138,7 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
             className={`px-3 py-1.5 rounded-lg transition-all ${
               viewMode === "monthly"
                 ? "bg-purple-600 text-white shadow-sm"
-                : "text-neutral-400 hover:text-white"
+                : "text-ink-muted hover:text-ink-main"
             }`}
           >
             Monthly
@@ -148,8 +148,8 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
 
       {/* Interactive Line Chart SVG */}
       {points.length === 0 ? (
-        <div className="py-16 text-center text-xs text-neutral-500 space-y-2">
-          <Calendar className="w-8 h-8 text-neutral-600 mx-auto" />
+        <div className="py-16 text-center text-xs text-ink-dim space-y-2">
+          <Calendar className="w-8 h-8 text-ink-dim mx-auto" />
           <p>No historical analysis activity recorded for this timeframe.</p>
         </div>
       ) : (
@@ -160,8 +160,8 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
           >
             <defs>
               <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#a855f7" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#a855f7" stopOpacity="0.0" />
+                <stop offset="0%" stopColor="#9333ea" stopOpacity="0.32" />
+                <stop offset="100%" stopColor="#9333ea" stopOpacity="0.0" />
               </linearGradient>
             </defs>
 
@@ -175,13 +175,13 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
                     y1={yPos}
                     x2={width - paddingRight}
                     y2={yPos}
-                    stroke="rgba(255, 255, 255, 0.08)"
+                    stroke="var(--chart-grid)"
                     strokeDasharray="4 4"
                   />
                   <text
                     x={paddingLeft - 8}
                     y={yPos + 4}
-                    fill="#737373"
+                    fill="var(--chart-axis)"
                     fontSize="10"
                     textAnchor="end"
                     fontFamily="monospace"
@@ -200,7 +200,7 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
               <path
                 d={linePath}
                 fill="none"
-                stroke="#c084fc"
+                stroke="var(--accent-chart)"
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -214,7 +214,7 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
                 y1={paddingTop}
                 x2={hoveredPoint.x}
                 y2={paddingTop + innerHeight}
-                stroke="rgba(255, 255, 255, 0.3)"
+                stroke="var(--chart-guide)"
                 strokeDasharray="2 2"
               />
             )}
@@ -228,8 +228,8 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
                     cx={pt.x}
                     cy={pt.y}
                     r={isHovered ? 6 : 4}
-                    fill={isHovered ? "#ffffff" : "#c084fc"}
-                    stroke="#171717"
+                    fill={isHovered ? "var(--text-main)" : "var(--accent-chart)"}
+                    stroke="var(--bg-surface-solid)"
                     strokeWidth="2"
                     className="cursor-pointer transition-all duration-150"
                     onMouseEnter={() => setHoveredPoint(pt)}
@@ -264,7 +264,7 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
                   key={i}
                   x={pt.x}
                   y={height - 10}
-                  fill="#a3a3a3"
+                  fill="var(--chart-axis)"
                   fontSize="10"
                   textAnchor="middle"
                   fontFamily="sans-serif"
@@ -286,17 +286,17 @@ export default function MoodTrendsChart({ trends = { daily: [], weekly: [], mont
               }}
               className="absolute pointer-events-none transform -translate-x-1/2 -translate-y-full z-20"
             >
-              <div className="bg-neutral-900 border border-white/20 rounded-2xl px-3 py-2 shadow-2xl text-xs space-y-1 backdrop-blur-md min-w-[130px]">
-                <div className="flex items-center justify-between text-[11px] text-neutral-400 font-mono pb-1 border-b border-white/10">
+              <div className="theme-modal rounded-2xl px-3 py-2 text-xs space-y-1 backdrop-blur-md min-w-[130px]">
+                <div className="flex items-center justify-between text-[11px] text-ink-muted font-mono pb-1 border-b border-white/10 light:border-slate-900/10">
                   <span>{hoveredPoint.label || hoveredPoint.date}</span>
-                  <span className="text-white font-bold">{hoveredPoint.total} songs</span>
+                  <span className="text-ink-main font-bold">{hoveredPoint.total} songs</span>
                 </div>
                 {hoveredPoint.moods && Object.keys(hoveredPoint.moods).length > 0 && (
                   <div className="space-y-0.5 pt-0.5">
                     {Object.entries(hoveredPoint.moods).map(([m, c]) => (
                       <div key={m} className="flex items-center justify-between text-[10px]">
-                        <span className="text-neutral-300">{m}</span>
-                        <span className="font-mono text-purple-300 font-semibold">{c}</span>
+                        <span className="text-ink-secondary">{m}</span>
+                        <span className="font-mono text-purple-300 light:text-purple-700 font-semibold">{c}</span>
                       </div>
                     ))}
                   </div>

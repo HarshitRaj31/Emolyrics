@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PieChart, Sparkles, Filter, Check } from "lucide-react";
+import { useTheme } from "../../context/ThemeContext";
+import { getEmotionToken } from "../../utils/emotionTheme";
 
 export default function EmotionDonutChart({
   distribution = {},
@@ -10,6 +12,7 @@ export default function EmotionDonutChart({
   selectedFilter = "All",
   onSelectFilter
 }) {
+  const { isDark } = useTheme();
   const [hoveredEmotion, setHoveredEmotion] = useState(null);
 
   // SVG Geometry Constants
@@ -82,19 +85,21 @@ export default function EmotionDonutChart({
       const dashoffset = -accumulated;
       accumulated += strokeLength;
 
+      const tok = getEmotionToken(emotion);
       return {
         emotion,
         percentage: pct,
         fraction,
         strokeLength,
         dashoffset,
-        color: emotionColors[emotion] || "#a855f7",
-        emoji: emotionEmojis[emotion] || "🎵",
+        color: tok.color || emotionColors[emotion] || "#a855f7",
+        textColor: isDark ? tok.darkText : tok.lightText,
+        emoji: emotionEmojis[emotion] || tok.emoji || "🎵",
         lineCount: lineCountsByEmotion[emotion] || 0,
         isPrimary: emotion === primaryEmotion
       };
     });
-  }, [activeEntries, circumference, emotionColors, emotionEmojis, lineCountsByEmotion, primaryEmotion]);
+  }, [activeEntries, circumference, emotionColors, emotionEmojis, isDark, lineCountsByEmotion, primaryEmotion]);
 
   // Currently active item for center display (hovered or selected or primary)
   const activeFocus = useMemo(() => {
@@ -108,16 +113,16 @@ export default function EmotionDonutChart({
   }, [hoveredEmotion, selectedFilter, segments]);
 
   return (
-    <div className="rounded-3xl p-5 sm:p-6 bg-neutral-900/80 border border-white/10 shadow-xl flex flex-col justify-between space-y-5">
+    <div className="rounded-3xl p-5 sm:p-6 theme-card flex flex-col justify-between space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-white/10">
+      <div className="flex items-center justify-between pb-3 border-b border-white/10 light:border-slate-900/10">
         <div className="flex items-center gap-2">
-          <PieChart className="w-4 h-4 text-purple-400" />
-          <h3 className="font-display font-bold text-base text-white">
+          <PieChart className="w-4 h-4 text-purple-400 light:text-purple-600" />
+          <h3 className="font-display font-bold text-base text-ink-main">
             Emotion Distribution Donut
           </h3>
         </div>
-        <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
+        <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-purple-500/15 light:bg-purple-100 text-purple-300 light:text-purple-700 border border-purple-500/30 light:border-purple-200">
           {activeEntries.length} Detected Emotions
         </span>
       </div>
@@ -137,7 +142,7 @@ export default function EmotionDonutChart({
                 cy={center}
                 r={radius}
                 fill="transparent"
-                stroke="rgba(255, 255, 255, 0.05)"
+                stroke="var(--chart-track)"
                 strokeWidth="24"
               />
 
@@ -196,21 +201,21 @@ export default function EmotionDonutChart({
                     <span className="text-3xl select-none block">
                       {activeFocus.emoji}
                     </span>
-                    <span className="font-display font-black text-xl text-white block leading-tight">
+                    <span className="font-display font-black text-xl text-ink-main block leading-tight">
                       {activeFocus.percentage}%
                     </span>
                     <span
                       className="font-bold text-xs block truncate max-w-[120px]"
-                      style={{ color: activeFocus.color }}
+                      style={{ color: activeFocus.textColor }}
                     >
                       {activeFocus.emotion}
                     </span>
-                    <span className="text-[10px] text-neutral-400 block font-mono">
+                    <span className="text-[10px] text-ink-muted block font-mono">
                       {activeFocus.isPrimary ? "Primary Emotion" : `${activeFocus.lineCount} lines`}
                     </span>
                   </motion.div>
                 ) : (
-                  <div className="text-xs text-neutral-400">
+                  <div className="text-xs text-ink-muted">
                     Hover segment to inspect
                   </div>
                 )}
@@ -221,7 +226,7 @@ export default function EmotionDonutChart({
 
         {/* Right: Interactive Legend & Filter List (6 cols on md) */}
         <div className="md:col-span-6 space-y-2">
-          <div className="flex items-center justify-between text-xs text-neutral-400 mb-1">
+          <div className="flex items-center justify-between text-xs text-ink-muted mb-1">
             <span className="font-semibold uppercase tracking-wider text-[10px]">
               Emotion Legend (Click to filter)
             </span>
@@ -229,7 +234,7 @@ export default function EmotionDonutChart({
               <button
                 type="button"
                 onClick={() => onSelectFilter && onSelectFilter("All")}
-                className="text-[10px] text-purple-400 hover:text-purple-300 font-semibold"
+                className="text-[10px] text-purple-400 light:text-purple-700 hover:underline font-semibold"
               >
                 Reset Filter
               </button>
@@ -252,10 +257,10 @@ export default function EmotionDonutChart({
                   }
                   className={`p-2 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                     isSelected
-                      ? "bg-purple-600/20 border-purple-500/50 shadow-sm"
+                      ? "bg-purple-600/20 light:bg-purple-100/80 border-purple-500/50 shadow-sm"
                       : isHovered
-                      ? "bg-white/10 border-white/20"
-                      : "bg-white/5 border-white/5 hover:border-white/10"
+                      ? "bg-white/10 light:bg-slate-900/10 border-white/20 light:border-slate-900/20"
+                      : "theme-well hover:border-white/15 light:hover:border-slate-900/20"
                   }`}
                 >
                   <div className="flex items-center gap-2 truncate">
@@ -264,19 +269,19 @@ export default function EmotionDonutChart({
                       style={{ backgroundColor: seg.color }}
                     />
                     <span className="text-sm select-none">{seg.emoji}</span>
-                    <span className="font-semibold text-neutral-200 truncate">
+                    <span className="font-semibold text-ink-main truncate">
                       {seg.emotion}
                     </span>
                     {seg.isPrimary && (
-                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 shrink-0 font-bold">
+                      <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 light:bg-amber-100 text-amber-300 light:text-amber-800 border border-amber-500/30 light:border-amber-300 shrink-0 font-bold">
                         Primary
                       </span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-2 font-mono text-[11px] shrink-0">
-                    <span className="font-bold text-white">{seg.percentage}%</span>
-                    <span className="text-neutral-500 text-[10px]">({seg.lineCount}L)</span>
+                    <span className="font-bold text-ink-main">{seg.percentage}%</span>
+                    <span className="text-ink-dim text-[10px]">({seg.lineCount}L)</span>
                   </div>
                 </div>
               );
@@ -286,9 +291,9 @@ export default function EmotionDonutChart({
       </div>
 
       {/* Tooltip Footer Note */}
-      <div className="text-[11px] text-neutral-400 pt-2 border-t border-white/5 flex items-center justify-between">
+      <div className="text-[11px] text-ink-muted pt-2 border-t border-white/5 light:border-slate-900/10 flex items-center justify-between">
         <span>Click any donut segment or legend row to filter lyrics and timeline</span>
-        <span className="font-mono text-neutral-500 text-[10px]">
+        <span className="font-mono text-ink-dim text-[10px]">
           100% Normalized Distribution
         </span>
       </div>

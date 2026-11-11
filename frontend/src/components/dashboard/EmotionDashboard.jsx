@@ -21,6 +21,8 @@ import EmotionSummaryCards from "./EmotionSummaryCards";
 import EmotionDonutChart from "./EmotionDonutChart";
 import EmotionalJourneyTimeline from "./EmotionalJourneyTimeline";
 import PdfDownloadButton from "./PdfDownloadButton";
+import { useTheme } from "../../context/ThemeContext";
+import { getEmotionBadgeStyle } from "../../utils/emotionTheme";
 
 export default function EmotionDashboard({
   data,
@@ -31,6 +33,7 @@ export default function EmotionDashboard({
   error = "",
   onReanalyze
 }) {
+  const { isDark } = useTheme();
   const [selectedEmotionFilter, setSelectedEmotionFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedLineIndex, setExpandedLineIndex] = useState(null);
@@ -72,22 +75,22 @@ export default function EmotionDashboard({
   // Loading State
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse p-6 sm:p-8 rounded-3xl bg-neutral-900/50 border border-white/10 shadow-2xl">
+      <div className="space-y-6 animate-pulse p-6 sm:p-8 rounded-3xl theme-card">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
-            <div className="h-6 w-56 bg-white/10 rounded-lg" />
-            <div className="h-3.5 w-80 bg-white/5 rounded-lg" />
+            <div className="h-6 w-56 bg-white/10 light:bg-slate-900/10 rounded-lg" />
+            <div className="h-3.5 w-80 max-w-full bg-white/5 light:bg-slate-900/5 rounded-lg" />
           </div>
-          <div className="h-9 w-36 bg-white/10 rounded-xl" />
+          <div className="h-9 w-36 bg-white/10 light:bg-slate-900/10 rounded-xl" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="h-28 rounded-2xl bg-white/5" />
+            <div key={i} className="h-28 rounded-2xl theme-well" />
           ))}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="h-80 rounded-3xl bg-white/5" />
-          <div className="h-80 rounded-3xl bg-white/5" />
+          <div className="h-80 rounded-3xl theme-well" />
+          <div className="h-80 rounded-3xl theme-well" />
         </div>
       </div>
     );
@@ -96,12 +99,12 @@ export default function EmotionDashboard({
   // Error State
   if (error) {
     return (
-      <div className="p-8 rounded-3xl bg-rose-500/10 border border-rose-500/20 text-center space-y-4">
-        <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+      <div className="p-8 rounded-3xl bg-rose-500/10 border border-rose-500/25 text-center space-y-4">
+        <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 light:text-rose-700 flex items-center justify-center mx-auto">
           <BarChart3 className="w-6 h-6" />
         </div>
-        <h4 className="text-lg font-bold text-white">Dashboard Visualization Unavailable</h4>
-        <p className="text-xs text-neutral-300 max-w-md mx-auto">{error}</p>
+        <h4 className="text-lg font-bold text-ink-main">Dashboard Visualization Unavailable</h4>
+        <p className="text-xs text-ink-secondary max-w-md mx-auto">{error}</p>
         {onReanalyze && (
           <button
             type="button"
@@ -118,14 +121,14 @@ export default function EmotionDashboard({
   // Empty State
   if (!data) {
     return (
-      <div className="p-10 rounded-3xl bg-neutral-900/40 border border-white/5 text-center space-y-3">
-        <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mx-auto text-neutral-500">
+      <div className="p-10 rounded-3xl theme-card text-center space-y-3">
+        <div className="w-14 h-14 rounded-2xl theme-well flex items-center justify-center mx-auto text-ink-dim">
           <Music2 className="w-7 h-7" />
         </div>
-        <h4 className="font-display font-bold text-base text-white">
+        <h4 className="font-display font-bold text-base text-ink-main">
           Awaiting Emotion Analysis Data
         </h4>
-        <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+        <p className="text-xs text-ink-muted max-w-sm mx-auto">
           Run standard or deep AI analysis on your song lyrics to unlock the interactive visualization dashboard.
         </p>
       </div>
@@ -137,35 +140,35 @@ export default function EmotionDashboard({
       {/* ============================================================ */}
       {/* 1. DASHBOARD TOP BAR: TITLE, STATS & PDF DOWNLOAD */}
       {/* ============================================================ */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-neutral-900/90 to-indigo-950/40 border border-purple-500/20 shadow-xl">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-purple-950/40 via-neutral-900/90 to-indigo-950/40 light:from-purple-50 light:via-white light:to-indigo-50 border border-purple-500/20 light:border-purple-200 shadow-xl light:shadow-md">
         <div className="flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purple-600 via-indigo-500 to-pink-500 p-0.5 shadow-lg shadow-purple-500/20 shrink-0">
-            <div className="w-full h-full bg-neutral-950 rounded-[14px] flex items-center justify-center">
+            <div className="w-full h-full bg-neutral-950 light:bg-slate-900 rounded-[14px] flex items-center justify-center">
               <BarChart3 className="w-6 h-6 text-purple-400" />
             </div>
           </div>
 
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="font-display font-extrabold text-lg sm:text-xl text-white tracking-tight">
+              <h3 className="font-display font-extrabold text-lg sm:text-xl text-ink-main tracking-tight">
                 Emotion Visualization Dashboard
               </h3>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-bold">
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-700 border border-purple-500/30 light:border-purple-200 font-bold">
                 Phase 2
               </span>
               {metadata.isCodeSwitched && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 light:bg-amber-100 text-amber-300 light:text-amber-800 border border-amber-500/30 light:border-amber-300 font-bold">
                   🔀 {metadata.codeSwitchType ? metadata.codeSwitchType.toUpperCase() : "Code-Switched"}
                 </span>
               )}
               {metadata.isUncertain && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30 font-bold flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3 text-orange-400" />
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-orange-500/20 light:bg-orange-100 text-orange-300 light:text-orange-800 border border-orange-500/30 light:border-orange-300 font-bold flex items-center gap-1">
+                  <AlertTriangle className="w-3 h-3 text-orange-400 light:text-orange-600" />
                   <span>Calibrated Margin</span>
                 </span>
               )}
             </div>
-            <p className="text-xs text-neutral-400 mt-0.5">
+            <p className="text-xs text-ink-muted mt-0.5">
               {metadata.title || title || "Analyzed Song"} • {metadata.artist || artist || "Independent Artist"}
               {metadata.language && ` • ${metadata.language}`}
             </p>
@@ -195,10 +198,10 @@ export default function EmotionDashboard({
       {/* ============================================================ */}
       {/* 3. INTERACTIVE EMOTION FILTER BAR */}
       {/* ============================================================ */}
-      <div className="flex items-center justify-between gap-3 p-3 rounded-2xl bg-neutral-900/60 border border-white/5">
+      <div className="flex items-center justify-between gap-3 p-3 rounded-2xl theme-card">
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <span className="text-[11px] font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1 shrink-0 px-2">
-            <Filter className="w-3 h-3 text-purple-400" />
+          <span className="text-[11px] font-semibold text-ink-muted uppercase tracking-wider flex items-center gap-1 shrink-0 px-2">
+            <Filter className="w-3 h-3 text-purple-400 light:text-purple-600" />
             <span>Filter:</span>
           </span>
 
@@ -208,7 +211,7 @@ export default function EmotionDashboard({
             className={`px-3 py-1 rounded-xl text-xs font-semibold shrink-0 transition-colors ${
               selectedEmotionFilter === "All"
                 ? "bg-purple-600 text-white shadow-sm"
-                : "bg-white/5 text-neutral-400 hover:text-white"
+                : "theme-well text-ink-muted hover:text-ink-main"
             }`}
           >
             All Emotions ({lines.filter((l) => !l.isSectionHeader).length})
@@ -224,7 +227,7 @@ export default function EmotionDashboard({
                 className={`px-3 py-1 rounded-xl text-xs font-semibold shrink-0 transition-colors flex items-center gap-1.5 ${
                   isSelected
                     ? "bg-purple-600 text-white shadow-sm"
-                    : "bg-white/5 text-neutral-400 hover:text-white"
+                    : "theme-well text-ink-muted hover:text-ink-main"
                 }`}
               >
                 <span>{emoKey}</span>
@@ -238,7 +241,7 @@ export default function EmotionDashboard({
           <button
             type="button"
             onClick={() => setSelectedEmotionFilter("All")}
-            className="text-xs text-amber-400 hover:text-amber-300 font-semibold shrink-0 px-2 transition-colors"
+            className="text-xs text-amber-400 light:text-amber-700 hover:underline font-semibold shrink-0 px-2 transition-colors"
           >
             Reset
           </button>
@@ -278,27 +281,27 @@ export default function EmotionDashboard({
       {/* ============================================================ */}
       {/* 5. INTERACTIVE LINE-BY-LINE LYRICS EXPLORER */}
       {/* ============================================================ */}
-      <div className="rounded-3xl p-5 sm:p-6 bg-neutral-900/70 border border-white/10 shadow-xl space-y-4">
+      <div className="rounded-3xl p-5 sm:p-6 theme-card space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h4 className="text-base font-bold text-white flex items-center gap-2">
-              <FileText className="w-4 h-4 text-purple-400" />
+            <h4 className="text-base font-bold text-ink-main flex items-center gap-2">
+              <FileText className="w-4 h-4 text-purple-400 light:text-purple-600" />
               <span>Interactive Lyrics & Sentiment Explorer</span>
             </h4>
-            <p className="text-xs text-neutral-400 mt-0.5">
+            <p className="text-xs text-ink-muted mt-0.5">
               Explore emotional classifications and matched cues line by line
             </p>
           </div>
 
           {/* Search Input */}
           <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-ink-dim" />
             <input
               type="text"
               placeholder="Search lyrics or cues..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-purple-500"
+              className="w-full pl-8 pr-3 py-1.5 rounded-xl glass-input text-xs"
             />
           </div>
         </div>
@@ -311,7 +314,7 @@ export default function EmotionDashboard({
                 return (
                   <div
                     key={`header-${line.lineIndex}`}
-                    className="py-2 px-3 text-xs font-bold font-mono text-purple-400 uppercase tracking-wider border-b border-white/5"
+                    className="py-2 px-3 text-xs font-bold font-mono text-purple-400 light:text-purple-700 uppercase tracking-wider border-b border-white/5 light:border-slate-900/10"
                   >
                     {line.text}
                   </div>
@@ -323,7 +326,7 @@ export default function EmotionDashboard({
               return (
                 <div
                   key={`line-${line.lineIndex}`}
-                  className="rounded-2xl border transition-all overflow-hidden bg-white/5 border-white/5 hover:border-white/15"
+                  className="rounded-2xl border transition-all overflow-hidden theme-well hover:border-white/20 light:hover:border-slate-900/20"
                   style={{
                     borderLeftWidth: "4px",
                     borderLeftColor: line.color || "#a855f7"
@@ -336,15 +339,15 @@ export default function EmotionDashboard({
                     className="p-3 sm:px-4 flex items-center justify-between gap-3 cursor-pointer select-none"
                   >
                     <div className="flex items-center gap-2.5 flex-1 min-w-0">
-                      <span className="text-[11px] font-mono text-neutral-500 w-5 text-right shrink-0">
+                      <span className="text-[11px] font-mono text-ink-dim w-5 text-right shrink-0">
                         {line.lineIndex}
                       </span>
                       {line.sectionName && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-purple-300 shrink-0">
+                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/10 light:bg-purple-100 text-purple-300 light:text-purple-700 shrink-0">
                           {line.sectionName}
                         </span>
                       )}
-                      <span className="text-xs sm:text-sm font-medium text-neutral-100 truncate">
+                      <span className="text-xs sm:text-sm font-medium text-ink-main truncate">
                         {line.text}
                       </span>
                     </div>
@@ -352,7 +355,7 @@ export default function EmotionDashboard({
                     <div className="flex items-center gap-2 shrink-0">
                       {line.isCodeSwitched && (
                         <span
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-mono font-medium"
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/20 light:bg-amber-100 text-amber-300 light:text-amber-800 font-mono font-medium"
                           title="Code-switched line"
                         >
                           🔀 CS
@@ -361,33 +364,30 @@ export default function EmotionDashboard({
 
                       {line.isUncertain && (
                         <span
-                          className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 font-mono flex items-center gap-0.5"
+                          className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/20 light:bg-orange-100 text-orange-300 light:text-orange-800 font-mono flex items-center gap-0.5"
                           title="Narrow decision margin"
                         >
-                          <AlertTriangle className="w-2.5 h-2.5 text-orange-400" />
+                          <AlertTriangle className="w-2.5 h-2.5 text-orange-400 light:text-orange-600" />
                           <span className="hidden sm:inline">Margin</span>
                         </span>
                       )}
 
                       <span
-                        className="text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center gap-1"
-                        style={{
-                          backgroundColor: `${line.color || "#a855f7"}20`,
-                          color: line.color || "#a855f7"
-                        }}
+                        className="text-xs px-2.5 py-0.5 rounded-full font-semibold flex items-center gap-1 border"
+                        style={getEmotionBadgeStyle(line.emotion, isDark)}
                       >
                         <span>{line.emoji}</span>
                         <span>{line.emotion}</span>
                       </span>
 
-                      <span className="text-[10px] font-mono text-neutral-400 hidden sm:inline">
+                      <span className="text-[10px] font-mono text-ink-muted hidden sm:inline">
                         {line.confidence}%
                       </span>
 
                       {isExpanded ? (
-                        <ChevronUp className="w-3.5 h-3.5 text-neutral-400" />
+                        <ChevronUp className="w-3.5 h-3.5 text-ink-muted" />
                       ) : (
-                        <ChevronDown className="w-3.5 h-3.5 text-neutral-400" />
+                        <ChevronDown className="w-3.5 h-3.5 text-ink-muted" />
                       )}
                     </div>
                   </div>
@@ -398,18 +398,18 @@ export default function EmotionDashboard({
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="px-4 pb-3 pt-1 text-xs text-neutral-300 border-t border-white/5 bg-black/20 space-y-1.5"
+                      className="px-4 pb-3 pt-2 text-xs text-ink-secondary border-t border-white/5 light:border-slate-900/10 bg-black/20 light:bg-slate-100/80 space-y-1.5"
                     >
                       <p className="font-sans leading-relaxed text-[11px] sm:text-xs">
                         {line.explanation}
                       </p>
                       {line.detectedKeywords?.length > 0 && (
                         <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                          <span className="text-[10px] text-neutral-500">Keywords:</span>
+                          <span className="text-[10px] text-ink-dim">Keywords:</span>
                           {line.detectedKeywords.map((kw, ki) => (
                             <span
                               key={ki}
-                              className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/10 text-white"
+                              className="text-[10px] font-mono px-1.5 py-0.5 rounded theme-well text-ink-main"
                             >
                               #{kw}
                             </span>
@@ -422,7 +422,7 @@ export default function EmotionDashboard({
               );
             })
           ) : (
-            <div className="py-12 text-center text-xs text-neutral-400">
+            <div className="py-12 text-center text-xs text-ink-muted">
               No lines found matching "{selectedEmotionFilter}"
             </div>
           )}

@@ -1,39 +1,88 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 const ThemeContext = createContext();
+const STORAGE_KEY = "emolyrics_theme";
+
+function getInitialTheme() {
+  if (typeof window === "undefined") return "dark";
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === "light" || saved === "dark") return saved;
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+      return "light";
+    }
+  } catch {
+    // storage/matchMedia unavailable
+  }
+  return "dark";
+}
+
+function applyThemeToDocument(nextTheme) {
+  const root = document.documentElement;
+  root.classList.remove("dark", "light");
+  root.classList.add(nextTheme);
+  root.dataset.theme = nextTheme;
+  root.style.colorScheme = nextTheme;
+}
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    // Check saved theme or system preference
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("emolyrics_theme");
-      if (saved === "light" || saved === "dark") return saved;
-      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
-        return "light";
-      }
-    }
-    return "dark"; // Default is rich dark music aesthetic
-  });
+  const [theme, setThemeState] = useState(getInitialTheme);
 
+  // Sync DOM immediately on state change
   useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-      root.classList.remove("light");
-    } else {
-      root.classList.add("light");
-      root.classList.remove("dark");
-    }
-    try {
-      localStorage.setItem("emolyrics_theme", theme);
-    } catch (e) {
-      // storage unavailable
-    }
+    applyThemeToDocument(theme);
   }, [theme]);
 
-  const toggleTheme = () => {
+  // Respect OS color-scheme changes while no manual preference is saved, and sync across tabs
+  useEffect(() => {
+    const mediaQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+
+    const handleSystemChange = (e) => {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved !== "light" && saved !== "dark") {
+          setThemeState(e.matches ? "light" : "dark");
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    const handleStorageChange = (e) => {
+      if (e.key === STORAGE_KEY && (e.newValue === "light" || e.newValue === "dark")) {
+        setThemeState(e.newValue);
+      }
+    };
+
+    if (mediaQuery?.addEventListener) {
+      mediaQuery.addEventListener("change", handleSystemChange);
+    }
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      if (mediaQuery?.removeEventListener) {
+        mediaQuery.removeEventListener("change", handleSystemChange);
+      }
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const setTheme = useCallback((nextOrUpdater) => {
+    setThemeState((prev) => {
+      const next = typeof nextOrUpdater === "function" ? nextOrUpdater(prev) : nextOrUpdater;
+      const resolved = next === "light" ? "light" : "dark";
+      try {
+        localStorage.setItem(STORAGE_KEY, resolved);
+      } catch {
+        // storage unavailable
+      }
+      return resolved;
+    });
+  }, []);
+
+  const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
+  }, [setTheme]);
 
   const isDark = theme === "dark";
 
@@ -51,4 +100,3 @@ export function useTheme() {
   }
   return context;
 }
-

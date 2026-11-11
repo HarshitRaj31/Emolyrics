@@ -45,7 +45,7 @@ export default function PdfDownloadButton({
       className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed ${
         downloadSuccess
           ? "bg-emerald-600/90 text-white border border-emerald-400"
-          : "bg-white/10 hover:bg-white/20 text-white border border-white/15"
+          : "bg-white/10 hover:bg-white/20 text-white border border-white/15 light:bg-white light:hover:bg-slate-100 light:text-slate-800 light:border-slate-300/80 light:shadow-sm"
       } ${className}`}
       title="Download comprehensive PDF analysis report including line-by-line sentiment, timeline, and Ollama interpretation"
     >

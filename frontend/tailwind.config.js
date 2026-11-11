@@ -1,3 +1,5 @@
+import plugin from "tailwindcss/plugin";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -10,6 +12,20 @@ export default {
       fontFamily: {
         sans: ["Manrope", "sans-serif"],
         display: ["Outfit", "sans-serif"]
+      },
+      colors: {
+        surface: {
+          page: "rgb(var(--rgb-page) / <alpha-value>)",
+          panel: "rgb(var(--rgb-surface) / <alpha-value>)",
+          card: "rgb(var(--rgb-card) / <alpha-value>)",
+          well: "rgb(var(--rgb-well) / <alpha-value>)"
+        },
+        ink: {
+          main: "rgb(var(--rgb-text-main) / <alpha-value>)",
+          secondary: "rgb(var(--rgb-text-secondary) / <alpha-value>)",
+          muted: "rgb(var(--rgb-text-muted) / <alpha-value>)",
+          dim: "rgb(var(--rgb-text-dim) / <alpha-value>)"
+        }
       },
       animation: {
         "spin-slow": "spin 8s linear infinite",
@@ -24,5 +40,9 @@ export default {
       }
     },
   },
-  plugins: [],
-}
+  plugins: [
+    plugin(({ addVariant }) => {
+      addVariant("light", "html.light &");
+    })
+  ],
+};

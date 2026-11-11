@@ -52,15 +52,15 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
   }, [activeItems, innerWidth]);
 
   return (
-    <div className="glass-panel rounded-3xl p-6 border border-white/10 shadow-xl space-y-6">
+    <div className="glass-panel rounded-3xl p-6 space-y-6">
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-white/10 light:border-slate-900/10">
         <div>
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-purple-400" />
-            <h3 className="font-display font-bold text-lg text-white">Emotion Frequency Comparison</h3>
+            <BarChart3 className="w-4 h-4 text-purple-400 light:text-purple-600" />
+            <h3 className="font-display font-bold text-lg text-ink-main">Emotion Frequency Comparison</h3>
           </div>
-          <p className="text-xs text-neutral-400">
+          <p className="text-xs text-ink-muted">
             Side-by-side volume and average confidence comparison across selected emotions
           </p>
         </div>
@@ -68,7 +68,7 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
         <button
           type="button"
           onClick={selectAll}
-          className="text-xs text-neutral-400 hover:text-white flex items-center gap-1.5 self-start sm:self-auto transition-colors"
+          className="text-xs text-ink-muted hover:text-ink-main flex items-center gap-1.5 self-start sm:self-auto transition-colors"
         >
           <span>Select All 9 Emotions</span>
         </button>
@@ -83,15 +83,15 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
               key={item.mood}
               type="button"
               onClick={() => toggleMood(item.mood)}
-              className={`px-3 py-1 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all border ${
                 isSelected
-                  ? "bg-white/15 text-white border border-white/20 shadow-sm"
-                  : "bg-white/[0.02] text-neutral-500 border border-transparent hover:bg-white/5 hover:text-neutral-300"
+                  ? "bg-white/15 light:bg-slate-900 text-white border-white/20 light:border-slate-900 shadow-sm"
+                  : "theme-well text-ink-muted hover:text-ink-main"
               }`}
             >
               <div
                 className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: isSelected ? item.color : "#525252" }}
+                style={{ backgroundColor: isSelected ? item.color : "#64748b" }}
               />
               <span>{item.emoji}</span>
               <span>{item.mood}</span>
@@ -102,7 +102,7 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
 
       {/* SVG Bar Chart */}
       {activeItems.length === 0 ? (
-        <div className="py-16 text-center text-xs text-neutral-500">
+        <div className="py-16 text-center text-xs text-ink-dim">
           No emotions selected for comparison. Please select at least one emotion above.
         </div>
       ) : (
@@ -118,13 +118,13 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
                     y1={yPos}
                     x2={width - paddingRight}
                     y2={yPos}
-                    stroke="rgba(255, 255, 255, 0.08)"
+                    stroke="var(--chart-grid)"
                     strokeDasharray="4 4"
                   />
                   <text
                     x={paddingLeft - 8}
                     y={yPos + 4}
-                    fill="#737373"
+                    fill="var(--chart-axis)"
                     fontSize="10"
                     textAnchor="end"
                     fontFamily="monospace"
@@ -168,7 +168,7 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
                   <text
                     x={xPos + barWidth / 2}
                     y={yPos - 6}
-                    fill={isHovered ? "#ffffff" : "#a3a3a3"}
+                    fill={isHovered ? "var(--text-main)" : "var(--chart-axis)"}
                     fontSize="11"
                     fontWeight="bold"
                     fontFamily="monospace"
@@ -181,7 +181,7 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
                   <text
                     x={xPos + barWidth / 2}
                     y={height - 12}
-                    fill="#d4d4d4"
+                    fill="var(--text-secondary)"
                     fontSize="10"
                     fontWeight="500"
                     textAnchor="middle"
@@ -204,22 +204,22 @@ export default function EmotionComparisonChart({ emotionComparison = [] }) {
               }}
               className="absolute pointer-events-none transform -translate-x-1/2 -translate-y-full z-20"
             >
-              <div className="bg-neutral-900 border border-white/20 rounded-2xl px-3.5 py-2.5 shadow-2xl text-xs space-y-1 backdrop-blur-md min-w-[140px]">
-                <div className="flex items-center gap-1.5 font-bold text-white pb-1 border-b border-white/10">
+              <div className="theme-modal rounded-2xl px-3.5 py-2.5 text-xs space-y-1 backdrop-blur-md min-w-[140px]">
+                <div className="flex items-center gap-1.5 font-bold text-ink-main pb-1 border-b border-white/10 light:border-slate-900/10">
                   <span>{hoveredBar.emoji}</span>
                   <span>{hoveredBar.mood}</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-neutral-300">
+                <div className="flex items-center justify-between text-[11px] text-ink-secondary">
                   <span>Count:</span>
-                  <span className="font-mono font-bold text-white">{hoveredBar.count} songs</span>
+                  <span className="font-mono font-bold text-ink-main">{hoveredBar.count} songs</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-neutral-300">
+                <div className="flex items-center justify-between text-[11px] text-ink-secondary">
                   <span>Frequency:</span>
-                  <span className="font-mono text-purple-300">{hoveredBar.percentage}%</span>
+                  <span className="font-mono text-purple-300 light:text-purple-700 font-semibold">{hoveredBar.percentage}%</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-neutral-300">
+                <div className="flex items-center justify-between text-[11px] text-ink-secondary">
                   <span>Avg Confidence:</span>
-                  <span className="font-mono text-emerald-400 font-semibold">
+                  <span className="font-mono text-emerald-400 light:text-emerald-700 font-semibold">
                     {hoveredBar.averageConfidence}%
                   </span>
                 </div>

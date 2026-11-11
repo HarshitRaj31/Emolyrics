@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "../../context/ThemeContext";
+import { getEmotionBadgeStyle, getEmotionToken } from "../../utils/emotionTheme";
 
 export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0 }) {
+  const { isDark } = useTheme();
   const [hoveredMood, setHoveredMood] = useState(null);
 
   // SVG dimensions
@@ -35,16 +38,16 @@ export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0
     : null;
 
   return (
-    <div className="glass-panel rounded-3xl p-6 border border-white/10 shadow-xl flex flex-col justify-between space-y-6">
+    <div className="glass-panel rounded-3xl p-6 space-y-6 flex flex-col justify-between">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-white/10">
+      <div className="flex items-center justify-between pb-3 border-b border-white/10 light:border-slate-900/10">
         <div>
-          <h3 className="font-display font-bold text-lg text-white">Mood Distribution</h3>
-          <p className="text-xs text-neutral-400">
+          <h3 className="font-display font-bold text-lg text-ink-main">Mood Distribution</h3>
+          <p className="text-xs text-ink-muted">
             Proportional representation of all 9 trained emotion categories
           </p>
         </div>
-        <span className="text-xs font-mono text-purple-300 bg-purple-500/15 border border-purple-500/30 px-2.5 py-0.5 rounded-full">
+        <span className="text-xs font-mono text-purple-300 light:text-purple-700 bg-purple-500/15 light:bg-purple-100 border border-purple-500/30 light:border-purple-200 px-2.5 py-0.5 rounded-full">
           {totalCount} Songs
         </span>
       </div>
@@ -62,7 +65,7 @@ export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0
               cy={center}
               r={radius}
               fill="transparent"
-              stroke="rgba(255, 255, 255, 0.05)"
+              stroke="var(--chart-track)"
               strokeWidth="24"
             />
 
@@ -107,13 +110,16 @@ export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0
                   className="space-y-0.5"
                 >
                   <span className="text-2xl select-none">{activeHover.emoji}</span>
-                  <div className="font-display font-extrabold text-xl text-white truncate max-w-[140px]">
+                  <div className="font-display font-extrabold text-xl text-ink-main truncate max-w-[140px]">
                     {activeHover.mood}
                   </div>
-                  <div className="font-display font-bold text-lg" style={{ color: activeHover.color }}>
+                  <div
+                    className="font-display font-bold text-lg"
+                    style={{ color: isDark ? getEmotionToken(activeHover.mood).darkText : getEmotionToken(activeHover.mood).lightText }}
+                  >
                     {activeHover.percentage}%
                   </div>
-                  <span className="text-[11px] text-neutral-400 font-mono">
+                  <span className="text-[11px] text-ink-muted font-mono">
                     {activeHover.count} songs
                   </span>
                 </motion.div>
@@ -125,13 +131,13 @@ export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0
                   exit={{ opacity: 0 }}
                   className="space-y-0.5"
                 >
-                  <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
                     Total Songs
                   </span>
-                  <div className="font-display font-extrabold text-3xl text-white">
+                  <div className="font-display font-extrabold text-3xl text-ink-main">
                     {totalCount}
                   </div>
-                  <span className="text-[10px] text-neutral-500">Hover for details</span>
+                  <span className="text-[10px] text-ink-dim">Hover for details</span>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -149,8 +155,8 @@ export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0
                 onMouseLeave={() => setHoveredMood(null)}
                 className={`p-2 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                   isHovered
-                    ? "bg-white/10 border-white/30 shadow-md scale-102"
-                    : "bg-white/[0.03] border-white/5 hover:bg-white/[0.06]"
+                    ? "bg-white/10 light:bg-slate-900/10 border-white/30 light:border-slate-900/25 shadow-md scale-102"
+                    : "theme-well hover:border-white/15 light:hover:border-slate-900/20"
                 }`}
               >
                 <div className="flex items-center gap-2 truncate">
@@ -159,14 +165,14 @@ export default function MoodDoughnutChart({ distribution = [], totalAnalyses = 0
                     style={{ backgroundColor: item.color }}
                   />
                   <span className="text-sm select-none">{item.emoji}</span>
-                  <span className="font-medium text-white truncate">{item.mood}</span>
+                  <span className="font-medium text-ink-main truncate">{item.mood}</span>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0 font-mono">
-                  <span className="text-neutral-400">{item.count}</span>
+                  <span className="text-ink-muted">{item.count}</span>
                   <span
-                    className="font-bold text-[11px] px-1.5 py-0.2 rounded"
-                    style={{ backgroundColor: `${item.color}20`, color: item.color }}
+                    className="font-bold text-[11px] px-1.5 py-0.2 rounded border"
+                    style={getEmotionBadgeStyle(item.mood, isDark)}
                   >
                     {item.percentage}%
                   </span>

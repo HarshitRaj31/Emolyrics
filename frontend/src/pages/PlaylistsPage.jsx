@@ -395,16 +395,16 @@ export default function PlaylistsPage() {
       )}
 
       {/* Header & Overview */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/10 light:border-slate-200">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-2">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 light:text-amber-700 mb-2">
             <ListMusic className="w-4 h-4" />
             <span>Smart Mood-Based Playlist Architecture</span>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
+          <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
             Mood Soundtracks & Playlists
           </h1>
-          <p className="text-sm text-neutral-400 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-sm text-ink-muted mt-1 max-w-2xl leading-relaxed">
             Create intelligent soundtracks synchronized with predicted lyrical emotions. Harmonize
             single or multi-mood emotional journeys with verified NLP confidence and listening links.
           </p>
@@ -426,13 +426,13 @@ export default function PlaylistsPage() {
       </div>
 
       {/* Primary Tab Switcher */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-neutral-900/80 border border-white/10 rounded-2xl w-fit">
+      <div className="flex flex-wrap items-center gap-2 p-1.5 theme-card rounded-2xl w-fit">
         <button
           onClick={() => setActiveTab("presets")}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all ${
             activeTab === "presets"
-              ? "bg-white text-black shadow-md font-bold"
-              : "text-neutral-400 hover:text-white hover:bg-white/5"
+              ? "bg-white light:bg-slate-900 text-black light:text-white shadow-md font-bold"
+              : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
           }`}
         >
           <Compass className="w-4 h-4" />
@@ -444,12 +444,12 @@ export default function PlaylistsPage() {
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all ${
             activeTab === "studio"
               ? "bg-purple-600 text-white shadow-md font-bold"
-              : "text-neutral-400 hover:text-white hover:bg-white/5"
+              : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
           }`}
         >
           <Sparkles className="w-4 h-4 text-amber-300" />
           <span>Generator Studio</span>
-          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
+          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 light:text-amber-700 light:bg-amber-100 border border-amber-400/30">
             Multi-Emotion
           </span>
         </button>
@@ -458,8 +458,8 @@ export default function PlaylistsPage() {
           onClick={() => setActiveTab("mine")}
           className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all ${
             activeTab === "mine"
-              ? "bg-white text-black shadow-md font-bold"
-              : "text-neutral-400 hover:text-white hover:bg-white/5"
+              ? "bg-white light:bg-slate-900 text-black light:text-white shadow-md font-bold"
+              : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
           }`}
         >
           <FolderPlus className="w-4 h-4" />
@@ -469,16 +469,16 @@ export default function PlaylistsPage() {
 
       {/* VIEW 1: Generator Studio */}
       {activeTab === "studio" && (
-        <div className="glass-panel rounded-3xl p-6 sm:p-8 border border-purple-500/30 space-y-8 animate-fadeIn">
+        <div className="glass-panel rounded-3xl p-6 sm:p-8 border-purple-500/30 light:border-purple-200 space-y-8 animate-fadeIn">
           <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-400 mb-1">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-400 light:text-purple-600 mb-1">
               <SlidersHorizontal className="w-4 h-4" />
               <span>Intelligent Emotion Synthesizer</span>
             </div>
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
+            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-ink-main">
               Create a Custom Mood Playlist
             </h2>
-            <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">
+            <p className="text-xs sm:text-sm text-ink-muted mt-1 max-w-2xl">
               Select one or combine multiple emotions. The algorithm selects songs from verified ML
               analyzed history and curated catalog tracks while enforcing artist diversity.
             </p>
@@ -486,7 +486,7 @@ export default function PlaylistsPage() {
 
           {/* 1. Emotion Selection Chips (Multi-Select Supported) */}
           <div className="space-y-3">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary">
               Target Emotions (Select Single or Combine Mixed Emotions) *
             </label>
             <div className="flex flex-wrap gap-2.5">
@@ -501,7 +501,7 @@ export default function PlaylistsPage() {
                     className={`px-3.5 py-2 rounded-2xl text-xs font-semibold flex items-center gap-2 transition-all ${
                       isSelected
                         ? "bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-600/30 border border-purple-400/40 scale-102"
-                        : "bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/5"
+                        : "theme-well text-ink-secondary hover:border-purple-500/30 hover:text-ink-main"
                     }`}
                   >
                     <span>{def.emoji}</span>
@@ -516,7 +516,7 @@ export default function PlaylistsPage() {
           {/* 2. Song Count & Custom Metadata Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-2">
                 Number of Songs ({generatorCount} tracks)
               </label>
               <div className="flex items-center gap-2">
@@ -527,8 +527,8 @@ export default function PlaylistsPage() {
                     onClick={() => setGeneratorCount(cnt)}
                     className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
                       generatorCount === cnt
-                        ? "bg-white text-black shadow-md"
-                        : "bg-white/5 text-neutral-400 hover:bg-white/10"
+                        ? "bg-white light:bg-slate-900 text-black light:text-white shadow-md"
+                        : "theme-well text-ink-muted hover:text-ink-main"
                     }`}
                   >
                     {cnt}
@@ -538,7 +538,7 @@ export default function PlaylistsPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-2">
                 Custom Title (Optional)
               </label>
               <input
@@ -546,12 +546,12 @@ export default function PlaylistsPage() {
                 placeholder="e.g. Midnight Solitude & Tenderness"
                 value={generatorTitle}
                 onChange={(e) => setGeneratorTitle(e.target.value)}
-                className="w-full px-4 py-2 rounded-xl bg-neutral-950 border border-white/10 text-white placeholder:text-neutral-500 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-4 py-2 rounded-xl glass-input text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 text-xs"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-2">
                 Custom Description (Optional)
               </label>
               <input
@@ -559,7 +559,7 @@ export default function PlaylistsPage() {
                 placeholder="e.g. Atmospheric blend for deep work"
                 value={generatorDesc}
                 onChange={(e) => setGeneratorDesc(e.target.value)}
-                className="w-full px-4 py-2 rounded-xl bg-neutral-950 border border-white/10 text-white placeholder:text-neutral-500 text-xs focus:outline-none focus:border-purple-500"
+                className="w-full px-4 py-2 rounded-xl glass-input text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 text-xs"
               />
             </div>
           </div>
@@ -589,29 +589,29 @@ export default function PlaylistsPage() {
 
           {/* Generated Preview Drawer */}
           {generatedDraft && (
-            <div className="p-6 rounded-3xl bg-neutral-900 border border-emerald-500/40 space-y-5 animate-fadeIn">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <div className="p-6 rounded-3xl theme-card border-emerald-500/40 space-y-5 animate-fadeIn">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10 light:border-slate-200">
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30">
                     Draft Generated Successfully
                   </span>
-                  <h3 className="font-display font-bold text-xl text-white mt-1">
+                  <h3 className="font-display font-bold text-xl text-ink-main mt-1">
                     {generatedDraft.title}
                   </h3>
-                  <p className="text-xs text-neutral-300">{generatedDraft.description}</p>
+                  <p className="text-xs text-ink-secondary">{generatedDraft.description}</p>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleGeneratePlaylist}
-                    className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                    className="px-3.5 py-2 rounded-xl theme-well text-ink-secondary hover:text-ink-main text-xs font-semibold flex items-center gap-1.5 transition-colors"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                     <span>Regenerate</span>
                   </button>
                   <button
                     onClick={handleSaveDraft}
-                    className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all"
+                    className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black light:text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all"
                   >
                     <Check className="w-4 h-4 stroke-[3]" />
                     <span>Save to My Playlists</span>
@@ -620,7 +620,7 @@ export default function PlaylistsPage() {
               </div>
 
               {/* Stats pill row */}
-              <div className="flex flex-wrap items-center gap-4 text-xs text-neutral-400">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-ink-muted">
                 <span>{generatedDraft.songs.length} Tracks Selected</span>
                 <span>•</span>
                 <span>
@@ -637,16 +637,16 @@ export default function PlaylistsPage() {
                 {generatedDraft.songs.map((song, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-neutral-950 border border-white/5 text-xs"
+                    className="flex items-center justify-between p-2.5 rounded-xl theme-well text-xs"
                   >
                     <div className="flex items-center gap-2.5 overflow-hidden">
-                      <span className="text-neutral-500 font-mono text-[10px] w-4">{i + 1}</span>
+                      <span className="text-ink-dim font-mono text-[10px] w-4">{i + 1}</span>
                       <div className="overflow-hidden">
-                        <div className="font-semibold text-white truncate">{song.title}</div>
-                        <div className="text-[11px] text-neutral-400 truncate">{song.artist}</div>
+                        <div className="font-semibold text-ink-main truncate">{song.title}</div>
+                        <div className="text-[11px] text-ink-muted truncate">{song.artist}</div>
                       </div>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-neutral-300 shrink-0">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 light:bg-white border border-transparent light:border-slate-200 text-ink-secondary shrink-0">
                       {song.mood}
                     </span>
                   </div>
@@ -661,10 +661,10 @@ export default function PlaylistsPage() {
       {activeTab === "presets" && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-display font-bold text-lg text-white">
+            <h3 className="font-display font-bold text-lg text-ink-main">
               Official Emotion Presets ({presetPlaylists.length})
             </h3>
-            <span className="text-xs text-neutral-400">Click any preset to view & listen</span>
+            <span className="text-xs text-ink-muted">Click any preset to view & listen</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
@@ -683,20 +683,20 @@ export default function PlaylistsPage() {
                   }}
                   className={`p-4 rounded-2xl text-left border transition-all duration-300 relative overflow-hidden group ${
                     isSelected
-                      ? "bg-white/15 border-purple-500 shadow-lg shadow-purple-500/20 scale-102"
-                      : "bg-neutral-900/60 border-white/5 hover:border-white/20 hover:bg-neutral-900"
+                      ? "bg-white/15 light:bg-purple-50 border-purple-500 shadow-lg shadow-purple-500/20 scale-102"
+                      : "theme-card hover:border-purple-500/40"
                   }`}
                 >
                   <div className="text-3xl mb-2">{def.emoji}</div>
-                  <h4 className="font-display font-bold text-sm text-white group-hover:text-amber-300 transition-colors">
+                  <h4 className="font-display font-bold text-sm text-ink-main group-hover:text-amber-300 light:group-hover:text-purple-700 transition-colors">
                     {matchingPres?.title || `${m} Vibes`}
                   </h4>
-                  <p className="text-[11px] text-neutral-400 mt-1 line-clamp-2">
+                  <p className="text-[11px] text-ink-muted mt-1 line-clamp-2">
                     {matchingPres?.description || def.description}
                   </p>
-                  <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-neutral-400 font-mono">
+                  <div className="mt-3 pt-2 border-t border-white/10 light:border-slate-200 flex items-center justify-between text-[10px] text-ink-muted font-mono">
                     <span>{matchingPres?.songs?.length || 4} songs</span>
-                    <Play className="w-3.5 h-3.5 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <Play className="w-3.5 h-3.5 text-ink-main opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                 </button>
               );
@@ -710,10 +710,10 @@ export default function PlaylistsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-display font-bold text-lg text-white">
+              <h3 className="font-display font-bold text-lg text-ink-main">
                 My Custom Collections ({myPlaylists.length})
               </h3>
-              <p className="text-xs text-neutral-400">
+              <p className="text-xs text-ink-muted">
                 Saved locally in your browser library
               </p>
             </div>
@@ -727,16 +727,16 @@ export default function PlaylistsPage() {
           </div>
 
           {myPlaylists.length === 0 ? (
-            <div className="text-center py-16 rounded-3xl bg-neutral-900/30 border border-white/5 space-y-3">
-              <FolderPlus className="w-10 h-10 text-neutral-500 mx-auto" />
-              <h4 className="font-display font-bold text-base text-white">No Custom Playlists Yet</h4>
-              <p className="text-xs text-neutral-400 max-w-sm mx-auto">
+            <div className="text-center py-16 rounded-3xl theme-card space-y-3">
+              <FolderPlus className="w-10 h-10 text-ink-dim mx-auto" />
+              <h4 className="font-display font-bold text-base text-ink-main">No Custom Playlists Yet</h4>
+              <p className="text-xs text-ink-muted max-w-sm mx-auto">
                 Use the Generator Studio to generate your first multi-mood soundtrack or save customized
                 track sequences.
               </p>
               <button
                 onClick={() => setActiveTab("studio")}
-                className="px-4 py-2 rounded-xl bg-white text-black text-xs font-bold hover:bg-neutral-200 transition-colors"
+                className="px-4 py-2 rounded-xl bg-white light:bg-slate-900 text-black light:text-white text-xs font-bold hover:bg-neutral-200 light:hover:bg-slate-800 transition-colors"
               >
                 Launch Generator Studio
               </button>
@@ -751,13 +751,13 @@ export default function PlaylistsPage() {
                     onClick={() => setSelectedPlaylist(pl)}
                     className={`p-5 rounded-3xl border transition-all cursor-pointer flex flex-col justify-between ${
                       isSelected
-                        ? "bg-purple-950/20 border-purple-500 shadow-xl shadow-purple-500/10"
-                        : "bg-neutral-900/60 border-white/5 hover:border-white/20 hover:bg-neutral-900"
+                        ? "bg-purple-950/20 light:bg-purple-50 border-purple-500 shadow-xl shadow-purple-500/10"
+                        : "theme-card hover:border-purple-500/40"
                     }`}
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2 mb-2">
-                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-white/10 text-neutral-300">
+                        <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full theme-well text-ink-secondary">
                           {pl.mood}
                         </span>
                         <div className="flex items-center gap-1">
@@ -767,7 +767,7 @@ export default function PlaylistsPage() {
                               handleDuplicatePlaylist(pl);
                             }}
                             title="Duplicate Playlist"
-                            className="p-1 rounded-lg hover:bg-white/10 text-neutral-400 hover:text-white"
+                            className="p-1 rounded-lg hover:bg-white/10 light:hover:bg-slate-200 text-ink-muted hover:text-ink-main"
                           >
                             <Copy className="w-3.5 h-3.5" />
                           </button>
@@ -777,18 +777,18 @@ export default function PlaylistsPage() {
                               handleDeletePlaylist(pl);
                             }}
                             title="Delete Playlist"
-                            className="p-1 rounded-lg hover:bg-rose-500/20 text-neutral-400 hover:text-rose-400"
+                            className="p-1 rounded-lg hover:bg-rose-500/20 text-ink-muted hover:text-rose-400 light:hover:text-rose-600"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       </div>
 
-                      <h4 className="font-display font-bold text-base text-white">{pl.title}</h4>
-                      <p className="text-xs text-neutral-400 mt-1 line-clamp-2">{pl.description}</p>
+                      <h4 className="font-display font-bold text-base text-ink-main">{pl.title}</h4>
+                      <p className="text-xs text-ink-muted mt-1 line-clamp-2">{pl.description}</p>
                     </div>
 
-                    <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-neutral-400 font-mono">
+                    <div className="mt-4 pt-3 border-t border-white/10 light:border-slate-200 flex items-center justify-between text-xs text-ink-muted font-mono">
                       <span>{pl.songs?.length || 0} tracks</span>
                       <span>{new Date(pl.createdAt || Date.now()).toLocaleDateString()}</span>
                     </div>
@@ -932,8 +932,8 @@ export default function PlaylistsPage() {
           </div>
 
           {/* Right Column: Tracklist & Reorder Management */}
-          <div className="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 border border-white/10 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs font-semibold uppercase text-neutral-400 tracking-wider">
+          <div className="lg:col-span-7 glass-panel rounded-3xl p-6 sm:p-8 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 light:border-slate-200 text-xs font-semibold uppercase text-ink-muted tracking-wider">
               <span>Track Title & Artist</span>
               <div className="flex items-center gap-6">
                 <span>Listening Links</span>
@@ -942,8 +942,8 @@ export default function PlaylistsPage() {
             </div>
 
             {selectedPlaylist.songs?.length === 0 ? (
-              <div className="py-12 text-center text-xs text-neutral-400 space-y-2">
-                <Music2 className="w-8 h-8 mx-auto text-neutral-600" />
+              <div className="py-12 text-center text-xs text-ink-muted space-y-2">
+                <Music2 className="w-8 h-8 mx-auto text-ink-dim" />
                 <p>No tracks currently in this playlist.</p>
                 <button
                   onClick={() => setIsAddSongModalOpen(true)}
@@ -961,8 +961,8 @@ export default function PlaylistsPage() {
                       key={idx}
                       className={`flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-2xl gap-3 transition-all ${
                         isPlaying
-                          ? "bg-white/15 border border-purple-500/40 text-white shadow-md"
-                          : "bg-white/5 hover:bg-white/10 text-neutral-200"
+                          ? "bg-white/15 light:bg-purple-50 border border-purple-500/40 text-ink-main shadow-md"
+                          : "theme-well hover:border-purple-500/30 text-ink-secondary"
                       }`}
                     >
                       {/* Left: Index, Play simulation, Title, Artist, Source badge */}
@@ -972,7 +972,7 @@ export default function PlaylistsPage() {
                           className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center transition-all ${
                             isPlaying
                               ? "bg-amber-400 text-black shadow-md shadow-amber-400/30"
-                              : "bg-black/40 text-neutral-400 hover:text-white"
+                              : "bg-black/40 light:bg-slate-200 text-neutral-400 light:text-slate-600 hover:text-white light:hover:text-slate-900"
                           }`}
                           title={isPlaying ? "Pause Preview" : "Play Preview"}
                         >
@@ -985,26 +985,26 @@ export default function PlaylistsPage() {
 
                         <div className="overflow-hidden">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm text-white truncate">
+                            <span className="font-semibold text-sm text-ink-main truncate">
                               {song.title}
                             </span>
                             {song.source === "analyzed" ? (
                               <span
-                                className="text-[9px] px-1.5 py-0.2 rounded font-mono font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0"
+                                className="text-[9px] px-1.5 py-0.5 rounded font-mono font-semibold bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 shrink-0"
                                 title="Verified by EmoLyrics ML Emotion Classifier"
                               >
                                 ML {song.confidence ? `${song.confidence}%` : "Verified"}
                               </span>
                             ) : (
                               <span
-                                className="text-[9px] px-1.5 py-0.2 rounded font-mono text-neutral-400 bg-white/5 border border-white/10 shrink-0"
+                                className="text-[9px] px-1.5 py-0.5 rounded font-mono text-ink-muted bg-white/5 light:bg-white border border-white/10 light:border-slate-200 shrink-0"
                                 title="Curated Discovery based on emotional resonance"
                               >
                                 Discovery
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-neutral-400 truncate flex items-center gap-2 mt-0.5">
+                          <div className="text-xs text-ink-muted truncate flex items-center gap-2 mt-0.5">
                             <span>{song.artist}</span>
                             <span>•</span>
                             <span className="font-mono">{song.duration || "3:30"}</span>
@@ -1024,7 +1024,7 @@ export default function PlaylistsPage() {
                           }
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2.5 py-1 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[11px] font-semibold flex items-center gap-1 transition-colors"
+                          className="px-2.5 py-1 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 light:bg-emerald-50 light:hover:bg-emerald-100 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 text-[11px] font-semibold flex items-center gap-1 transition-colors"
                           title="Open on Spotify"
                         >
                           <span>Spotify</span>
@@ -1041,7 +1041,7 @@ export default function PlaylistsPage() {
                           }
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2.5 py-1 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-[11px] font-semibold flex items-center gap-1 transition-colors"
+                          className="px-2.5 py-1 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 light:bg-rose-50 light:hover:bg-rose-100 text-rose-300 light:text-rose-700 border border-rose-500/30 text-[11px] font-semibold flex items-center gap-1 transition-colors"
                           title="Open on YouTube"
                         >
                           <span>YouTube</span>
@@ -1052,7 +1052,7 @@ export default function PlaylistsPage() {
                         <button
                           onClick={() => handleMoveSongUp(idx)}
                           disabled={idx === 0}
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-neutral-400 hover:text-white disabled:opacity-20 transition-colors"
+                          className="p-1.5 rounded-lg bg-white/5 light:bg-slate-200/70 hover:bg-white/15 light:hover:bg-slate-300 text-ink-muted hover:text-ink-main disabled:opacity-25 transition-colors"
                           title="Move Track Up"
                         >
                           <ChevronUp className="w-3.5 h-3.5" />
@@ -1062,7 +1062,7 @@ export default function PlaylistsPage() {
                         <button
                           onClick={() => handleMoveSongDown(idx)}
                           disabled={idx === selectedPlaylist.songs.length - 1}
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-neutral-400 hover:text-white disabled:opacity-20 transition-colors"
+                          className="p-1.5 rounded-lg bg-white/5 light:bg-slate-200/70 hover:bg-white/15 light:hover:bg-slate-300 text-ink-muted hover:text-ink-main disabled:opacity-25 transition-colors"
                           title="Move Track Down"
                         >
                           <ChevronDown className="w-3.5 h-3.5" />
@@ -1071,7 +1071,7 @@ export default function PlaylistsPage() {
                         {/* Remove Track */}
                         <button
                           onClick={() => handleRemoveSong(idx)}
-                          className="p-1.5 rounded-lg bg-white/5 hover:bg-rose-500/20 text-neutral-400 hover:text-rose-400 transition-colors ml-1"
+                          className="p-1.5 rounded-lg bg-white/5 light:bg-slate-200/70 hover:bg-rose-500/20 text-ink-muted hover:text-rose-400 light:hover:text-rose-600 transition-colors ml-1"
                           title="Remove Song from Playlist"
                         >
                           <Trash2 className="w-3.5 h-3.5" />

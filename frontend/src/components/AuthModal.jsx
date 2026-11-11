@@ -51,22 +51,29 @@ export default function AuthModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-neutral-900 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={isRegister ? "Join EmoLyrics" : "Sign In to EmoLyrics"}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 light:bg-slate-900/45 backdrop-blur-md animate-in fade-in duration-200"
+    >
+      <div className="relative w-full max-w-md theme-modal rounded-3xl p-6 sm:p-8">
         {/* Close Button */}
         <button
+          type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+          aria-label="Close Authentication Modal"
+          className="absolute top-5 right-5 p-2 rounded-full text-ink-muted hover:text-ink-main hover:bg-white/10 light:hover:bg-slate-900/10 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="text-center mb-6">
-          <h3 className="font-display text-2xl font-bold text-white">
+          <h3 className="font-display text-2xl font-bold text-ink-main">
             {isRegister ? "Join EmoLyrics" : "Welcome Back"}
           </h3>
-          <p className="text-sm text-neutral-400 mt-1">
+          <p className="text-sm text-ink-muted mt-1">
             {isRegister
               ? "Create an account to save analyses and playlists"
               : "Sign in to access your saved lyrics and favorites"}
@@ -74,7 +81,7 @@ export default function AuthModal({ isOpen, onClose }) {
         </div>
 
         {/* Tab Toggle */}
-        <div className="grid grid-cols-2 bg-neutral-950 p-1 rounded-xl mb-6 border border-white/5">
+        <div className="grid grid-cols-2 theme-well p-1 rounded-xl mb-6">
           <button
             type="button"
             onClick={() => {
@@ -82,7 +89,7 @@ export default function AuthModal({ isOpen, onClose }) {
               setError(null);
             }}
             className={`py-2 text-sm font-semibold rounded-lg transition-all ${
-              !isRegister ? "bg-white text-black shadow" : "text-neutral-400 hover:text-white"
+              !isRegister ? "bg-white light:bg-slate-900 text-neutral-950 light:text-white shadow" : "text-ink-muted hover:text-ink-main"
             }`}
           >
             Sign In
@@ -94,7 +101,7 @@ export default function AuthModal({ isOpen, onClose }) {
               setError(null);
             }}
             className={`py-2 text-sm font-semibold rounded-lg transition-all ${
-              isRegister ? "bg-white text-black shadow" : "text-neutral-400 hover:text-white"
+              isRegister ? "bg-white light:bg-slate-900 text-neutral-950 light:text-white shadow" : "text-ink-muted hover:text-ink-main"
             }`}
           >
             Register
@@ -103,13 +110,13 @@ export default function AuthModal({ isOpen, onClose }) {
 
         {/* Alerts */}
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 light:text-rose-700 text-sm flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
         {success && (
-          <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 light:text-emerald-700 text-sm flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{success}</span>
           </div>
@@ -119,47 +126,47 @@ export default function AuthModal({ isOpen, onClose }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister && (
             <div>
-              <label className="block text-xs font-medium text-neutral-400 mb-1.5">Full Name</label>
+              <label className="block text-xs font-medium text-ink-muted mb-1.5">Full Name</label>
               <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-dim" />
                 <input
                   type="text"
                   required
                   placeholder="e.g. Chandrima Chawdhury"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-950 border border-white/10 text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-sm"
                 />
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium text-neutral-400 mb-1.5">Email Address</label>
+            <label className="block text-xs font-medium text-ink-muted mb-1.5">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-dim" />
               <input
                 type="email"
                 required
                 placeholder="you@example.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-950 border border-white/10 text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-sm"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-neutral-400 mb-1.5">Password</label>
+            <label className="block text-xs font-medium text-ink-muted mb-1.5">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-dim" />
               <input
                 type="password"
                 required
                 placeholder="At least 6 characters"
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-neutral-950 border border-white/10 text-white text-sm focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-input text-sm"
               />
             </div>
           </div>

@@ -27,6 +27,8 @@ import {
 } from "lucide-react";
 import { api } from "../services/api";
 import { usePersonalization } from "../context/PersonalizationContext";
+import { useTheme } from "../context/ThemeContext";
+import { getEmotionBadgeStyle } from "../utils/emotionTheme";
 
 function YoutubeIcon({ className = "w-3.5 h-3.5" }) {
   return (
@@ -51,6 +53,7 @@ const ADVANCED_MOODS = [
 ];
 
 export default function RecommendationsPage() {
+  const { isDark } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
   const { trackRecommendations, getExcludedTitles } = usePersonalization();
@@ -267,32 +270,32 @@ export default function RecommendationsPage() {
   return (
     <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
       {/* 1. HERO HEADER BANNER */}
-      <div className="relative rounded-3xl p-6 sm:p-10 overflow-hidden bg-neutral-900/80 border border-white/10 shadow-2xl">
+      <div className="relative rounded-3xl p-6 sm:p-10 overflow-hidden theme-card shadow-2xl">
         <div
-          className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl opacity-20 pointer-events-none transition-colors duration-500"
+          className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl opacity-20 light:opacity-15 pointer-events-none transition-colors duration-500"
           style={{ backgroundColor: activeMoodMeta.color }}
         />
 
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-purple-500/20 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
               <span>Phase 3 Engine</span>
             </span>
-            <span className="text-xs font-mono px-3 py-1 rounded-full bg-white/10 text-neutral-300">
+            <span className="text-xs font-mono px-3 py-1 rounded-full theme-well text-ink-secondary">
               10-Emotion Spectrum
             </span>
             {seedTitle && (
-              <span className="text-xs font-mono px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">
+              <span className="text-xs font-mono px-3 py-1 rounded-full bg-sky-500/20 light:bg-sky-50 text-sky-300 light:text-sky-700 border border-sky-500/30">
                 Seeded: {seedTitle}
               </span>
             )}
           </div>
 
-          <h1 className="font-display text-3xl sm:text-5xl font-black text-white tracking-tight">
+          <h1 className="font-display text-3xl sm:text-5xl font-black text-ink-main tracking-tight">
             Personalized Music Recommendations
           </h1>
-          <p className="text-sm sm:text-base text-neutral-300 leading-relaxed font-sans">
+          <p className="text-sm sm:text-base text-ink-secondary leading-relaxed font-sans">
             Discover emotionally aligned songs matched through natural language lyrical analysis,
             sentiment valence, arousal densities, and intelligent Ollama AI explanations.
           </p>
@@ -312,9 +315,9 @@ export default function RecommendationsPage() {
 
             <Link
               to="/"
-              className="px-4 py-2.5 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 border border-white/10 transition-colors"
+              className="px-4 py-2.5 rounded-2xl theme-well hover:border-purple-500/40 text-ink-main font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
             >
-              <Compass className="w-4 h-4 text-purple-400" />
+              <Compass className="w-4 h-4 text-purple-400 light:text-purple-600" />
               <span>Analyze New Lyrics</span>
             </Link>
           </div>
@@ -325,12 +328,12 @@ export default function RecommendationsPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Volume2 className="w-4 h-4 text-purple-400" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-neutral-300">
+            <Volume2 className="w-4 h-4 text-purple-400 light:text-purple-600" />
+            <h2 className="text-sm font-bold uppercase tracking-wider text-ink-secondary">
               Select Dominant Emotional Frequency
             </h2>
           </div>
-          <span className="text-xs text-neutral-400 font-mono hidden sm:inline">
+          <span className="text-xs text-ink-muted font-mono hidden sm:inline">
             Active: {selectedMood} {activeMoodMeta.emoji}
           </span>
         </div>
@@ -345,12 +348,12 @@ export default function RecommendationsPage() {
                 onClick={() => setSelectedMood(mood.name)}
                 className={`p-3 rounded-2xl flex flex-col items-center justify-center gap-1.5 transition-all text-center border ${
                   isSelected
-                    ? "bg-white/15 border-purple-500 shadow-lg scale-105"
-                    : "bg-neutral-900/60 border-white/5 hover:border-white/20 hover:bg-white/10"
+                    ? "bg-white/15 light:bg-purple-600/10 border-purple-500 shadow-lg scale-105"
+                    : "theme-card hover:border-purple-500/30"
                 }`}
               >
                 <span className="text-2xl select-none">{mood.emoji}</span>
-                <span className={`text-xs font-bold leading-none ${isSelected ? "text-white" : "text-neutral-400"}`}>
+                <span className={`text-xs font-bold leading-none ${isSelected ? "text-ink-main light:text-purple-800" : "text-ink-muted"}`}>
                   {mood.name}
                 </span>
                 <div
@@ -364,18 +367,18 @@ export default function RecommendationsPage() {
       </div>
 
       {/* 3. BLENDED CONTROLS & SEARCH BAR */}
-      <div className="p-4 rounded-3xl bg-neutral-900/60 border border-white/10 shadow-lg flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+      <div className="p-4 rounded-3xl theme-card shadow-lg flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         {/* Left: Secondary Emotion Blend Selector */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <span className="text-xs font-semibold text-neutral-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5 text-purple-400" />
+          <span className="text-xs font-semibold text-ink-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Filter className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
             <span>Blend Secondary Mood:</span>
           </span>
 
           <select
             value={secondaryMood}
             onChange={(e) => setSecondaryMood(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-black/40 border border-white/15 text-xs text-white focus:outline-none focus:border-purple-500 font-medium cursor-pointer"
+            className="px-3 py-1.5 rounded-xl glass-input text-xs text-ink-main font-medium cursor-pointer"
           >
             <option value="">None (Pure {selectedMood})</option>
             {ADVANCED_MOODS.filter((m) => m.name.toLowerCase() !== selectedMood.toLowerCase()).map((m) => (
@@ -389,7 +392,7 @@ export default function RecommendationsPage() {
             <button
               type="button"
               onClick={() => setSecondaryMood("")}
-              className="text-xs text-amber-400 hover:text-amber-300 font-semibold transition-colors"
+              className="text-xs text-amber-400 hover:text-amber-300 light:text-amber-700 light:hover:text-amber-800 font-semibold transition-colors"
             >
               Reset Blend
             </button>
@@ -399,13 +402,13 @@ export default function RecommendationsPage() {
         {/* Right: Search Filter & Refresh */}
         <div className="flex items-center gap-2">
           <div className="relative flex-1 md:w-64">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Filter by title, artist, trait..."
-              className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-black/40 border border-white/15 text-xs text-white placeholder:text-neutral-500 focus:outline-none focus:border-purple-500 font-sans"
+              className="w-full pl-9 pr-3 py-1.5 rounded-xl glass-input text-xs text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 font-sans"
             />
           </div>
 
@@ -413,10 +416,10 @@ export default function RecommendationsPage() {
             type="button"
             onClick={() => fetchRecommendations(true)}
             disabled={loading}
-            className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40 shrink-0"
+            className="px-3 py-1.5 rounded-xl theme-well hover:border-purple-500/40 text-ink-main text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40 shrink-0"
             title="Explore more recommendations without duplicates"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-purple-400 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`w-3.5 h-3.5 text-purple-400 light:text-purple-600 ${loading ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">Shuffle</span>
           </button>
         </div>
@@ -424,14 +427,14 @@ export default function RecommendationsPage() {
 
       {/* 4. FEATURE 2: SIMILAR SONG DISCOVERY (IF SEED PRESENT) */}
       {seedTitle && (
-        <div className="p-6 rounded-3xl bg-neutral-900/60 border border-sky-500/20 space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-white/5">
+        <div className="p-6 rounded-3xl theme-card border-sky-500/20 space-y-4">
+          <div className="flex items-center justify-between pb-2 border-b border-white/10 light:border-slate-200">
             <div className="flex items-center gap-2">
-              <Compass className="w-4 h-4 text-sky-400" />
-              <h3 className="font-display font-bold text-base text-white">
+              <Compass className="w-4 h-4 text-sky-400 light:text-sky-600" />
+              <h3 className="font-display font-bold text-base text-ink-main">
                 Similar Song Discovery
               </h3>
-              <span className="text-xs text-sky-300 font-mono">
+              <span className="text-xs text-sky-300 light:text-sky-700 font-mono">
                 Matching "{seedTitle}"
               </span>
             </div>
@@ -441,14 +444,14 @@ export default function RecommendationsPage() {
                 setSeedTitle("");
                 setSeedArtist("");
               }}
-              className="text-xs text-neutral-400 hover:text-white transition-colors"
+              className="text-xs text-ink-muted hover:text-ink-main transition-colors"
             >
               Clear Seed
             </button>
           </div>
 
           {similarLoading ? (
-            <div className="py-6 text-center text-xs text-neutral-400 animate-pulse">
+            <div className="py-6 text-center text-xs text-ink-muted animate-pulse">
               Finding emotionally similar song profiles...
             </div>
           ) : similarSongs.length > 0 ? (
@@ -456,10 +459,10 @@ export default function RecommendationsPage() {
               {similarSongs.map((song, idx) => (
                 <div
                   key={song.id || idx}
-                  className="p-3 rounded-2xl bg-white/5 border border-white/10 space-y-2 hover:border-sky-500/30 transition-all"
+                  className="p-3 rounded-2xl theme-well space-y-2 hover:border-sky-500/30 transition-all"
                 >
                   <div className="flex items-center gap-2.5">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-black/60 shrink-0 border border-white/10 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl overflow-hidden bg-black/60 light:bg-slate-200 shrink-0 border border-white/10 light:border-slate-200 flex items-center justify-center">
                       {song.coverArtUrl ? (
                         <img
                           src={song.coverArtUrl}
@@ -470,22 +473,22 @@ export default function RecommendationsPage() {
                           }}
                         />
                       ) : (
-                        <Music2 className="w-5 h-5 text-neutral-500" />
+                        <Music2 className="w-5 h-5 text-ink-dim" />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="font-bold text-xs text-white truncate">{song.title}</div>
-                      <div className="text-[11px] text-neutral-400 truncate">{song.artist}</div>
+                      <div className="font-bold text-xs text-ink-main truncate">{song.title}</div>
+                      <div className="text-[11px] text-ink-muted truncate">{song.artist}</div>
                     </div>
                   </div>
-                  <p className="text-[10px] text-neutral-300 leading-relaxed font-sans line-clamp-2">
+                  <p className="text-[10px] text-ink-secondary leading-relaxed font-sans line-clamp-2">
                     {song.similarityReason}
                   </p>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="text-xs text-neutral-400">
+            <div className="text-xs text-ink-muted">
               No directly similar tracks found. Explore the general recommendation grid below!
             </div>
           )}
@@ -496,13 +499,13 @@ export default function RecommendationsPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Disc3 className="w-4 h-4 text-purple-400 animate-spin-slow" />
-            <h3 className="font-display font-bold text-lg text-white">
+            <Disc3 className="w-4 h-4 text-purple-400 light:text-purple-600 animate-spin-slow" />
+            <h3 className="font-display font-bold text-lg text-ink-main">
               Curated {selectedMood} Tracklist
               {secondaryMood && ` (with ${secondaryMood} cues)`}
             </h3>
           </div>
-          <span className="text-xs text-neutral-400 font-mono">
+          <span className="text-xs text-ink-muted font-mono">
             {filteredRecommendations.length} verified songs
           </span>
         </div>
@@ -512,28 +515,28 @@ export default function RecommendationsPage() {
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="h-72 rounded-3xl bg-neutral-900/60 border border-white/5 p-5 flex flex-col justify-between animate-pulse"
+                className="h-72 rounded-3xl theme-card p-5 flex flex-col justify-between animate-pulse"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-16 h-16 rounded-2xl bg-white/10" />
+                  <div className="w-16 h-16 rounded-2xl bg-white/10 light:bg-slate-200" />
                   <div className="space-y-2 flex-1">
-                    <div className="h-4 bg-white/10 rounded w-3/4" />
-                    <div className="h-3 bg-white/10 rounded w-1/2" />
+                    <div className="h-4 bg-white/10 light:bg-slate-200 rounded w-3/4" />
+                    <div className="h-3 bg-white/10 light:bg-slate-200 rounded w-1/2" />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <div className="h-3 bg-white/5 rounded" />
-                  <div className="h-3 bg-white/5 rounded w-5/6" />
+                  <div className="h-3 bg-white/5 light:bg-slate-100 rounded" />
+                  <div className="h-3 bg-white/5 light:bg-slate-100 rounded w-5/6" />
                 </div>
-                <div className="h-8 bg-white/5 rounded-xl" />
+                <div className="h-8 bg-white/5 light:bg-slate-100 rounded-xl" />
               </div>
             ))}
           </div>
         ) : error ? (
-          <div className="p-8 rounded-3xl bg-red-500/10 border border-red-500/30 text-center space-y-3">
-            <AlertTriangle className="w-8 h-8 text-red-400 mx-auto" />
-            <h4 className="font-bold text-red-200">Recommendation Engine Notice</h4>
-            <p className="text-xs text-neutral-400 max-w-md mx-auto">{error}</p>
+          <div className="p-8 rounded-3xl bg-red-500/10 light:bg-red-50 border border-red-500/30 text-center space-y-3">
+            <AlertTriangle className="w-8 h-8 text-red-400 light:text-red-600 mx-auto" />
+            <h4 className="font-bold text-red-200 light:text-red-800">Recommendation Engine Notice</h4>
+            <p className="text-xs text-ink-muted max-w-md mx-auto">{error}</p>
             <button
               onClick={() => fetchRecommendations(false)}
               className="px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-semibold hover:bg-red-500 transition-colors"
@@ -542,10 +545,10 @@ export default function RecommendationsPage() {
             </button>
           </div>
         ) : filteredRecommendations.length === 0 ? (
-          <div className="py-16 text-center rounded-3xl bg-neutral-900/40 border border-white/5 space-y-3">
-            <Music2 className="w-10 h-10 text-neutral-600 mx-auto" />
-            <h4 className="font-bold text-neutral-300">No Tracks Matched Query</h4>
-            <p className="text-xs text-neutral-500">
+          <div className="py-16 text-center rounded-3xl theme-card space-y-3">
+            <Music2 className="w-10 h-10 text-ink-dim mx-auto" />
+            <h4 className="font-bold text-ink-secondary">No Tracks Matched Query</h4>
+            <p className="text-xs text-ink-dim">
               Try adjusting your search query or switching to another emotional vibe.
             </p>
           </div>
@@ -561,11 +564,11 @@ export default function RecommendationsPage() {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="rounded-3xl p-5 bg-neutral-900/80 border border-white/10 hover:border-purple-500/40 transition-all flex flex-col justify-between group shadow-lg"
+                  className="rounded-3xl p-5 theme-card hover:border-purple-500/40 transition-all flex flex-col justify-between group shadow-lg"
                 >
                   <div className="space-y-3.5">
                     {/* Top Row: Artwork + Badges */}
-                    <div className="relative rounded-2xl overflow-hidden aspect-square bg-black/60 border border-white/10 flex items-center justify-center group-hover:shadow-md transition-shadow">
+                    <div className="relative rounded-2xl overflow-hidden aspect-square bg-black/60 light:bg-slate-200 border border-white/10 light:border-slate-200 flex items-center justify-center group-hover:shadow-md transition-shadow">
                       {track.coverArtUrl ? (
                         <img
                           src={track.coverArtUrl}
@@ -576,7 +579,7 @@ export default function RecommendationsPage() {
                           }}
                         />
                       ) : (
-                        <div className="flex flex-col items-center justify-center text-neutral-500 gap-1">
+                        <div className="flex flex-col items-center justify-center text-ink-dim gap-1">
                           <Disc3 className="w-12 h-12 text-purple-400/50" />
                           <span className="text-[10px] font-mono">EmoLyrics Audio</span>
                         </div>
@@ -590,7 +593,7 @@ export default function RecommendationsPage() {
                       </div>
 
                       <div className="absolute bottom-2.5 right-2.5">
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-neutral-300 flex items-center gap-1">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-neutral-200 flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           <span>{track.duration || "3:30"}</span>
                         </span>
@@ -599,12 +602,12 @@ export default function RecommendationsPage() {
 
                     {/* Title & Artist */}
                     <div>
-                      <h4 className="font-display font-bold text-base text-white truncate group-hover:text-purple-300 transition-colors">
+                      <h4 className="font-display font-bold text-base text-ink-main truncate group-hover:text-purple-300 light:group-hover:text-purple-700 transition-colors">
                         {track.title}
                       </h4>
-                      <p className="text-xs text-neutral-400 truncate">{track.artist}</p>
+                      <p className="text-xs text-ink-muted truncate">{track.artist}</p>
                       {track.album && (
-                        <p className="text-[11px] text-neutral-500 truncate mt-0.5">{track.album}</p>
+                        <p className="text-[11px] text-ink-dim truncate mt-0.5">{track.album}</p>
                       )}
                     </div>
 
@@ -614,7 +617,7 @@ export default function RecommendationsPage() {
                         {track.traits.slice(0, 2).map((t, i) => (
                           <span
                             key={i}
-                            className="text-[9px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-neutral-300 border border-white/5"
+                            className="text-[9px] font-mono px-2 py-0.5 rounded-md theme-well text-ink-secondary"
                           >
                             {t}
                           </span>
@@ -623,16 +626,16 @@ export default function RecommendationsPage() {
                     )}
 
                     {/* Match Reason Text */}
-                    <p className="text-xs text-neutral-300 leading-relaxed font-sans line-clamp-3 bg-black/30 p-2.5 rounded-xl border border-white/5">
+                    <p className="text-xs text-ink-secondary leading-relaxed font-sans line-clamp-3 theme-well p-2.5 rounded-xl">
                       {track.reason}
                     </p>
 
                     {/* FEATURE 4: AI EXPLANATION DRAWER */}
                     {aiExp ? (
-                      <div className="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-[11px] text-purple-200 leading-relaxed space-y-1">
-                        <div className="flex items-center justify-between text-[10px] font-mono font-bold text-purple-300">
+                      <div className="p-2.5 rounded-xl bg-purple-500/10 light:bg-purple-50 border border-purple-500/30 text-[11px] text-purple-200 light:text-purple-900 leading-relaxed space-y-1">
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold text-purple-300 light:text-purple-700">
                           <span className="flex items-center gap-1">
-                            <Bot className="w-3 h-3 text-purple-400" />
+                            <Bot className="w-3 h-3 text-purple-400 light:text-purple-600" />
                             <span>AI Explanation</span>
                           </span>
                           <span>{aiExp.model}</span>
@@ -644,7 +647,7 @@ export default function RecommendationsPage() {
                         type="button"
                         onClick={() => handleExplainTrack(track)}
                         disabled={isExplaining}
-                        className="w-full py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-[11px] text-purple-300 font-semibold flex items-center justify-center gap-1.5 border border-white/5 transition-colors"
+                        className="w-full py-1.5 px-2.5 rounded-xl theme-well hover:border-purple-500/40 text-[11px] text-purple-300 light:text-purple-700 font-semibold flex items-center justify-center gap-1.5 transition-colors"
                       >
                         {isExplaining ? (
                           <>
@@ -653,7 +656,7 @@ export default function RecommendationsPage() {
                           </>
                         ) : (
                           <>
-                            <Bot className="w-3 h-3 text-purple-400" />
+                            <Bot className="w-3 h-3 text-purple-400 light:text-purple-600" />
                             <span>Why does this match? (AI)</span>
                           </>
                         )}
@@ -662,13 +665,13 @@ export default function RecommendationsPage() {
                   </div>
 
                   {/* External Links & Actions */}
-                  <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between gap-2">
+                  <div className="pt-3 mt-3 border-t border-white/10 light:border-slate-200 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5">
                       <a
                         href={track.spotifyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 transition-colors"
+                        className="p-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 light:bg-emerald-50 light:hover:bg-emerald-100 text-emerald-400 light:text-emerald-700 transition-colors"
                         title="Listen on Spotify"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -677,7 +680,7 @@ export default function RecommendationsPage() {
                         href={track.youtubeUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 text-red-400 transition-colors"
+                        className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/25 light:bg-red-50 light:hover:bg-red-100 text-red-400 light:text-red-700 transition-colors"
                         title="Listen on YouTube Audio"
                       >
                         <YoutubeIcon className="w-3.5 h-3.5" />
@@ -687,7 +690,7 @@ export default function RecommendationsPage() {
                     <button
                       type="button"
                       onClick={() => handleAnalyzeSong(track)}
-                      className="text-[11px] font-semibold text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                      className="text-[11px] font-semibold text-purple-400 hover:text-purple-300 light:text-purple-700 light:hover:text-purple-800 flex items-center gap-1 transition-colors"
                     >
                       <span>Analyze</span>
                       <ArrowRight className="w-3 h-3" />
@@ -702,17 +705,17 @@ export default function RecommendationsPage() {
 
       {/* 6. FEATURE 3: SMART PLAYLIST GENERATION SECTION */}
       {playlistDrawerOpen && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-neutral-900/90 border border-purple-500/30 shadow-2xl space-y-6">
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="p-6 sm:p-8 rounded-3xl theme-modal border-purple-500/30 shadow-2xl space-y-6">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10 light:border-slate-200">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-purple-600/20 border border-purple-500/40 flex items-center justify-center text-purple-400">
+              <div className="w-10 h-10 rounded-2xl bg-purple-600/20 light:bg-purple-50 border border-purple-500/40 flex items-center justify-center text-purple-400 light:text-purple-600">
                 <ListPlus className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-display font-bold text-xl text-white">
+                <h3 className="font-display font-bold text-xl text-ink-main">
                   Smart Mood Playlist Generator
                 </h3>
-                <p className="text-xs text-neutral-400">
+                <p className="text-xs text-ink-muted">
                   Compose single or mixed-emotion playlists with customized track lengths
                 </p>
               </div>
@@ -721,7 +724,7 @@ export default function RecommendationsPage() {
             <button
               type="button"
               onClick={() => setPlaylistDrawerOpen(false)}
-              className="text-xs text-neutral-400 hover:text-white px-3 py-1.5 rounded-xl bg-white/5"
+              className="text-xs text-ink-muted hover:text-ink-main px-3 py-1.5 rounded-xl theme-well"
             >
               Close
             </button>
@@ -730,7 +733,7 @@ export default function RecommendationsPage() {
           {/* Controls: Target Emotions Multi-Select + Length */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-ink-secondary uppercase tracking-wider">
                 Select Target Emotions (Mixed Emotion Supported)
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -752,7 +755,7 @@ export default function RecommendationsPage() {
                       className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                         isChecked
                           ? "bg-purple-600 text-white shadow-sm"
-                          : "bg-white/5 text-neutral-400 hover:text-white"
+                          : "theme-well text-ink-muted hover:text-ink-main"
                       }`}
                     >
                       <span>{m.emoji}</span>
@@ -765,7 +768,7 @@ export default function RecommendationsPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-neutral-300 uppercase tracking-wider">
+              <label className="text-xs font-semibold text-ink-secondary uppercase tracking-wider">
                 Playlist Track Count
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -777,14 +780,14 @@ export default function RecommendationsPage() {
                     className={`py-2 rounded-xl text-xs font-bold transition-colors ${
                       playlistLength === count
                         ? "bg-purple-600 text-white"
-                        : "bg-white/5 text-neutral-400 hover:text-white"
+                        : "theme-well text-ink-muted hover:text-ink-main"
                     }`}
                   >
                     {count} Tracks
                   </button>
                 ))}
               </div>
-              <p className="text-[11px] text-neutral-500">
+              <p className="text-[11px] text-ink-dim">
                 Equally balances track quotas across {playlistEmotions.length} selected mood(s).
               </p>
             </div>
@@ -814,13 +817,13 @@ export default function RecommendationsPage() {
 
           {/* Generated Playlist Preview Table */}
           {generatedPlaylist && (
-            <div className="pt-4 border-t border-white/10 space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-black/40 border border-white/5">
+            <div className="pt-4 border-t border-white/10 light:border-slate-200 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl theme-well">
                 <div>
-                  <h4 className="font-display font-bold text-lg text-white">
+                  <h4 className="font-display font-bold text-lg text-ink-main">
                     {generatedPlaylist.title}
                   </h4>
-                  <p className="text-xs text-neutral-400 mt-0.5">
+                  <p className="text-xs text-ink-muted mt-0.5">
                     {generatedPlaylist.description}
                   </p>
                 </div>
@@ -832,7 +835,7 @@ export default function RecommendationsPage() {
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors ${
                       playlistSaved
                         ? "bg-emerald-600 text-white"
-                        : "bg-white/10 hover:bg-white/20 text-white"
+                        : "theme-card hover:border-purple-500/40 text-ink-main"
                     }`}
                   >
                     {playlistSaved ? (
@@ -842,7 +845,7 @@ export default function RecommendationsPage() {
                       </>
                     ) : (
                       <>
-                        <BookmarkPlus className="w-3.5 h-3.5 text-purple-400" />
+                        <BookmarkPlus className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
                         <span>Save Playlist</span>
                       </>
                     )}
@@ -854,21 +857,24 @@ export default function RecommendationsPage() {
                 {generatedPlaylist.songs?.map((song, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-xs transition-colors"
+                    className="flex items-center justify-between p-2.5 rounded-xl theme-well text-xs transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-neutral-500 w-5">{i + 1}</span>
+                      <span className="font-mono text-ink-dim w-5">{i + 1}</span>
                       <div>
-                        <div className="font-semibold text-white">{song.title}</div>
-                        <div className="text-[11px] text-neutral-400">{song.artist}</div>
+                        <div className="font-semibold text-ink-main">{song.title}</div>
+                        <div className="text-[11px] text-ink-muted">{song.artist}</div>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-purple-500/20 text-purple-300">
+                      <span
+                        className="text-[10px] font-mono px-2 py-0.5 rounded-md border"
+                        style={getEmotionBadgeStyle(song.mood, isDark)}
+                      >
                         {song.mood}
                       </span>
-                      <span className="text-neutral-400 font-mono text-[11px]">
+                      <span className="text-ink-muted font-mono text-[11px]">
                         {song.duration}
                       </span>
                     </div>

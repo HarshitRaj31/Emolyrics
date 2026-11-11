@@ -13,7 +13,7 @@ export default function CircularProgress({ value = 0, color = "#a855f7", size = 
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke="rgba(255, 255, 255, 0.08)"
+          stroke="var(--chart-track)"
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -31,7 +31,7 @@ export default function CircularProgress({ value = 0, color = "#a855f7", size = 
           animate={{ strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: "easeOut" }}
           style={{
-            filter: `drop-shadow(0 0 10px ${color}80)`
+            filter: `drop-shadow(0 0 8px ${color}66)`
           }}
         />
       </svg>
@@ -40,15 +40,14 @@ export default function CircularProgress({ value = 0, color = "#a855f7", size = 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-4xl font-extrabold font-display tracking-tight text-white"
+          className="text-4xl font-extrabold font-display tracking-tight text-ink-main"
         >
           {Math.round(value)}%
         </motion.span>
-        <span className="text-[10px] font-semibold tracking-widest uppercase text-neutral-400 mt-0.5">
+        <span className="text-[10px] font-semibold tracking-widest uppercase text-ink-muted mt-0.5">
           Confidence
         </span>
       </div>
     </div>
   );
 }
-

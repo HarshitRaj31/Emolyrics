@@ -39,29 +39,34 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="relative w-full max-w-md bg-neutral-900 border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 light:bg-slate-900/50 backdrop-blur-md animate-fadeIn">
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="relative w-full max-w-md theme-modal rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6"
+      >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10 light:border-slate-200">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 light:bg-purple-50 text-purple-400 light:text-purple-600 border border-purple-500/30 flex items-center justify-center">
               <Plus className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-lg text-white">Add Song to Playlist</h3>
-              <p className="text-xs text-neutral-400">Append track with automatic listening links</p>
+              <h3 className="font-display font-bold text-lg text-ink-main">Add Song to Playlist</h3>
+              <p className="text-xs text-ink-muted">Append track with automatic listening links</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+            aria-label="Close modal"
+            className="p-1.5 rounded-full text-ink-muted hover:text-ink-main hover:bg-white/10 light:hover:bg-slate-100 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+          <div className="p-3 rounded-xl bg-rose-500/10 light:bg-rose-50 border border-rose-500/30 text-rose-300 light:text-rose-700 text-xs">
             {error}
           </div>
         )}
@@ -69,7 +74,7 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-1.5">
               Track Title *
             </label>
             <input
@@ -78,12 +83,12 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
               placeholder="e.g. Yellow"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-neutral-950 border border-white/10 text-white placeholder:text-neutral-500 text-sm focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-2.5 rounded-xl glass-input text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 text-sm"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-1.5">
               Artist Name *
             </label>
             <input
@@ -92,13 +97,13 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
               placeholder="e.g. Coldplay"
               value={artist}
               onChange={(e) => setArtist(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-neutral-950 border border-white/10 text-white placeholder:text-neutral-500 text-sm focus:outline-none focus:border-purple-500"
+              className="w-full px-4 py-2.5 rounded-xl glass-input text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 text-sm"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-1.5">
                 Duration (MM:SS)
               </label>
               <input
@@ -106,17 +111,17 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
                 placeholder="3:30"
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
-                className="w-full px-4 py-2 rounded-xl bg-neutral-950 border border-white/10 text-white placeholder:text-neutral-500 text-sm focus:outline-none focus:border-purple-500"
+                className="w-full px-4 py-2 rounded-xl glass-input text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 text-sm"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-neutral-300 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-1.5">
                 Emotion Mood
               </label>
               <select
                 value={mood}
                 onChange={(e) => setMood(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-neutral-950 border border-white/10 text-white text-sm focus:outline-none focus:border-purple-500"
+                className="w-full px-3 py-2 rounded-xl glass-input text-ink-main text-sm"
               >
                 {Object.keys(MOOD_DEFINITIONS).map((m) => (
                   <option key={m} value={m}>
@@ -131,7 +136,7 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-neutral-400 hover:text-white transition-colors"
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-ink-muted hover:text-ink-main transition-colors"
             >
               Cancel
             </button>
