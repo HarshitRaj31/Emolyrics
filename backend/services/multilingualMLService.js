@@ -10,9 +10,8 @@
  */
 
 const { detectLanguage } = require("../nlp/languageDetector");
+const { resolveMLServiceUrl, parsePositiveInt } = require("../utils/serviceUrls");
 
-const DEFAULT_ML_SERVICE_URL = "http://127.0.0.1:8001";
-const REQUEST_TIMEOUT_MS = 5000;
 const HEALTH_CACHE_TTL_MS = 15000;
 
 class MultilingualMLService {
@@ -21,8 +20,20 @@ class MultilingualMLService {
     this._cachedHealthTime = 0;
   }
 
+  getResolution() {
+    return resolveMLServiceUrl();
+  }
+
   getBaseUrl() {
-    return (process.env.ML_SERVICE_URL || DEFAULT_ML_SERVICE_URL).replace(/\/$/, "");
+    return this.getResolution().url;
+  }
+
+  getTimeouts() {
+    return {
+      healthMs: parsePositiveInt(process.env.ML_HEALTH_TIMEOUT_MS, 4000),
+      predictMs: parsePositiveInt(process.env.ML_REQUEST_TIMEOUT_MS, 15000),
+      linesMs: parsePositiveInt(process.env.ML_LINES_TIMEOUT_MS, 25000)
+    };
   }
 
   /**
@@ -34,11 +45,25 @@ class MultilingualMLService {
       return this._cachedHealth;
     }
 
+    const resolution = this.getResolution();
+    if (!resolution.configured) {
+      this._cachedHealth = {
+        online: false,
+        configured: false,
+        status: "unconfigured",
+        error: resolution.reason,
+        url: null
+      };
+      this._cachedHealthTime = now;
+      return this._cachedHealth;
+    }
+
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 1800);
+    const { healthMs } = this.getTimeouts();
+    const timeout = setTimeout(() => controller.abort(), healthMs);
 
     try {
-      const url = `${this.getBaseUrl()}/health`;
+      const url = `${resolution.url}/health`;
       const res = await fetch(url, {
         method: "GET",
         headers: { Accept: "application/json" },
@@ -53,12 +78,13 @@ class MultilingualMLService {
       const data = await res.json();
       this._cachedHealth = {
         online: data.status === "healthy",
+        configured: true,
         status: data.status,
         modelVersion: data.modelVersion || "v1.0.0-multilingual-minilm",
         device: data.device || "cpu",
         supportedLanguages: data.supportedLanguages || ["en", "hi", "bn", "es", "fr"],
         supportedEmotions: data.supportedEmotions || [],
-        url: this.getBaseUrl()
+        url: resolution.url
       };
       this._cachedHealthTime = now;
       return this._cachedHealth;
@@ -66,9 +92,10 @@ class MultilingualMLService {
       clearTimeout(timeout);
       this._cachedHealth = {
         online: false,
+        configured: true,
         status: "offline",
         error: err.message,
-        url: this.getBaseUrl()
+        url: resolution.url
       };
       this._cachedHealthTime = now;
       return this._cachedHealth;
@@ -86,13 +113,51 @@ class MultilingualMLService {
     const cleanLyrics = lyrics.trim();
     const detected = detectLanguage(cleanLyrics);
     const targetLang = language || detected.code || "en";
+    const resolution = this.getResolution();
+
+    const handleUnavailable = (reasonMessage) => {
+      const isEnglish = targetLang === "en" && !detected.isCodeSwitched;
+      if (!isEnglish) {
+        const langDisplay = detected.name || targetLang.toUpperCase();
+        const offlineErr = new Error(
+          `The Multilingual Emotion ML microservice (${resolution.url || "ML_SERVICE_URL unconfigured"}) is currently unreachable or unconfigured (${reasonMessage}). ` +
+            `A separately hosted Python FastAPI ML service is required to classify non-English lyrics in ${langDisplay}.`
+        );
+        offlineErr.statusCode = 503;
+        offlineErr.code = "ERR_MULTILINGUAL_SERVICE_OFFLINE";
+        offlineErr.detectedLanguage = targetLang;
+        offlineErr.isEnglish = false;
+        throw offlineErr;
+      }
+
+      return {
+        success: false,
+        source: "fallback_permitted_english",
+        fallbackPermitted: true,
+        language: "en",
+        reason: reasonMessage
+      };
+    };
+
+    if (!resolution.configured) {
+      this._cachedHealth = {
+        online: false,
+        configured: false,
+        status: "unconfigured",
+        error: resolution.reason,
+        url: null
+      };
+      this._cachedHealthTime = Date.now();
+      return handleUnavailable(resolution.reason);
+    }
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const { predictMs } = this.getTimeouts();
+    const timeout = setTimeout(() => controller.abort(), predictMs);
     const reqId = `req_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
     try {
-      const url = `${this.getBaseUrl()}/predict`;
+      const url = `${resolution.url}/predict`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -159,36 +224,9 @@ class MultilingualMLService {
       };
     } catch (err) {
       clearTimeout(timeout);
-      this._cachedHealth = { online: false, status: "offline", error: err.message };
+      this._cachedHealth = { online: false, configured: true, status: "offline", error: err.message, url: resolution.url };
       this._cachedHealthTime = Date.now();
-
-      // Strict Fallback Rule:
-      // If language is English (en), permit fallback to deterministic lexical engine.
-      // If language is non-English (hi, bn, es, fr, hinglish, banglish), NEVER silently fall back!
-      const isEnglish = targetLang === "en" && !detected.isCodeSwitched;
-
-      if (!isEnglish) {
-        const langDisplay = detected.name || targetLang.toUpperCase();
-        const offlineErr = new Error(
-          `The Multilingual Emotion ML microservice (${this.getBaseUrl()}) is currently unreachable or offline (${err.message}). ` +
-          `To classify non-English lyrics in ${langDisplay}, please start the Python ML service (` +
-          `run: "python -m src.api" in ml-services/). English lexical fallback is only permitted for English lyrics.`
-        );
-        offlineErr.statusCode = 503;
-        offlineErr.code = "ERR_MULTILINGUAL_SERVICE_OFFLINE";
-        offlineErr.detectedLanguage = targetLang;
-        offlineErr.isEnglish = false;
-        throw offlineErr;
-      }
-
-      // Permitted English fallback
-      return {
-        success: false,
-        source: "fallback_permitted_english",
-        fallbackPermitted: true,
-        language: "en",
-        reason: err.message
-      };
+      return handleUnavailable(err.message);
     }
   }
 
@@ -200,16 +238,54 @@ class MultilingualMLService {
       throw new Error("Lines array is required for line-level emotion prediction.");
     }
 
-    const sampleText = lines.filter(l => (l || "").trim() && !/^\[.*\]$/i.test(l.trim())).slice(0, 5).join(" ");
+    const sampleText = lines.filter((l) => (l || "").trim() && !/^\[.*\]$/i.test(l.trim())).slice(0, 5).join(" ");
     const detected = detectLanguage(sampleText || lines[0] || "");
     const targetLang = options.language || detected.code || "en";
+    const resolution = this.getResolution();
+
+    const handleUnavailable = (reasonMessage) => {
+      const isEnglish = targetLang === "en" && !detected.isCodeSwitched;
+      if (!isEnglish) {
+        const langDisplay = detected.name || targetLang.toUpperCase();
+        const offlineErr = new Error(
+          `The Multilingual Emotion ML microservice (${resolution.url || "ML_SERVICE_URL unconfigured"}) is currently unreachable or unconfigured (${reasonMessage}). ` +
+            `A separately hosted Python FastAPI ML service is required for non-English line-by-line analysis in ${langDisplay}.`
+        );
+        offlineErr.statusCode = 503;
+        offlineErr.code = "ERR_MULTILINGUAL_SERVICE_OFFLINE";
+        offlineErr.detectedLanguage = targetLang;
+        offlineErr.isEnglish = false;
+        throw offlineErr;
+      }
+
+      return {
+        success: false,
+        source: "fallback_permitted_english",
+        fallbackPermitted: true,
+        language: "en",
+        reason: reasonMessage
+      };
+    };
+
+    if (!resolution.configured) {
+      this._cachedHealth = {
+        online: false,
+        configured: false,
+        status: "unconfigured",
+        error: resolution.reason,
+        url: null
+      };
+      this._cachedHealthTime = Date.now();
+      return handleUnavailable(resolution.reason);
+    }
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    const { linesMs } = this.getTimeouts();
+    const timeout = setTimeout(() => controller.abort(), linesMs);
     const reqId = `req_lines_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
 
     try {
-      const url = `${this.getBaseUrl()}/predict-lines`;
+      const url = `${resolution.url}/predict-lines`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -244,31 +320,9 @@ class MultilingualMLService {
       };
     } catch (err) {
       clearTimeout(timeout);
-      this._cachedHealth = { online: false, status: "offline", error: err.message };
+      this._cachedHealth = { online: false, configured: true, status: "offline", error: err.message, url: resolution.url };
       this._cachedHealthTime = Date.now();
-
-      const isEnglish = targetLang === "en" && !detected.isCodeSwitched;
-      if (!isEnglish) {
-        const langDisplay = detected.name || targetLang.toUpperCase();
-        const offlineErr = new Error(
-          `The Multilingual Emotion ML microservice (${this.getBaseUrl()}) is currently unreachable or offline (${err.message}). ` +
-          `To perform line-by-line analysis on non-English lyrics in ${langDisplay}, please start the Python ML service (` +
-          `run: "python -m src.api" in ml-services/). English lexical fallback is only permitted for English lyrics.`
-        );
-        offlineErr.statusCode = 503;
-        offlineErr.code = "ERR_MULTILINGUAL_SERVICE_OFFLINE";
-        offlineErr.detectedLanguage = targetLang;
-        offlineErr.isEnglish = false;
-        throw offlineErr;
-      }
-
-      return {
-        success: false,
-        source: "fallback_permitted_english",
-        fallbackPermitted: true,
-        language: "en",
-        reason: err.message
-      };
+      return handleUnavailable(err.message);
     }
   }
 }

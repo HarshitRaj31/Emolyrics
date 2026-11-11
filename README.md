@@ -214,7 +214,7 @@ Continuous Integration is automated via [`.github/workflows/ci.yml`](file:///.gi
 | Hosting Tier | Recommended Providers | Setup Architecture | Estimated Monthly Cost | Hardware Specifications |
 |---|---|---|---|---|
 | **Option A (Recommended): Single VPS / Cloud VM** | Hetzner Cloud (CX32 / CPX31), DigitalOcean Droplet, AWS Lightsail | Run `docker compose up -d` on Linux VM. Nginx container serves frontend and proxies backend. | **$12 – $24 / month** | 4 vCPU, 8 GB RAM, 80 GB SSD (Comfortably hosts ML, Backend, Mongo, and Ollama) |
-| **Option B: Split PaaS Deployment** | Frontend: Vercel / Cloudflare Pages<br/>Backend: Render / Railway<br/>ML: Render / Railway<br/>DB: MongoDB Atlas | Static SPA on Vercel (Free).<br/>Node API on Render ($7/mo).<br/>Python ML on Render ($15/mo for 2GB RAM container).<br/>MongoDB Atlas M0 (Free). | **$22 / month** | 2 GB RAM allocated to Python ML container |
+| **Option B: Split PaaS Deployment** | Frontend: Cloudflare Pages / Vercel<br/>Backend: Vercel Hobby (`backend/`) or Render<br/>ML: Hugging Face Spaces / Render<br/>DB: MongoDB Atlas M0 | See [`backend/VERCEL_DEPLOYMENT.md`](file:///backend/VERCEL_DEPLOYMENT.md) for Vercel Hobby setup ($0/mo w/ HF Spaces + Atlas M0) or Render ($15/mo for 2GB ML). | **$0 – $22 / month** | Separate Python ML microservice (`~1.14 GB` RSS) |
 | **Option C: Serverless with NLP Fallback** | Frontend: Netlify<br/>Backend: AWS Lambda / Render<br/>Ollama: Offline NLP fallback | Run backend on serverless or basic container. When ML service is offline, English lexical fallback runs at $0 extra cost. | **$7 / month** | Low-cost entry tier |
 
 ---

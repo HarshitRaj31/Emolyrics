@@ -8,7 +8,8 @@ const path = require("path");
 
 const TEST_FILES = [
   "stage5LineAndSection.test.js",
-  "stage9ApiAndPdf.test.js"
+  "stage9ApiAndPdf.test.js",
+  "stage10VercelServerless.test.js"
 ];
 
 async function runTest(file) {

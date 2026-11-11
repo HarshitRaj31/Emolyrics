@@ -17,6 +17,7 @@ const recommendationService = require("./recommendationService");
 const playlistGeneratorService = require("./playlistGeneratorService");
 const musicBrainzAdapter = require("../plugins/adapters/musicbrainzAdapter");
 const { classifyMultilingualLyrics } = require("../nlp/multilingualClassifier");
+const { resolveOllamaBaseUrl } = require("../utils/serviceUrls");
 
 const VALID_EMOTIONS = [
   "Happy",
@@ -78,11 +79,15 @@ class AIAssistantService {
     return process.env.OLLAMA_MODEL || "qwen2.5:3b";
   }
 
+  getOllamaResolution() {
+    return resolveOllamaBaseUrl();
+  }
+
   /**
    * Get configured Ollama base URL dynamically from environment
    */
   getBaseUrl() {
-    return (process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434").replace(/\/$/, "");
+    return this.getOllamaResolution().url;
   }
 
   /**
@@ -122,13 +127,21 @@ class AIAssistantService {
       console.warn("[AIAssistant] Action execution warning:", actErr.message);
     }
 
-    // 4. Generate AI response using local Ollama model (CPU-optimized parameters)
+    // 4. Generate AI response using configurable Ollama model (optional; fails fast if unconfigured on serverless)
     const activeModel = this.getModelName();
+    const ollamaResolution = this.getOllamaResolution();
     let replyText = "";
     let providerName = `Ollama (${activeModel})`;
+    let ollamaAvailable = true;
+    let ollamaError = null;
     let responseTimeMs = 0;
 
     try {
+      if (!ollamaResolution.configured) {
+        const cfgErr = new Error(ollamaResolution.reason);
+        cfgErr.code = "ERR_OLLAMA_UNCONFIGURED";
+        throw cfgErr;
+      }
       const ollamaRes = await this.callOllamaChat({
         userMessage: trimmedMsg, // Completely preserved with no truncation!
         history: conversationHistory,
@@ -139,27 +152,33 @@ class AIAssistantService {
       providerName = `Ollama (${ollamaRes.model})`;
       responseTimeMs = ollamaRes.durationMs || 0;
     } catch (ollamaErr) {
-      console.warn("[AIAssistant] Ollama generation failed:", ollamaErr.message);
+      console.warn("[AIAssistant] Ollama generation unavailable:", ollamaErr.message);
+      ollamaAvailable = false;
+      ollamaError = ollamaErr.message;
 
       const errLower = (ollamaErr.message || "").toLowerCase();
+      const isUnconfigured = ollamaErr.code === "ERR_OLLAMA_UNCONFIGURED";
       const isConnectionRefused =
         errLower.includes("econnrefused") ||
         errLower.includes("could not connect") ||
         errLower.includes("failed to fetch");
       const isModelMissing =
-        errLower.includes("not found") ||
-        errLower.includes("missing") ||
-        errLower.includes("model");
+        !isUnconfigured &&
+        (errLower.includes("not found") ||
+          errLower.includes("missing") ||
+          errLower.includes("model"));
 
-      if (isModelMissing) {
-        replyText = `The local Ollama model "${activeModel}" is missing. Please open your terminal and run:\n\`\`\`bash\nollama pull ${activeModel}\n\`\`\`\nOnce downloaded, send your message again!`;
+      if (isUnconfigured) {
+        replyText = `Ollama LLM is not configured in this serverless environment (${ollamaErr.message}). Set \`OLLAMA_BASE_URL\` to an externally reachable Ollama host to enable LLM chat.`;
+      } else if (isModelMissing) {
+        replyText = `The configured Ollama model "${activeModel}" is missing. Run \`ollama pull ${activeModel}\` on your Ollama host, then try again.`;
       } else if (isConnectionRefused) {
-        replyText = `Could not connect to Ollama at ${this.getBaseUrl()}. Please ensure the Ollama service is running locally:\n\`\`\`bash\nollama serve\n\`\`\`\nThen try sending your message again!`;
+        replyText = `Configured Ollama service at ${ollamaResolution.url} is unreachable (${ollamaErr.message}). Please ensure Ollama is running and accessible, then try again.`;
       } else {
-        replyText = `Ollama service error: ${ollamaErr.message}. Please verify your local Ollama setup.`;
+        replyText = `Ollama service unavailable: ${ollamaErr.message}.`;
       }
 
-      // If subsystem generated lyrics analysis, append it so user gets instant value even if Ollama was unreachable
+      // If subsystem generated lyrics analysis or recommendations/playlist locally, append deterministic results clearly
       if (actionResult?.type === "analysis" && actionResult.analysis) {
         const fallbackComp = this.composeAssistantResponse(localIntent, actionResult, "Local Lexical Engine");
         replyText += `\n\n*(Local NLP Classification)*:\n${fallbackComp.text}`;
@@ -187,6 +206,8 @@ class AIAssistantService {
       message: replyText,
       intent: localIntent.intent,
       provider: providerName,
+      ollamaAvailable,
+      ...(ollamaError && { ollamaError }),
       responseTimeMs,
       data: responseData,
       followUpSuggestions
@@ -326,10 +347,10 @@ class AIAssistantService {
       res.flushHeaders();
     }
 
-    // Client disconnection detection & cancellation
+    // Client disconnection detection & cancellation (listen on res.close for serverless compatibility)
     let clientDisconnected = false;
     const abortController = new AbortController();
-    req.on("close", () => {
+    res.on("close", () => {
       if (!res.writableEnded) {
         clientDisconnected = true;
         abortController.abort();
@@ -337,6 +358,7 @@ class AIAssistantService {
     });
 
     const activeModel = this.getModelName();
+    const ollamaResolution = this.getOllamaResolution();
 
     // 6. Send initial SSE 'start' event with metadata / cards if available
     res.write(
@@ -344,46 +366,51 @@ class AIAssistantService {
         type: "start",
         sessionId,
         intent: localIntent.intent,
-        provider: `Ollama (${activeModel})`,
+        provider: ollamaResolution.configured ? `Ollama (${activeModel})` : "Ollama (Offline/Unavailable)",
         data: responseData
       })}\n\n`
     );
 
     // 7. Prepare Ollama request
-    const baseUrl = this.getBaseUrl();
-    const url = `${baseUrl}/api/chat`;
-
-    let systemContext =
-      "You are the EmoLyrics Music Assistant. Specialize in song lyrics, moods, emotions, music recommendations, and lyric interpretation. EmoLyrics recognizes 9 emotion classes: Happy, Sad, Angry, Romantic, Calm/Chill, Exciting, Patriotic, Thrilling, Horror. Provide concise, empathetic, and musically insightful responses in 1-2 focused paragraphs.";
-
-    if (actionResult && actionResult.type === "analysis" && actionResult.analysis) {
-      const a = actionResult.analysis;
-      systemContext += ` [Current lyrics classified as ${a.mood} (${a.confidence}% confidence). Key markers: ${a.detectedKeywords?.slice(0, 3).join(", ") || "none"}].`;
-    }
-
-    const historyMessages = (conversationHistory || [])
-      .filter((m) => m && m.content && (m.role === "user" || m.role === "assistant"))
-      .slice(-6)
-      .map((m) => ({
-        role: m.role === "assistant" ? "assistant" : "user",
-        content: m.content
-      }));
-
-    if (historyMessages.length > 0 && historyMessages[historyMessages.length - 1].content === trimmedMsg) {
-      historyMessages.pop();
-    }
-
-    const messages = [
-      { role: "system", content: systemContext },
-      ...historyMessages,
-      { role: "user", content: trimmedMsg }
-    ];
-
     const startTime = Date.now();
     let fullReply = "";
     let evalCount = 0;
 
     try {
+      if (!ollamaResolution.configured) {
+        const cfgErr = new Error(ollamaResolution.reason);
+        cfgErr.code = "ERR_OLLAMA_UNCONFIGURED";
+        throw cfgErr;
+      }
+
+      const url = `${ollamaResolution.url}/api/chat`;
+
+      let systemContext =
+        "You are the EmoLyrics Music Assistant. Specialize in song lyrics, moods, emotions, music recommendations, and lyric interpretation. EmoLyrics recognizes 9 emotion classes: Happy, Sad, Angry, Romantic, Calm/Chill, Exciting, Patriotic, Thrilling, Horror. Provide concise, empathetic, and musically insightful responses in 1-2 focused paragraphs.";
+
+      if (actionResult && actionResult.type === "analysis" && actionResult.analysis) {
+        const a = actionResult.analysis;
+        systemContext += ` [Current lyrics classified as ${a.mood} (${a.confidence}% confidence). Key markers: ${a.detectedKeywords?.slice(0, 3).join(", ") || "none"}].`;
+      }
+
+      const historyMessages = (conversationHistory || [])
+        .filter((m) => m && m.content && (m.role === "user" || m.role === "assistant"))
+        .slice(-6)
+        .map((m) => ({
+          role: m.role === "assistant" ? "assistant" : "user",
+          content: m.content
+        }));
+
+      if (historyMessages.length > 0 && historyMessages[historyMessages.length - 1].content === trimmedMsg) {
+        historyMessages.pop();
+      }
+
+      const messages = [
+        { role: "system", content: systemContext },
+        ...historyMessages,
+        { role: "user", content: trimmedMsg }
+      ];
+
       const ollamaFetch = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -511,21 +538,23 @@ class AIAssistantService {
       if (clientDisconnected || abortController.signal.aborted) {
         return;
       }
-      console.warn("[AIAssistant] Ollama streaming error:", ollamaErr.message);
+      console.warn("[AIAssistant] Ollama streaming unavailable:", ollamaErr.message);
 
       const errLower = (ollamaErr.message || "").toLowerCase();
       let fallbackReply = "";
 
-      if (errLower.includes("not found") || errLower.includes("missing")) {
-        fallbackReply = `The local Ollama model "${activeModel}" is missing. Please open your terminal and run:\n\`\`\`bash\nollama pull ${activeModel}\n\`\`\`\nOnce downloaded, send your message again!`;
+      if (ollamaErr.code === "ERR_OLLAMA_UNCONFIGURED") {
+        fallbackReply = `Ollama LLM is not configured in this serverless environment (${ollamaErr.message}). Set \`OLLAMA_BASE_URL\` to an externally reachable Ollama host to enable LLM streaming.`;
+      } else if (errLower.includes("not found") || errLower.includes("missing")) {
+        fallbackReply = `The configured Ollama model "${activeModel}" is missing. Run \`ollama pull ${activeModel}\` on your Ollama host, then try again.`;
       } else if (
         errLower.includes("econnrefused") ||
         errLower.includes("could not connect") ||
         errLower.includes("failed to fetch")
       ) {
-        fallbackReply = `Could not connect to Ollama at ${this.getBaseUrl()}. Please ensure the Ollama service is running locally:\n\`\`\`bash\nollama serve\n\`\`\`\nThen try sending your message again!`;
+        fallbackReply = `Configured Ollama service at ${ollamaResolution.url} is unreachable (${ollamaErr.message}). Please ensure Ollama is running and accessible, then try again.`;
       } else {
-        fallbackReply = `Ollama streaming error: ${ollamaErr.message}. Please verify your local Ollama setup.`;
+        fallbackReply = `Ollama streaming unavailable: ${ollamaErr.message}.`;
       }
 
       if (actionResult?.type === "analysis" && actionResult.analysis) {
@@ -533,13 +562,14 @@ class AIAssistantService {
         fallbackReply += `\n\n*(Local NLP Classification)*:\n${fallbackComp.text}`;
       }
 
-      // Stream fallback chunk
-      res.write(
-        `data: ${JSON.stringify({
-          type: "chunk",
-          content: fallbackReply
-        })}\n\n`
-      );
+      if (!res.writableEnded) {
+        res.write(
+          `data: ${JSON.stringify({
+            type: "chunk",
+            content: fallbackReply
+          })}\n\n`
+        );
+      }
 
       await this.saveMessage({
         sessionId,
@@ -550,17 +580,21 @@ class AIAssistantService {
         data: responseData
       });
 
-      res.write(
-        `data: ${JSON.stringify({
-          type: "done",
-          reply: fallbackReply,
-          responseTimeMs: Date.now() - startTime,
-          provider: "Ollama (Offline/Unavailable)",
-          data: responseData,
-          followUpSuggestions
-        })}\n\n`
-      );
-      res.end();
+      if (!res.writableEnded) {
+        res.write(
+          `data: ${JSON.stringify({
+            type: "done",
+            reply: fallbackReply,
+            responseTimeMs: Date.now() - startTime,
+            provider: "Ollama (Offline/Unavailable)",
+            ollamaAvailable: false,
+            ollamaError: ollamaErr.message,
+            data: responseData,
+            followUpSuggestions
+          })}\n\n`
+        );
+        res.end();
+      }
     }
   }
 
@@ -873,7 +907,13 @@ class AIAssistantService {
    *   - options.temperature: 0.5 (focused, coherent generation)
    */
   async callOllamaChat({ userMessage, history = [], actionResult = null, intent = null }) {
-    const baseUrl = this.getBaseUrl();
+    const ollamaResolution = this.getOllamaResolution();
+    if (!ollamaResolution.configured) {
+      const cfgErr = new Error(ollamaResolution.reason);
+      cfgErr.code = "ERR_OLLAMA_UNCONFIGURED";
+      throw cfgErr;
+    }
+    const baseUrl = ollamaResolution.url;
     const model = this.getModelName();
     const url = `${baseUrl}/api/chat`;
 

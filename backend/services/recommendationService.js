@@ -11,6 +11,7 @@
 const musicBrainzAdapter = require("../plugins/adapters/musicbrainzAdapter");
 const { getIsConnected, memoryStore } = require("../db");
 const Analysis = require("../models/Analysis");
+const { resolveOllamaBaseUrl } = require("../utils/serviceUrls");
 
 // Canonical emotion mapping supporting both Phase 1/2 10-emotions and legacy 9-emotions
 const CANONICAL_EMOTION_MAP = {
@@ -955,8 +956,20 @@ class RecommendationService {
       };
     }
 
-    // Attempt Ollama AI explanation
-    const baseUrl = process.env.OLLAMA_BASE_URL || "http://localhost:11434";
+    // Attempt Ollama AI explanation when configured
+    const ollamaResolution = resolveOllamaBaseUrl();
+    if (!ollamaResolution.configured) {
+      const fallbackReason = this._generateReason(canonical, { title: seedTitle, artist }, 0);
+      const finalExplanation = `${fallbackReason} Its acoustic signature and lyric themes align naturally with the ${canonical.toLowerCase()} emotional state.`;
+      return {
+        explanation: finalExplanation,
+        model: "EmoLyrics Deterministic Heuristics (Ollama Unavailable)",
+        fromCache: false,
+        ollamaAvailable: false
+      };
+    }
+
+    const baseUrl = ollamaResolution.url;
     const model = process.env.OLLAMA_MODEL || "qwen2.5:3b";
     const url = `${baseUrl}/api/chat`;
 

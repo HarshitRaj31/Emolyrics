@@ -109,6 +109,17 @@ router.post("/analyze-multilingual", optionalJWT, async (req, res, next) => {
       language
     });
 
+    if (!prediction || prediction.success === false) {
+      return res.status(503).json({
+        success: false,
+        code: "ERR_MULTILINGUAL_SERVICE_OFFLINE",
+        message:
+          `Multilingual ML service is unavailable (${prediction?.reason || "offline"}). ` +
+          `Configure ML_SERVICE_URL to point to the separate Python FastAPI ML service.`,
+        detectedLanguage: prediction?.language || language || null
+      });
+    }
+
     return res.json(prediction);
   } catch (error) {
     if (error.statusCode === 503 || error.code === "ERR_MULTILINGUAL_SERVICE_OFFLINE") {
@@ -143,6 +154,17 @@ router.post("/analyze-lines", optionalJWT, async (req, res, next) => {
       lines: inputLines,
       options: { language, contextWindow }
     });
+
+    if (!prediction || prediction.success === false) {
+      return res.status(503).json({
+        success: false,
+        code: "ERR_MULTILINGUAL_SERVICE_OFFLINE",
+        message:
+          `Multilingual ML service is unavailable (${prediction?.reason || "offline"}). ` +
+          `Configure ML_SERVICE_URL to point to the separate Python FastAPI ML service.`,
+        detectedLanguage: prediction?.language || language || null
+      });
+    }
 
     return res.json(prediction);
   } catch (error) {

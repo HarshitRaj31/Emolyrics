@@ -11,6 +11,7 @@ const { detectLanguage } = require("../nlp/languageDetector");
 const { preprocessMultilingualLyrics } = require("../nlp/multilingualPreprocessor");
 const { multilingualMLService } = require("./multilingualMLService");
 const { songSectionService } = require("./songSectionService");
+const { resolveOllamaBaseUrl } = require("../utils/serviceUrls");
 
 // 10 Core Emotion Classes Taxonomy & Multilingual Lexicons
 const ADVANCED_EMOTIONS = {
@@ -238,11 +239,15 @@ class AdvancedEmotionService {
     return process.env.OLLAMA_MODEL || "qwen2.5:3b";
   }
 
+  getOllamaResolution() {
+    return resolveOllamaBaseUrl();
+  }
+
   /**
    * Get configured Ollama base URL dynamically from environment
    */
   getBaseUrl() {
-    return (process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434").replace(/\/$/, "");
+    return this.getOllamaResolution().url;
   }
 
   /**
@@ -349,7 +354,7 @@ class AdvancedEmotionService {
       primaryEmotion,
       primaryEmotionMeta: ADVANCED_EMOTIONS[primaryEmotion],
       confidence,
-      confidenceType: "ml_classifier_probability",
+      confidenceType: "deterministic_lexical_heuristic",
       secondaryEmotions,
       emotionDistribution,
       rawScores,
@@ -538,8 +543,21 @@ class AdvancedEmotionService {
    * Generates overall emotional meaning, lyrical themes, emotional progression, and primary reasoning.
    */
   async generateOllamaInterpretation({ lyrics, title, artist, primaryEmotion, secondaryEmotions, language }) {
-    const baseUrl = this.getBaseUrl();
+    const ollamaResolution = this.getOllamaResolution();
     const model = this.getModelName();
+
+    if (!ollamaResolution.configured) {
+      return this.buildFallbackInterpretation({
+        title,
+        artist,
+        primaryEmotion,
+        secondaryEmotions,
+        language,
+        reason: ollamaResolution.reason
+      });
+    }
+
+    const baseUrl = ollamaResolution.url;
     const url = `${baseUrl}/api/chat`;
 
     // Compact sample of lyrics (up to 1,200 chars) to prevent context bloat while preserving emotional core
@@ -681,11 +699,12 @@ Return ONLY a valid JSON object matching this exact schema:
       whyPrimaryEmotion,
       conciseInterpretation,
       model: this.getModelName(),
-      provider: "EmoLyrics Neural Fallback Engine",
+      provider: "EmoLyrics Deterministic Fallback (Ollama Unavailable)",
       isAiGenerated: false,
+      ollamaAvailable: false,
       fallbackReason: reason?.includes("AbortError")
-        ? "Ollama request reached inference timeout; served instant NLP interpretation."
-        : "Ollama local service is offline or uninstalled; served instant deterministic NLP interpretation."
+        ? "Ollama request reached inference timeout; served deterministic NLP interpretation."
+        : reason || "Ollama service is offline or unconfigured; served deterministic NLP interpretation."
     };
   }
 

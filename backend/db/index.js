@@ -1,6 +1,24 @@
 const mongoose = require("mongoose");
+const { isLocalhostUrl, isProductionRuntime } = require("../utils/serviceUrls");
 
-let isConnected = false;
+// Global connection cache preserves warm MongoDB connections across serverless invocations
+const dbCache =
+  global.__emolyricsMongooseCache ||
+  (global.__emolyricsMongooseCache = {
+    conn: null,
+    promise: null,
+    lastError: null,
+    loggedFallback: false
+  });
+
+function sanitizeMongoTarget(uri) {
+  try {
+    const parsed = new URL(uri);
+    return `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+  } catch {
+    return "MongoDB";
+  }
+}
 
 // Seed initial memory store for zero-friction local execution without MongoDB
 const memoryStore = {
@@ -151,28 +169,82 @@ const memoryStore = {
 };
 
 async function connectDB() {
-  const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/emolyrics";
-  try {
-    mongoose.set("strictQuery", false);
-    // Attempt with 2-second timeout so app never hangs
-    await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 2000
-    });
-    isConnected = true;
-    console.log(" Connected successfully to MongoDB at", uri);
-  } catch (error) {
-    isConnected = false;
-    console.warn(" MongoDB connection failed or not running locally.");
-    console.warn(" Seamlessly falling back to high-performance in-memory/JSON store for zero-friction local execution.");
+  // Reuse warm established connection
+  if (mongoose.connection.readyState === 1) {
+    dbCache.conn = mongoose.connection;
+    dbCache.lastError = null;
+    return true;
   }
+
+  // Coalesce concurrent cold-start calls on the same in-flight promise
+  if (dbCache.promise) {
+    return dbCache.promise;
+  }
+
+  const configuredUri = (process.env.MONGODB_URI || "").trim();
+  const isProd = isProductionRuntime();
+
+  // In production/Vercel, never dial localhost MongoDB when MONGODB_URI is unset or local
+  if (isProd && (!configuredUri || isLocalhostUrl(configuredUri))) {
+    dbCache.lastError = configuredUri
+      ? "MONGODB_URI points to localhost, which is unreachable in serverless production."
+      : "MONGODB_URI is not configured.";
+    if (!dbCache.loggedFallback) {
+      dbCache.loggedFallback = true;
+      console.warn(`⚠ [DB] ${dbCache.lastError} Using non-persistent MemoryStore fallback.`);
+    }
+    return false;
+  }
+
+  const uri = configuredUri || "mongodb://127.0.0.1:27017/emolyrics";
+  const targetLabel = sanitizeMongoTarget(uri);
+
+  mongoose.set("strictQuery", false);
+
+  dbCache.promise = mongoose
+    .connect(uri, {
+      maxPoolSize: 5,
+      minPoolSize: 0,
+      serverSelectionTimeoutMS: isProd ? 5000 : 2000,
+      socketTimeoutMS: 45000
+    })
+    .then((m) => {
+      dbCache.conn = m.connection;
+      dbCache.lastError = null;
+      console.log(` Connected successfully to MongoDB (${targetLabel})`);
+      return true;
+    })
+    .catch((error) => {
+      dbCache.conn = null;
+      dbCache.promise = null; // Allow future invocations to retry cleanly
+      dbCache.lastError = error.message;
+      if (!dbCache.loggedFallback) {
+        dbCache.loggedFallback = true;
+        console.warn(`⚠ [DB] MongoDB connection unavailable (${error.message}). Falling back to MemoryStore.`);
+      }
+      return false;
+    });
+
+  return dbCache.promise;
 }
 
 function getIsConnected() {
-  return isConnected;
+  return mongoose.connection.readyState === 1;
+}
+
+function getDbStatus() {
+  return {
+    connected: getIsConnected(),
+    readyState: mongoose.connection.readyState,
+    type: getIsConnected() ? "MongoDB" : "MemoryStore",
+    persistent: getIsConnected(),
+    lastError: getIsConnected() ? null : dbCache.lastError
+  };
 }
 
 module.exports = {
   connectDB,
   getIsConnected,
+  getDbStatus,
   memoryStore
 };

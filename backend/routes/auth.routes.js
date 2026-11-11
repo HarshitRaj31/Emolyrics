@@ -3,14 +3,14 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { getIsConnected, memoryStore } = require("../db");
 const User = require("../models/User");
-const { authenticateJWT, optionalJWT, JWT_SECRET } = require("../middleware/auth.middleware");
+const { authenticateJWT, optionalJWT, getJwtSecret } = require("../middleware/auth.middleware");
 const { authLimiter } = require("../middleware/rateLimiter");
 
 const router = express.Router();
 
 // Generate signed JWT
 function createToken(userId, role) {
-  return jwt.sign({ id: userId, role }, JWT_SECRET, { expiresIn: "7d" });
+  return jwt.sign({ id: userId, role }, getJwtSecret(), { expiresIn: "7d" });
 }
 
 // POST /api/auth/register

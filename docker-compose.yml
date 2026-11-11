@@ -75,7 +75,7 @@ services:
       - ML_SERVICE_URL=http://ml-services:8001
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
       - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:3b}
-      - JWT_SECRET=${JWT_SECRET:-emolyrics-super-secure-production-secret-key-2026}
+      - JWT_SECRET=${JWT_SECRET:?Configure a strong 32+ character JWT_SECRET in .env}
       - MAX_LYRICS_LENGTH=30000
     depends_on:
       mongo:
