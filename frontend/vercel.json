@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://emolyrics-api.onrender.com/api/$1" },
+    { "source": "/api/(.*)", "destination": "https://emolyrics-il28.vercel.app/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

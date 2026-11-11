@@ -1,4 +1,24 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
+const PRODUCTION_BACKEND_URL = "https://emolyrics-il28.vercel.app";
+
+function resolveApiBaseUrl() {
+  const configuredUrl = (import.meta.env.VITE_API_URL || "").trim().replace(/\/+$/, "");
+  if (configuredUrl) {
+    if (configuredUrl === "/api" || configuredUrl.endsWith("/api")) {
+      return configuredUrl;
+    }
+    return `${configuredUrl}/api`;
+  }
+
+  // Preserve local Vite dev proxy (/api -> http://localhost:5000) in development
+  if (import.meta.env.DEV) {
+    return "/api";
+  }
+
+  // Production builds target the deployed Vercel backend API
+  return `${PRODUCTION_BACKEND_URL}/api`;
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 function getAuthHeader() {
   const token = localStorage.getItem("emolyrics_token");
