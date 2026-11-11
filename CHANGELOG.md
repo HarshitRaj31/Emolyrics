@@ -71,3 +71,4 @@ The project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - Emotion Donut Chart and Visualization Dashboard.
 - Curated mood playlists and recommendations.
 - Local Ollama AI Assistant integration.
+
