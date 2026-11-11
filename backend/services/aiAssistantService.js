@@ -1280,9 +1280,15 @@ For instance, the model extracts high-salience terms (e.g. sorrow, tears, rain f
 
       case "recommendations":
       default: {
-        const { primaryMood, emotions, language, songs } = actionResult;
+        const primaryMood = actionResult?.primaryMood || parsedIntent?.mood || "Music";
+        const emotions = Array.isArray(actionResult?.emotions)
+          ? actionResult.emotions
+          : (Array.isArray(parsedIntent?.emotions) ? parsedIntent.emotions : [primaryMood]);
+        const language = actionResult?.language || parsedIntent?.language || null;
+        const songs = Array.isArray(actionResult?.songs) ? actionResult.songs : [];
+
         const langStr = language ? ` in ${language}` : "";
-        const emotionStr = emotions.join(" & ");
+        const emotionStr = emotions.length > 0 ? emotions.join(" & ") : primaryMood;
 
         text = `Here are hand-curated **${emotionStr}** tracks${langStr} perfectly tuned for your vibe. Each song has verified metadata and instant Spotify/YouTube listening links:`;
 

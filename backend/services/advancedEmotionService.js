@@ -9,6 +9,8 @@
 
 const { detectLanguage } = require("../nlp/languageDetector");
 const { preprocessMultilingualLyrics } = require("../nlp/multilingualPreprocessor");
+const { multilingualMLService } = require("./multilingualMLService");
+const { songSectionService } = require("./songSectionService");
 
 // 10 Core Emotion Classes Taxonomy & Multilingual Lexicons
 const ADVANCED_EMOTIONS = {
@@ -358,42 +360,103 @@ class AdvancedEmotionService {
   }
 
   /**
-   * Fast Line-by-Line Emotion Extraction (Zero LLM Latency)
-   * Splits lyrics into meaningful lines and classifies each line using the 10 emotion taxonomy.
+   * Line-by-Line Emotion Extraction (Multilingual Neural Model + Context Windowing)
+   * Evaluates individual lines using the trained multilingual sentence encoder with context windowing.
+   * If Python microservice is offline, falls back to deterministic lexical analysis for English.
    */
-  analyzeLines(lyrics, globalResult) {
+  async analyzeLines(lyrics, globalResult, options = {}) {
     if (!lyrics || typeof lyrics !== "string") return [];
 
-    const lines = lyrics.split(/\r?\n/);
+    const rawLines = lyrics.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (rawLines.length === 0) return [];
+
+    // 1. Try multilingual neural model batched prediction if available
+    try {
+      const mlLinesRes = await multilingualMLService.predictLines({
+        lines: rawLines,
+        options: {
+          contextWindow: options.contextWindow !== undefined ? options.contextWindow : 1,
+          language: options.language
+        }
+      });
+
+      if (mlLinesRes && mlLinesRes.success && Array.isArray(mlLinesRes.lines)) {
+        return mlLinesRes.lines.map((l, idx) => {
+          const emotionKey = l.primaryEmotion || globalResult.primaryEmotion || "Calmness";
+          const meta = ADVANCED_EMOTIONS[emotionKey] || ADVANCED_EMOTIONS.Calmness;
+
+          return {
+            lineIndex: l.lineNumber || idx + 1,
+            lineNumber: l.lineNumber || idx + 1,
+            originalLineNumber: l.originalLineNumber || idx + 1,
+            text: l.text,
+            isSectionHeader: Boolean(l.isSectionHeader),
+            emotion: emotionKey,
+            primaryEmotion: emotionKey,
+            secondaryEmotions: l.secondaryEmotions || [],
+            secondaryEmotionsData: l.secondaryEmotionsData || [],
+            confidence: Math.round(Number(l.confidence || 0.7) * 100 * 10) / 10,
+            rawConfidence: Number(l.confidence || 0.7),
+            emotionProbabilities: l.emotionProbabilities || {},
+            isAmbiguous: Boolean(l.isAmbiguous),
+            color: meta.color,
+            emoji: meta.emoji,
+            gradient: meta.gradient,
+            explanation: l.explanation || `Expresses ${emotionKey}`,
+            language: l.language || globalResult.language || "en",
+            languageName: l.languageName || null,
+            isCodeSwitched: Boolean(l.isCodeSwitched),
+            codeSwitchType: l.codeSwitchType || null,
+            isUncertain: Boolean(l.isUncertain),
+            uncertaintyReason: l.uncertaintyReason || null,
+            detectedKeywords: []
+          };
+        });
+      }
+    } catch (err) {
+      if (err.statusCode === 503 || err.code === "ERR_MULTILINGUAL_SERVICE_OFFLINE") {
+        throw err;
+      }
+      console.warn("[AdvancedEmotionService] Line neural batch failed, using lexical line extraction:", err.message);
+    }
+
+    // 2. Deterministic Lexical Fallback for English lyrics
+    return this.analyzeLinesLexical(rawLines, globalResult);
+  }
+
+  /**
+   * Deterministic Lexical Fallback Line Extraction
+   */
+  analyzeLinesLexical(rawLines, globalResult) {
     const analyzedLines = [];
     let validLineIndex = 1;
 
-    for (let i = 0; i < lines.length; i++) {
-      const rawLine = lines[i].trim();
-
-      // Skip completely empty lines
+    for (let i = 0; i < rawLines.length; i++) {
+      const rawLine = rawLines[i].trim();
       if (!rawLine) continue;
 
-      // Check if line is a structural indicator like [Chorus], [Verse 1], etc.
       const isHeader = /^\[.*\]$|^\(.*\)$/i.test(rawLine);
 
       if (isHeader) {
         analyzedLines.push({
-          lineIndex: validLineIndex++,
+          lineIndex: validLineIndex,
+          lineNumber: validLineIndex++,
           originalLineNumber: i + 1,
           text: rawLine,
           isSectionHeader: true,
           emotion: "Structure",
+          primaryEmotion: "Structure",
           confidence: 100.0,
           color: "#94a3b8",
           emoji: "🎵",
           explanation: "Song structural marker",
+          secondaryEmotions: [],
+          emotionProbabilities: {},
           detectedKeywords: []
         });
         continue;
       }
 
-      // Line-level lexical evaluation
       const lineLower = rawLine.toLowerCase();
       let bestEmotion = null;
       let bestScore = 0;
@@ -411,7 +474,6 @@ class AdvancedEmotionService {
               matched.push(kw);
             }
           } else {
-            // Regex boundary match for word in line
             const regex = new RegExp(`\\b${kwLower}\\b`, "i");
             if (regex.test(lineLower)) {
               score += 2.5;
@@ -436,7 +498,6 @@ class AdvancedEmotionService {
         const cuesList = lineCues.slice(0, 3).map((c) => `#${c}`).join(", ");
         explanation = `Expresses ${lineEmotion} through markers: ${cuesList}`;
       } else {
-        // Fallback to song's primary or secondary emotion if ambient phrasing
         lineEmotion = globalResult.primaryEmotion || "Calmness";
         lineConfidence = 64.0;
         explanation = `Subtle ambient phrasing harmonizing with the overarching ${lineEmotion} theme`;
@@ -444,17 +505,27 @@ class AdvancedEmotionService {
 
       const meta = ADVANCED_EMOTIONS[lineEmotion] || ADVANCED_EMOTIONS.Calmness;
 
+      // Construct fallback probability distribution
+      const fallbackProbs = {};
+      for (const k of Object.keys(ADVANCED_EMOTIONS)) {
+        fallbackProbs[k] = k === lineEmotion ? 0.65 : 0.04;
+      }
+
       analyzedLines.push({
-        lineIndex: validLineIndex++,
+        lineIndex: validLineIndex,
+        lineNumber: validLineIndex++,
         originalLineNumber: i + 1,
         text: rawLine,
         isSectionHeader: false,
         emotion: lineEmotion,
+        primaryEmotion: lineEmotion,
         confidence: lineConfidence,
         color: meta.color,
         emoji: meta.emoji,
         gradient: meta.gradient,
         explanation,
+        secondaryEmotions: [globalResult.primaryEmotion !== lineEmotion ? globalResult.primaryEmotion : "Calmness"],
+        emotionProbabilities: fallbackProbs,
         detectedKeywords: lineCues
       });
     }
@@ -643,6 +714,7 @@ Return ONLY a valid JSON object matching this exact schema:
 
   /**
    * Main Entrypoint: Complete Advanced Mood Analysis Orchestrator
+   * Integrates Python Multilingual Neural Classifier with line analysis & Ollama interpretation.
    */
   async analyzeAdvanced({ lyrics, title = "", artist = "", options = {} }) {
     if (!lyrics || typeof lyrics !== "string" || !lyrics.trim()) {
@@ -652,13 +724,99 @@ Return ONLY a valid JSON object matching this exact schema:
     const startTime = Date.now();
     const cleanLyrics = lyrics.trim();
 
-    // 1. Multi-Emotion Classification across 10 classes
-    const multiEmotion = this.classifyMultiEmotions(cleanLyrics, options);
+    let multiEmotion;
+    let mlServiceOnline = false;
+    let mlModelVersion = "v1.2.0-production-calibrated";
+    let mlWarning = null;
+    let mlDurationMs = null;
+    let mlRequestId = null;
+    let isCodeSwitched = false;
+    let isSupported = true;
+    let detectedLang = null;
 
-    // 2. Line-by-Line Emotion Analysis
-    const lines = this.analyzeLines(cleanLyrics, multiEmotion);
+    // 1. Attempt Multilingual Neural Model Inference via Python ML Microservice
+    try {
+      const mlResult = await multilingualMLService.predictEmotion({
+        lyrics: cleanLyrics,
+        language: options.language
+      });
 
-    // 3. Overall Song Interpretation via Ollama
+      if (mlResult && mlResult.success) {
+        mlServiceOnline = true;
+        mlModelVersion = mlResult.modelVersion || "v1.2.0-production-calibrated";
+        mlWarning = mlResult.warning;
+        mlDurationMs = mlResult.durationMs;
+        mlRequestId = mlResult.requestId;
+        isCodeSwitched = mlResult.isCodeSwitched;
+        isSupported = mlResult.isSupported;
+        detectedLang = mlResult.languageName || mlResult.language;
+
+        const primaryMeta = ADVANCED_EMOTIONS[mlResult.primaryEmotion] || ADVANCED_EMOTIONS.Happiness;
+
+        // Enhance secondary emotions with UI metadata
+        const secondaryEmotions = (mlResult.secondaryEmotions || []).map((sec) => {
+          const def = ADVANCED_EMOTIONS[sec.emotion] || {};
+          const pct = sec.percentage !== undefined ? sec.percentage : Math.round((sec.confidence || 0) * 100);
+          return {
+            emotion: sec.emotion,
+            confidence: Math.round((sec.confidence || 0) * 100 * 10) / 10,
+            percentage: pct,
+            emoji: def.emoji || "🎵",
+            color: def.color || "#8b5cf6",
+            gradient: def.gradient || "from-purple-500 to-indigo-600",
+            matchedKeywords: []
+          };
+        });
+
+        multiEmotion = {
+          primaryEmotion: mlResult.primaryEmotion,
+          primaryEmotionMeta: primaryMeta,
+          confidence: mlResult.confidence,
+          confidenceType: "multilingual_neural_calibrated_probability",
+          confidenceDisclaimer:
+            "Calibrated model statistical confidence indicates temperature-scaled classifier probability (ECE: 0.0538), distinct from factual human certainty.",
+          secondaryEmotions,
+          emotionDistribution: mlResult.emotionDistribution,
+          emotionProbabilities: mlResult.emotionProbabilities,
+          language: mlResult.languageName || detectedLang,
+          languageCode: mlResult.language,
+          isCodeSwitched: Boolean(mlResult.isCodeSwitched),
+          codeSwitchType: mlResult.codeSwitchType || null,
+          scriptBreakdown: mlResult.scriptBreakdown || {},
+          languageDistribution: mlResult.languageDistribution || {},
+          isUncertain: Boolean(mlResult.isUncertain),
+          uncertaintyDetails: mlResult.uncertaintyDetails || null,
+          temperature: mlResult.temperature || 1.0295,
+          isSupported,
+          warning: mlResult.warning || mlWarning,
+          source: "multilingual_neural_model"
+        };
+      } else {
+        // Handled as permitted English fallback
+        multiEmotion = this.classifyMultiEmotions(cleanLyrics, options);
+        multiEmotion.source = "deterministic_english_lexicon";
+      }
+    } catch (err) {
+      if (err.statusCode === 503 || err.code === "ERR_MULTILINGUAL_SERVICE_OFFLINE") {
+        // Strict fallback enforcement: throw descriptive error for non-English lyrics
+        throw err;
+      }
+      console.warn("[AdvancedEmotionService] Multilingual ML call failed, evaluating fallback:", err.message);
+      multiEmotion = this.classifyMultiEmotions(cleanLyrics, options);
+      multiEmotion.source = "deterministic_english_lexicon";
+    }
+
+    // 2. Line-by-Line Emotion Analysis (Multilingual Neural Model + Context Windowing)
+    const lines = await this.analyzeLines(cleanLyrics, multiEmotion, options);
+
+    // 3. Section Detection & Emotional Journey Analysis
+    const sectionAnalysis = songSectionService.analyzeSectionsAndJourney(
+      lines,
+      cleanLyrics,
+      multiEmotion.primaryEmotion
+    );
+
+    // 4. Overall Song Interpretation via Ollama
     const aiInterpretation = await this.generateOllamaInterpretation({
       lyrics: cleanLyrics,
       title,
@@ -677,18 +835,44 @@ Return ONLY a valid JSON object matching this exact schema:
       confidence: multiEmotion.confidence,
       confidenceType: multiEmotion.confidenceType,
       confidenceDisclaimer:
-        "Model statistical confidence indicates classifier lexical and semantic probability, distinct from factual certainty.",
+        multiEmotion.confidenceDisclaimer ||
+        "Calibrated model statistical confidence indicates classifier neural probability, distinct from factual certainty.",
       secondaryEmotions: multiEmotion.secondaryEmotions,
       emotionDistribution: multiEmotion.emotionDistribution,
+      emotionProbabilities: multiEmotion.emotionProbabilities || null,
+      isUncertain: multiEmotion.isUncertain || false,
+      uncertaintyDetails: multiEmotion.uncertaintyDetails || null,
       lines,
       totalLines: lines.length,
       analyzedLines: lines.filter((l) => !l.isSectionHeader).length,
+      sections: sectionAnalysis.sections,
+      emotionalJourney: {
+        transitions: sectionAnalysis.transitions,
+        strongestSection: sectionAnalysis.strongestSection,
+        mostDiverseSection: sectionAnalysis.mostDiverseSection,
+        beginningToEnding: sectionAnalysis.beginningToEnding,
+        dominantProgression: sectionAnalysis.dominantProgression
+      },
       aiInterpretation,
       metadata: {
         title: title.trim() || "Untitled Song",
         artist: artist.trim() || "Unknown Artist",
         language: multiEmotion.language,
         languageCode: multiEmotion.languageCode,
+        modelVersion: mlModelVersion,
+        mlServiceOnline,
+        mlDurationMs,
+        requestId: mlRequestId,
+        isCodeSwitched: multiEmotion.isCodeSwitched || false,
+        codeSwitchType: multiEmotion.codeSwitchType || null,
+        scriptBreakdown: multiEmotion.scriptBreakdown || {},
+        languageDistribution: multiEmotion.languageDistribution || {},
+        isUncertain: multiEmotion.isUncertain || false,
+        uncertaintyDetails: multiEmotion.uncertaintyDetails || null,
+        temperature: multiEmotion.temperature || 1.0295,
+        isSupported: multiEmotion.isSupported !== false,
+        warning: multiEmotion.warning || null,
+        source: multiEmotion.source || (mlServiceOnline ? "multilingual_neural_model" : "deterministic_english_lexicon"),
         durationMs,
         analyzedAt: new Date().toISOString()
       }

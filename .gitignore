@@ -6,12 +6,15 @@ node_modules/
 .env
 .env.*
 !.env.example
+!*/.env.example
 *.env
 backend/.env
 backend/.env.local
 backend/.env.production
 frontend/.env
 frontend/.env.local
+ml-services/.env
+ml-services/.env.*
 
 # Production Build outputs
 frontend/dist/
@@ -37,4 +40,31 @@ Thumbs.db
 # Temporary scratch & coverage
 coverage/
 .nyc_output/
+
+# Python & ML Models / Checkpoints
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.onnx
+ml-services/models/
+ml-services/checkpoints/
+ml-services/cache/
+*.npz
+
+# Raw Datasets & Audio / MIDI Media (Prevent committing copyrighted content)
+ml-services/datasets/raw/
+ml-services/datasets/processed/*.jsonl
+*.mp3
+*.wav
+*.mid
+*.midi
 

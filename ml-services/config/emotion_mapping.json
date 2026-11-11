@@ -1,0 +1,511 @@
+{
+  "target_taxonomy": [
+    "Happiness",
+    "Sadness",
+    "Love",
+    "Anger",
+    "Nostalgia",
+    "Fear",
+    "Excitement",
+    "Hope",
+    "Loneliness",
+    "Calmness"
+  ],
+  "mirex_mapping": {
+    "Cheerful": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "cluster": "Cluster 2",
+      "reason": "Clear expression of positive valence, buoyant cheer, and joyful affect."
+    },
+    "Fun": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "cluster": "Cluster 2",
+      "reason": "Lighthearted, enjoyable, and cheerful emotional state matching Happiness."
+    },
+    "Amiable-good natured": {
+      "mapped_emotion": "Happiness",
+      "confidence": "medium",
+      "cluster": "Cluster 2",
+      "reason": "Pleasant, friendly, and warm disposition aligned with positive social affect."
+    },
+    "Sweet": {
+      "mapped_emotion": "Love",
+      "confidence": "medium",
+      "cluster": "Cluster 2",
+      "reason": "Tender romantic affection, gentle endearment, and caring emotional tone."
+    },
+    "Passionate": {
+      "mapped_emotion": "Love",
+      "confidence": "high",
+      "cluster": "Cluster 1",
+      "reason": "High emotional devotion, heartfelt romantic intensity, and ardent feeling."
+    },
+    "Poignant": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "cluster": "Cluster 3",
+      "reason": "Evokes a deep, touching sense of sadness, heartache, and vulnerable sorrow."
+    },
+    "Brooding": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "cluster": "Cluster 3",
+      "reason": "Dark, lingering, melancholic sorrow and persistent unhappy rumination."
+    },
+    "Bittersweet": {
+      "mapped_emotion": "Nostalgia",
+      "confidence": "high",
+      "cluster": "Cluster 3",
+      "reason": "Classic nostalgic affect combining fond retrospective warmth with the ache of passage."
+    },
+    "Wistful": {
+      "mapped_emotion": "Nostalgia",
+      "confidence": "high",
+      "cluster": "Cluster 3",
+      "reason": "Vague or regretful longing for the past, quintessential to Nostalgia."
+    },
+    "Agressive": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "cluster": "Cluster 5",
+      "reason": "Hostile, furious, and confrontational emotional arousal matching Anger."
+    },
+    "Fiery": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "cluster": "Cluster 5",
+      "reason": "Burning rage, fierce vocal hostility, and intense anger."
+    },
+    "Tense - Anxious": {
+      "mapped_emotion": "Fear",
+      "confidence": "high",
+      "cluster": "Cluster 5",
+      "reason": "Apprehension, nervous dread, and acute psychological tension matching Fear."
+    },
+    "Boisterous": {
+      "mapped_emotion": "Excitement",
+      "confidence": "high",
+      "cluster": "Cluster 1",
+      "reason": "High-energy, exuberant, noisy celebration with elevated arousal."
+    },
+    "Rowdy": {
+      "mapped_emotion": "Excitement",
+      "confidence": "high",
+      "cluster": "Cluster 1",
+      "reason": "Disorderly, loud, high-tempo celebration matching peak party excitement."
+    },
+    "Rousing": {
+      "mapped_emotion": "Excitement",
+      "confidence": "medium",
+      "cluster": "Cluster 1",
+      "reason": "Stirring, anthemic energy that mobilizes emotions with elevated momentum."
+    },
+    "Rollicking": {
+      "mapped_emotion": "Excitement",
+      "confidence": "medium",
+      "cluster": "Cluster 2",
+      "reason": "Carefree, fast-paced, high-spirited movement and kinetic joy."
+    },
+    "Confident": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 1",
+      "reason": "Cognitive appraisal of self-efficacy rather than a primary emotional affect."
+    },
+    "Autumnal": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 3",
+      "reason": "Poetic/seasonal aesthetic metaphor without a single defensible affective category."
+    },
+    "Literate": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 3",
+      "reason": "Lyrical complexity/compositional style descriptor, not an emotional state."
+    },
+    "Campy": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 4",
+      "reason": "Stylistic theatrics and ironic parody, lacking genuine affective valence."
+    },
+    "Humorous": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 4",
+      "reason": "Comedic genre marker; humor functions as entertainment rather than primary emotion."
+    },
+    "Silly": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 4",
+      "reason": "Playful absurdity and lighthearted novelty without distinct emotional grounding."
+    },
+    "Witty": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 4",
+      "reason": "Intellectual tone and cleverness rather than affective emotional state."
+    },
+    "Wry": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 4",
+      "reason": "Sardonic cynicism and dry mockery without consistent affective category."
+    },
+    "whimsical": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 4",
+      "reason": "Quirky creative temperament rather than a standard emotional affect."
+    },
+    "Intense": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 5",
+      "reason": "Non-specific high arousal state applicable equally to rage, passion, or terror."
+    },
+    "Visceral": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 5",
+      "reason": "Somatosensory descriptor indicating bodily sensation without specific valence."
+    },
+    "Volatile": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "cluster": "Cluster 5",
+      "reason": "Instability and rapid fluctuation descriptor rather than a specific emotion."
+    }
+  },
+  "benchmark_mapping": {
+    "Happy": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Happiness."
+    },
+    "Sad": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Sadness."
+    },
+    "Angry": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Anger."
+    },
+    "Romantic": {
+      "mapped_emotion": "Love",
+      "confidence": "high",
+      "reason": "Tender romantic devotion directly maps to Love."
+    },
+    "Calm/Chill": {
+      "mapped_emotion": "Calmness",
+      "confidence": "high",
+      "reason": "Tranquil stillness and meditative pacing maps to Calmness."
+    },
+    "Exciting": {
+      "mapped_emotion": "Excitement",
+      "confidence": "high",
+      "reason": "High-octane arousal and fast BPM maps to Excitement."
+    },
+    "Patriotic": {
+      "mapped_emotion": "Hope",
+      "confidence": "medium",
+      "reason": "National solidarity, inspirational sacrifice, and homeland anthem maps closest to Hope."
+    },
+    "Thrilling": {
+      "mapped_emotion": "Fear",
+      "confidence": "medium",
+      "reason": "Suspense, danger, and racing pulse associated with apprehension/fear."
+    },
+    "Horror": {
+      "mapped_emotion": "Fear",
+      "confidence": "high",
+      "reason": "Terror, nightmares, and macabre dread directly maps to Fear."
+    }
+  },
+  "goemotions_mapping": {
+    "joy": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Happiness."
+    },
+    "sadness": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Sadness."
+    },
+    "grief": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "reason": "Intense bereavement and profound sorrow maps to Sadness."
+    },
+    "remorse": {
+      "mapped_emotion": "Sadness",
+      "confidence": "medium",
+      "reason": "Guilt and sorrowful regret aligned with melancholic affect."
+    },
+    "anger": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Anger."
+    },
+    "fear": {
+      "mapped_emotion": "Fear",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Fear."
+    },
+    "nervousness": {
+      "mapped_emotion": "Fear",
+      "confidence": "high",
+      "reason": "Acute apprehension and anxious tension closely aligned with Fear."
+    },
+    "love": {
+      "mapped_emotion": "Love",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Love."
+    },
+    "excitement": {
+      "mapped_emotion": "Excitement",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Excitement."
+    },
+    "optimism": {
+      "mapped_emotion": "Hope",
+      "confidence": "high",
+      "reason": "Positive expectation and forward-looking confidence directly maps to Hope."
+    },
+    "relief": {
+      "mapped_emotion": "Hope",
+      "confidence": "medium",
+      "reason": "Reassurance following distress, closely related to restored hope."
+    },
+    "admiration": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Social appraisal and reverence without specific target emotion."
+    },
+    "amusement": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Humorous reaction / comedic entertainment, excluded from primary emotion taxonomy."
+    },
+    "annoyance": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Mild irritation lacking intensity of primary Anger."
+    },
+    "approval": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Cognitive endorsement rather than affective state."
+    },
+    "caring": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Empathic behavior / social concern, distinct from romantic/familial Love."
+    },
+    "confusion": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Epistemic cognitive uncertainty, not an affective emotion."
+    },
+    "curiosity": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Intellectual drive / exploratory interest, not an affective emotion."
+    },
+    "desire": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Motivational appetite / craving, ambiguous affective tone."
+    },
+    "disappointment": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Unmet expectation; excluded to preserve purity of canonical Sadness."
+    },
+    "disapproval": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Cognitive negative judgment rather than an emotional affect."
+    },
+    "disgust": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Sensory or moral revulsion, not part of canonical 10-emotion taxonomy."
+    },
+    "embarrassment": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Self-conscious social affect, excluded from canonical taxonomy."
+    },
+    "gratitude": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Moral thankfulness / appreciation, not a primary emotion."
+    },
+    "pride": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Self-evaluative appraisal, distinct from Happiness."
+    },
+    "realization": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Cognitive epiphany / awareness, not an emotional state."
+    },
+    "surprise": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Startle response with neutral valence; do not map surprise automatically to excitement."
+    },
+    "neutral": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Absence of affective arousal; do not map neutral to calmness."
+    }
+  },
+  "xed_mapping": {
+    "1": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "original_name": "Anger",
+      "reason": "Plutchik Anger maps directly to Anger."
+    },
+    "2": {
+      "mapped_emotion": "Hope",
+      "confidence": "medium",
+      "original_name": "Anticipation",
+      "reason": "Plutchik Anticipation represents forward-looking expectation aligned with Hope."
+    },
+    "3": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "original_name": "Disgust",
+      "reason": "Disgust is a distinct aversion emotion, excluded from 10-emotion taxonomy."
+    },
+    "4": {
+      "mapped_emotion": "Fear",
+      "confidence": "high",
+      "original_name": "Fear",
+      "reason": "Plutchik Fear maps directly to Fear."
+    },
+    "5": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "original_name": "Joy",
+      "reason": "Plutchik Joy maps directly to Happiness."
+    },
+    "6": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "original_name": "Sadness",
+      "reason": "Plutchik Sadness maps directly to Sadness."
+    },
+    "7": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "original_name": "Surprise",
+      "reason": "Do not map surprise automatically to excitement."
+    },
+    "8": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "original_name": "Trust",
+      "reason": "Social relational appraisal with ambiguous affective polarity."
+    },
+    "0": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "original_name": "Neutral",
+      "reason": "Do not map neutral to calmness."
+    }
+  },
+  "bemoc_mapping": {
+    "joy": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "reason": "Bengali 'ananda/ullas' maps directly to Happiness."
+    },
+    "sadness": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "reason": "Bengali 'dukkho' maps directly to Sadness."
+    },
+    "anger": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "reason": "Bengali 'krodh/rag' maps directly to Anger."
+    },
+    "fear": {
+      "mapped_emotion": "Fear",
+      "confidence": "high",
+      "reason": "Bengali 'bhoy' maps directly to Fear."
+    },
+    "disgust": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Bengali 'ghrina' (disgust/revulsion), excluded from 10-emotion taxonomy."
+    },
+    "surprise": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Bengali 'bismoy'; do not map surprise automatically to excitement."
+    }
+  },
+  "hindi_corpus_mapping": {
+    "happy": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "reason": "Hindi 'khushi/prasannata' maps directly to Happiness."
+    },
+    "sad": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "reason": "Hindi 'dukh/udaasi' maps directly to Sadness."
+    },
+    "angry": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "reason": "Hindi 'krodh/gussa' maps directly to Anger."
+    },
+    "neutral": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Hindi 'tatasth'; do not map neutral to calmness."
+    }
+  },
+  "bhaav_mapping": {
+    "joy": {
+      "mapped_emotion": "Happiness",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Happiness."
+    },
+    "sad": {
+      "mapped_emotion": "Sadness",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Sadness."
+    },
+    "anger": {
+      "mapped_emotion": "Anger",
+      "confidence": "high",
+      "reason": "Direct semantic equivalence to Anger."
+    },
+    "suspense": {
+      "mapped_emotion": "Fear",
+      "confidence": "medium",
+      "reason": "Apprehensive tension and fear-inducing suspense."
+    },
+    "neutral": {
+      "mapped_emotion": null,
+      "confidence": null,
+      "reason": "Do not map neutral to calmness."
+    }
+  }
+}
+

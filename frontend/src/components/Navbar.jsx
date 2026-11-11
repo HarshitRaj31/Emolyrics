@@ -25,6 +25,7 @@ export default function Navbar({ onOpenResearch }) {
 
   const navLinks = [
     { to: "/", label: "Analyze", icon: Sparkles },
+    { to: "/recommendations", label: "Discover", icon: Music2, badge: "New" },
     { to: "/assistant", label: "AI Assistant", icon: Bot, badge: "AI" },
     { to: "/explore", label: "Explore", icon: Compass },
     { to: "/analytics", label: "Analytics", icon: BarChart3 },

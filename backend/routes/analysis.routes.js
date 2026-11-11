@@ -1,6 +1,7 @@
 const express = require("express");
 const { classifyLyrics } = require("../nlp/emotionClassifier");
 const { advancedEmotionService } = require("../services/advancedEmotionService");
+const { multilingualMLService } = require("../services/multilingualMLService");
 const { getIsConnected, memoryStore } = require("../db");
 const Analysis = require("../models/Analysis");
 const { optionalJWT, authenticateJWT } = require("../middleware/auth.middleware");
@@ -73,12 +74,97 @@ router.post("/analyze-mood", optionalJWT, async (req, res, next) => {
 });
 
 /**
+ * GET /api/ml-health
+ * Check status and configuration of the Python Multilingual Emotion ML microservice
+ */
+router.get("/ml-health", async (req, res, next) => {
+  try {
+    const health = await multilingualMLService.checkHealth(true);
+    return res.json({
+      success: true,
+      ...health
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/analyze-multilingual
+ * Direct original-language classification via the trained multilingual model
+ */
+router.post("/analyze-multilingual", optionalJWT, async (req, res, next) => {
+  try {
+    const { lyrics, language } = req.body;
+
+    if (!lyrics || typeof lyrics !== "string" || !lyrics.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Lyrics text is required for multilingual emotion prediction."
+      });
+    }
+
+    const prediction = await multilingualMLService.predictEmotion({
+      lyrics,
+      language
+    });
+
+    return res.json(prediction);
+  } catch (error) {
+    if (error.statusCode === 503 || error.code === "ERR_MULTILINGUAL_SERVICE_OFFLINE") {
+      return res.status(503).json({
+        success: false,
+        message: error.message,
+        code: error.code,
+        detectedLanguage: error.detectedLanguage
+      });
+    }
+    next(error);
+  }
+});
+
+/**
+ * POST /api/analyze-lines
+ * Direct line-by-line multilingual emotion prediction with context windowing
+ */
+router.post("/analyze-lines", optionalJWT, async (req, res, next) => {
+  try {
+    const { lyrics, lines, language, contextWindow } = req.body;
+    const inputLines = lines || (lyrics ? lyrics.split(/\r?\n/) : []);
+
+    if (!Array.isArray(inputLines) || inputLines.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Lyrics or lines array is required."
+      });
+    }
+
+    const prediction = await multilingualMLService.predictLines({
+      lines: inputLines,
+      options: { language, contextWindow }
+    });
+
+    return res.json(prediction);
+  } catch (error) {
+    if (error.statusCode === 503 || error.code === "ERR_MULTILINGUAL_SERVICE_OFFLINE") {
+      return res.status(503).json({
+        success: false,
+        message: error.message,
+        code: error.code,
+        detectedLanguage: error.detectedLanguage
+      });
+    }
+    next(error);
+  }
+});
+
+/**
  * POST /api/analyze-advanced
  * Advanced Multi-Emotion Detection, Line-by-Line Analysis & Ollama Deep Interpretation
  */
 router.post("/analyze-advanced", optionalJWT, async (req, res, next) => {
   try {
-    const { lyrics, title, artist, autoSave } = req.body;
+    const { lyrics, title, artist, autoSave, language, contextWindow } = req.body;
 
     if (!lyrics || typeof lyrics !== "string" || !lyrics.trim()) {
       return res.status(400).json({
@@ -97,7 +183,8 @@ router.post("/analyze-advanced", optionalJWT, async (req, res, next) => {
     const result = await advancedEmotionService.analyzeAdvanced({
       lyrics,
       title,
-      artist
+      artist,
+      options: { language, contextWindow }
     });
 
     let savedRecord = null;
@@ -135,6 +222,14 @@ router.post("/analyze-advanced", optionalJWT, async (req, res, next) => {
       savedId: savedRecord ? savedRecord._id : null
     });
   } catch (error) {
+    if (error.statusCode === 503 || error.code === "ERR_MULTILINGUAL_SERVICE_OFFLINE") {
+      return res.status(503).json({
+        success: false,
+        message: error.message,
+        code: error.code,
+        detectedLanguage: error.detectedLanguage
+      });
+    }
     next(error);
   }
 });

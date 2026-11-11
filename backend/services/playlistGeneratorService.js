@@ -1,11 +1,12 @@
 /**
- * EmoLyrics Smart Mood-Based Playlist Generator Engine
+ * EmoLyrics Smart Mood-Based Playlist Generator Engine (Phase 3)
  * Automatically generates, curates, and sequences playlists matching single
  * or multiple target emotions, utilizing analyzed user history, model prediction
  * confidence, artist diversity controls, and duplicate prevention.
  *
- * Supported 9 ML Model Emotion Classes:
- * Happy, Sad, Angry, Romantic, Calm/Chill, Exciting, Patriotic, Thrilling, Horror.
+ * Supports the 10 Advanced Emotion Classes:
+ * Happiness, Sadness, Love, Anger, Nostalgia, Fear, Excitement, Hope, Loneliness, Calmness.
+ * Backwards compatible with legacy 9 ML classes.
  */
 
 const { getIsConnected, memoryStore } = require("../db");
@@ -16,6 +17,17 @@ const CURATED_EMOTION_CATALOG =
   recommendationService.CURATED_EMOTION_CATALOG || {};
 
 const VALID_EMOTIONS = [
+  "Happiness",
+  "Sadness",
+  "Love",
+  "Anger",
+  "Nostalgia",
+  "Fear",
+  "Excitement",
+  "Hope",
+  "Loneliness",
+  "Calmness",
+  // Legacy aliases
   "Happy",
   "Sad",
   "Angry",
@@ -29,6 +41,18 @@ const VALID_EMOTIONS = [
 
 // Smart Titles & Descriptors Generator for single or mixed emotions
 const EMOTION_TITLES = {
+  Happiness: ["Euphoric Sunshine", "Golden Daybreak", "Pure Bliss & High Valence", "Joyful Horizon", "Radiant Daylight"],
+  Sadness: ["Midnight Melancholy", "Echoes in the Rain", "Vulnerable Solitude", "Quiet Heartstrings", "Gentle Tears"],
+  Love: ["Constellations of Love", "Tender Embers", "Starry Devotion", "Soulmate Serenade", "Infinite Affection"],
+  Anger: ["Cathartic Fire", "Unleashed Fury", "Defiant Resonance", "Raw Voltage", "Surge of Rebellion"],
+  Nostalgia: ["Echoes of Yesterday", "Golden Age Retrospect", "Summer Memories", "Time Capsule Haze", "Treasured Days"],
+  Fear: ["Nocturnal Tremors", "Whispers from the Shadows", "Creeping Darkness", "Spine-Chilling Mystery", "Grave Echoes"],
+  Excitement: ["Electric Pulse", "Adrenaline Surge", "Unstoppable Tempo", "Ignite the Floor", "Peak Momentum"],
+  Hope: ["Dawn of Renewal", "Rising Horizon", "Anthem of Resilience", "Unconquerable Spirit", "Brighter Days"],
+  Loneliness: ["Midnight Streets", "Solitary Echoes", "Quiet Contemplation", "Wanderer's Reverie", "Alone in the Echo"],
+  Calmness: ["Tranquil Shorelines", "Ocean Whispers", "Slow Breathing Room", "Serene Drift", "Meditative Stillness"],
+
+  // Legacy aliases
   Happy: ["Euphoric Sunshine", "Golden Daybreak", "Pure Bliss & High Valence", "Joyful Horizon"],
   Sad: ["Midnight Melancholy", "Echoes in the Rain", "Vulnerable Solitude", "Quiet Heartstrings"],
   Angry: ["Cathartic Fire", "Unleashed Fury", "Defiant Resonance", "Raw Voltage"],
@@ -55,19 +79,19 @@ function enrichSongListeningLinks(song) {
     spotifyUrl:
       song.spotifyUrl || `https://open.spotify.com/search/${query}`,
     youtubeUrl:
-      song.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(title + " " + artist + " audio")}`
+      song.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(title + " " + artist + " official audio")}`
   };
 }
 
 class PlaylistGeneratorService {
   /**
-   * Seed default 9 emotion presets into database if not present
+   * Seed default emotion presets into database if not present
    */
   async ensurePresetsSeeded() {
     if (!getIsConnected()) return;
     try {
       const count = await Playlist.countDocuments({ isSystemPreset: true });
-      if (count < 9) {
+      if (count < 9 && memoryStore && Array.isArray(memoryStore.playlists)) {
         for (const pl of memoryStore.playlists) {
           const exists = await Playlist.findOne({ mood: pl.mood, isSystemPreset: true });
           if (!exists) {
@@ -93,10 +117,12 @@ class PlaylistGeneratorService {
    * Validate and sanitize requested emotions against model labels
    */
   sanitizeEmotions(emotionsInput) {
-    if (!emotionsInput) return ["Happy"];
+    if (!emotionsInput) return ["Happiness"];
     const arr = Array.isArray(emotionsInput) ? emotionsInput : [emotionsInput];
-    const filtered = arr.filter((e) => VALID_EMOTIONS.includes(e));
-    return filtered.length > 0 ? filtered : ["Happy"];
+    const resolved = arr
+      .map((e) => recommendationService.resolveCanonicalMood(e))
+      .filter((e) => VALID_EMOTIONS.includes(e));
+    return resolved.length > 0 ? Array.from(new Set(resolved)) : ["Happiness"];
   }
 
   /**
@@ -128,9 +154,9 @@ class PlaylistGeneratorService {
           .sort({ confidence: -1, createdAt: -1 })
           .limit(40)
           .lean();
-      } else {
+      } else if (memoryStore && Array.isArray(memoryStore.analyses)) {
         analyzedPool = memoryStore.analyses.filter((a) =>
-          targetEmotions.includes(a.mood)
+          targetEmotions.includes(recommendationService.resolveCanonicalMood(a.mood))
         );
       }
     } catch (e) {
@@ -180,25 +206,29 @@ class PlaylistGeneratorService {
         duration: candidate.duration || "3:30",
         coverArtUrl:
           candidate.coverArtUrl ||
-          "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80",
+          "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80",
+        spotifyUrl: candidate.spotifyUrl || "",
+        youtubeUrl: candidate.youtubeUrl || "",
         mood: candidate.mood || targetEmotions[0],
         confidence: candidate.confidence || null,
-        source: sourceTag || candidate.source || "recommended",
-        analysisId: candidate._id || null
+        traits: candidate.traits || [],
+        source: sourceTag
       });
 
       selectedSongs.push(songObj);
       return true;
     };
 
-    // Step A: Allocate slots across target emotions
-    const slotsPerEmotion = Math.max(1, Math.floor(targetCount / targetEmotions.length));
+    // Step A: Balance slots equally across each target emotion
+    const slotsPerEmotion = Math.ceil(targetCount / targetEmotions.length);
 
     for (const emotion of targetEmotions) {
       let addedForEmotion = 0;
 
       // First check ML analyzed songs matching this emotion
-      const matchingAnalyzed = analyzedPool.filter((a) => a.mood === emotion);
+      const matchingAnalyzed = analyzedPool.filter(
+        (a) => recommendationService.resolveCanonicalMood(a.mood) === emotion
+      );
       for (const a of matchingAnalyzed) {
         if (addedForEmotion >= slotsPerEmotion) break;
         if (tryAddSong(a, "analyzed")) {
@@ -233,7 +263,7 @@ class PlaylistGeneratorService {
     if (!generatedTitle) {
       if (isMixed) {
         const titlePair = targetEmotions.slice(0, 2).join(" & ");
-        generatedTitle = `Harmonic Fusion (${titlePair})`;
+        generatedTitle = `Harmonic Fusion: ${titlePair}`;
       } else {
         const titleOptions = EMOTION_TITLES[primaryMood] || ["Emotion Sync"];
         generatedTitle = titleOptions[Math.floor(Math.random() * titleOptions.length)];
@@ -242,7 +272,7 @@ class PlaylistGeneratorService {
 
     if (!generatedDescription) {
       if (isMixed) {
-        generatedDescription = `An intelligent ${selectedSongs.length}-track playlist blending ${targetEmotions.join(", ")} vibes, prioritizing verified NLP lyrical sentiments and smooth transitions.`;
+        generatedDescription = `An intelligent ${selectedSongs.length}-track playlist blending ${targetEmotions.join(" and ")} vibes, prioritizing verified NLP lyrical sentiments and smooth transitions.`;
       } else {
         generatedDescription = `A focused ${selectedSongs.length}-track collection synchronized with ${primaryMood} emotional frequencies, verified through EmoLyrics NLP analysis.`;
       }
@@ -274,15 +304,15 @@ class PlaylistGeneratorService {
     const {
       title,
       description = "",
-      mood = "Happy",
-      emotions = ["Happy"],
+      mood = "Happiness",
+      emotions = ["Happiness"],
       artwork = "",
       songs = []
     } = playlistData;
 
     const payload = {
-      title: title.trim(),
-      description: description.trim(),
+      title: (title || "Untitled Playlist").trim(),
+      description: (description || "").trim(),
       mood,
       emotions,
       user: userId,
@@ -301,7 +331,9 @@ class PlaylistGeneratorService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      memoryStore.playlists.unshift(created);
+      if (memoryStore && Array.isArray(memoryStore.playlists)) {
+        memoryStore.playlists.unshift(created);
+      }
       return created;
     }
   }
@@ -314,7 +346,7 @@ class PlaylistGeneratorService {
 
     if (getIsConnected()) {
       source = await Playlist.findById(playlistId).lean();
-    } else {
+    } else if (memoryStore && Array.isArray(memoryStore.playlists)) {
       source = memoryStore.playlists.find((p) => p._id === playlistId);
     }
 
@@ -339,6 +371,7 @@ class PlaylistGeneratorService {
         youtubeUrl: s.youtubeUrl || "",
         mood: s.mood || source.mood,
         confidence: s.confidence || null,
+        traits: s.traits || [],
         source: s.source || "recommended"
       }))
     };

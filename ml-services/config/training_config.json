@@ -1,0 +1,42 @@
+{
+  "model_version": "v1.0.0-multilingual-minilm",
+  "encoder_name": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_dim": 384,
+  "hidden_dims": [256, 128],
+  "dropout": 0.3,
+  "num_classes": 10,
+  "target_taxonomy": [
+    "Happiness",
+    "Sadness",
+    "Love",
+    "Anger",
+    "Nostalgia",
+    "Fear",
+    "Excitement",
+    "Hope",
+    "Loneliness",
+    "Calmness"
+  ],
+  "target_languages": ["en", "hi", "bn", "es", "fr"],
+  "domains": ["lyrics", "social_media", "general_text"],
+  "training": {
+    "batch_size": 32,
+    "epochs": 40,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "early_stopping_patience": 7,
+    "random_seed": 42,
+    "use_class_weights": true
+  },
+  "baseline": {
+    "model_type": "LogisticRegression",
+    "max_iter": 1000,
+    "class_weight": "balanced",
+    "solver": "lbfgs"
+  },
+  "hardware": {
+    "device": "cpu",
+    "num_threads": 4
+  }
+}
+

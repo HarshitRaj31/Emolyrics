@@ -28,13 +28,17 @@ import {
   ChevronDown,
   Compass,
   CheckCircle2,
-  Quote
+  Quote,
+  PieChart,
+  Brain
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import CircularProgress from "../components/CircularProgress";
 import SongDiscovery from "../components/SongDiscovery";
 import MoodRecommendations from "../components/MoodRecommendations";
 import AdvancedMoodAnalysis from "../components/analysis/AdvancedMoodAnalysis";
+import EmotionDashboard from "../components/dashboard/EmotionDashboard";
+import PdfDownloadButton from "../components/dashboard/PdfDownloadButton";
 import { MOOD_DEFINITIONS, EXAMPLE_LYRICS } from "../data/examples";
 import { api } from "../services/api";
 import { usePersonalization } from "../context/PersonalizationContext";
@@ -136,6 +140,7 @@ export default function AnalyzerPage() {
   const [advancedResult, setAdvancedResult] = useState(null);
   const [advancedLoading, setAdvancedLoading] = useState(false);
   const [advancedError, setAdvancedError] = useState("");
+  const [advancedTab, setAdvancedTab] = useState("dashboard"); // "dashboard" | "narrative"
 
   const workbenchRef = useRef(null);
   const advancedRef = useRef(null);
@@ -932,7 +937,13 @@ export default function AnalyzerPage() {
                     {/* Deep AI Analysis Quick Trigger */}
                     <button
                       type="button"
-                      onClick={() => handleAdvancedAnalyze()}
+                      onClick={() => {
+                        if (advancedResult) {
+                          scrollToAdvanced();
+                        } else {
+                          handleAdvancedAnalyze();
+                        }
+                      }}
                       disabled={advancedLoading || !lyrics.trim()}
                       className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-purple-600/20 via-indigo-600/20 to-purple-600/20 hover:from-purple-600/35 hover:to-indigo-600/35 text-purple-200 text-xs font-semibold flex items-center justify-center gap-2 border border-purple-500/30 transition-all shadow-md group disabled:opacity-40"
                     >
@@ -941,7 +952,7 @@ export default function AnalyzerPage() {
                         {advancedLoading
                           ? "Running Deep AI Multi-Emotion Analysis..."
                           : advancedResult
-                          ? "Scroll to Deep AI Breakdown & Lines"
+                          ? "View Emotion Visualization Dashboard & Report"
                           : "Run Deep AI Multi-Emotion & Line-by-Line Analysis"}
                       </span>
                       <ArrowRight className="w-3.5 h-3.5 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
@@ -1010,23 +1021,121 @@ export default function AnalyzerPage() {
         </div>
 
         {/* ============================================================ */}
-        {/* ADVANCED AI MOOD ANALYSIS (MULTI-EMOTION & LINE-BY-LINE) */}
+        {/* ADVANCED AI MOOD ANALYSIS & EMOTION VISUALIZATION DASHBOARD */}
         {/* ============================================================ */}
         {(advancedResult || advancedLoading || advancedError) && (
-          <div ref={advancedRef} className="pt-10 scroll-mt-24">
-            <AdvancedMoodAnalysis
-              data={advancedResult}
-              loading={advancedLoading}
-              error={advancedError}
-              onReanalyze={() => handleAdvancedAnalyze()}
-            />
+          <div ref={advancedRef} className="pt-10 scroll-mt-24 space-y-6">
+            {/* View Switcher Tabs Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-3xl bg-neutral-900/80 border border-white/10 shadow-xl">
+              <div className="flex items-center gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/5 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setAdvancedTab("dashboard")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                    advancedTab === "dashboard"
+                      ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
+                      : "text-neutral-400 hover:text-white"
+                  }`}
+                >
+                  <PieChart className="w-4 h-4" />
+                  <span>Emotion Dashboard</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 font-mono font-bold">
+                    Phase 2
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAdvancedTab("narrative")}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                    advancedTab === "narrative"
+                      ? "bg-purple-600 text-white shadow-md shadow-purple-600/30"
+                      : "text-neutral-400 hover:text-white"
+                  }`}
+                >
+                  <Brain className="w-4 h-4" />
+                  <span>Deep AI Narrative</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/10 font-mono">
+                    Phase 1
+                  </span>
+                </button>
+              </div>
+
+              {advancedResult && (
+                <div className="flex items-center gap-3">
+                  <PdfDownloadButton
+                    data={advancedResult}
+                    lyrics={lyrics}
+                    title={title}
+                    artist={artist}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Active Tab View */}
+            <AnimatePresence mode="wait">
+              {advancedTab === "dashboard" ? (
+                <motion.div
+                  key="dashboard-view"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <EmotionDashboard
+                    data={advancedResult}
+                    lyrics={lyrics}
+                    title={title}
+                    artist={artist}
+                    loading={advancedLoading}
+                    error={advancedError}
+                    onReanalyze={() => handleAdvancedAnalyze()}
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="narrative-view"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.25 }}
+                >
+                  <AdvancedMoodAnalysis
+                    data={advancedResult}
+                    loading={advancedLoading}
+                    error={advancedError}
+                    onReanalyze={() => handleAdvancedAnalyze()}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
 
         {/* Phase 3: Personalized Mood-Based Music Recommendations */}
         <MoodRecommendations
-          detectedMood={result ? result.mood : currentMood !== "neutral" ? currentMood : "Happy"}
-          seedSong={result ? { title, artist } : null}
+          detectedMood={
+            advancedResult
+              ? advancedResult.primaryEmotion
+              : result
+              ? result.mood
+              : currentMood !== "neutral"
+              ? currentMood
+              : "Happiness"
+          }
+          seedSong={
+            result
+              ? { title, artist }
+              : advancedResult
+              ? {
+                  title: advancedResult.metadata?.title || title,
+                  artist: advancedResult.metadata?.artist || artist
+                }
+              : null
+          }
+          secondaryEmotions={advancedResult?.secondaryEmotions || []}
+          lyricalThemes={advancedResult?.aiInterpretation?.mainThemes || []}
+          overallTone={advancedResult?.aiInterpretation?.conciseInterpretation || ""}
           onSelectSongForAnalysis={(recSong) => {
             setTitle(recSong.title);
             setArtist(recSong.artist);

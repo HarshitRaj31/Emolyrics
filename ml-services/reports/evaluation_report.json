@@ -1,0 +1,573 @@
+{
+  "baseline_model": {
+    "model_name": "BaselineLogisticRegression",
+    "total_test_samples": 484,
+    "overall": {
+      "accuracy": 0.438,
+      "macro_f1": 0.3806,
+      "weighted_f1": 0.4424,
+      "macro_precision": 0.3757,
+      "macro_recall": 0.4334
+    },
+    "per_emotion": {
+      "Happiness": {
+        "precision": 0.5694,
+        "recall": 0.3981,
+        "f1": 0.4686,
+        "support": 103
+      },
+      "Sadness": {
+        "precision": 0.5806,
+        "recall": 0.3913,
+        "f1": 0.4675,
+        "support": 92
+      },
+      "Love": {
+        "precision": 0.3333,
+        "recall": 0.4643,
+        "f1": 0.3881,
+        "support": 28
+      },
+      "Anger": {
+        "precision": 0.4923,
+        "recall": 0.3441,
+        "f1": 0.4051,
+        "support": 93
+      },
+      "Nostalgia": {
+        "precision": 0.2258,
+        "recall": 0.7,
+        "f1": 0.3415,
+        "support": 10
+      },
+      "Fear": {
+        "precision": 0.4333,
+        "recall": 0.5132,
+        "f1": 0.4699,
+        "support": 76
+      },
+      "Excitement": {
+        "precision": 0.4211,
+        "recall": 0.5714,
+        "f1": 0.4848,
+        "support": 28
+      },
+      "Hope": {
+        "precision": 0.3256,
+        "recall": 0.5185,
+        "f1": 0.4,
+        "support": 54
+      },
+      "Loneliness": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "Calmness": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      }
+    },
+    "per_language": {
+      "bn": {
+        "sample_count": 72,
+        "accuracy": 0.375,
+        "macro_f1": 0.253,
+        "macro_precision": 0.4479,
+        "macro_recall": 0.3
+      },
+      "en": {
+        "sample_count": 181,
+        "accuracy": 0.4862,
+        "macro_f1": 0.4928,
+        "macro_precision": 0.5215,
+        "macro_recall": 0.5125
+      },
+      "es": {
+        "sample_count": 90,
+        "accuracy": 0.3667,
+        "macro_f1": 0.2383,
+        "macro_precision": 0.2643,
+        "macro_recall": 0.2292
+      },
+      "fr": {
+        "sample_count": 90,
+        "accuracy": 0.3333,
+        "macro_f1": 0.2389,
+        "macro_precision": 0.2916,
+        "macro_recall": 0.2381
+      },
+      "hi": {
+        "sample_count": 51,
+        "accuracy": 0.6667,
+        "macro_f1": 0.3513,
+        "macro_precision": 0.3862,
+        "macro_recall": 0.3296
+      }
+    },
+    "per_domain": {
+      "general_text": {
+        "sample_count": 303,
+        "accuracy": 0.4092,
+        "macro_f1": 0.23,
+        "macro_precision": 0.2459,
+        "macro_recall": 0.2345
+      },
+      "lyrics": {
+        "sample_count": 64,
+        "accuracy": 0.3594,
+        "macro_f1": 0.2583,
+        "macro_precision": 0.49,
+        "macro_recall": 0.2814
+      },
+      "social_media": {
+        "sample_count": 117,
+        "accuracy": 0.5556,
+        "macro_f1": 0.5471,
+        "macro_precision": 0.5551,
+        "macro_recall": 0.5492
+      }
+    },
+    "insufficient_samples_notice": {
+      "emotions": [
+        {
+          "emotion": "Loneliness",
+          "support": 0,
+          "reason": "Test set contains fewer than 10 samples for this emotion."
+        },
+        {
+          "emotion": "Calmness",
+          "support": 0,
+          "reason": "Test set contains fewer than 10 samples for this emotion."
+        }
+      ],
+      "languages": []
+    },
+    "confusion_matrix": [
+      [
+        41,
+        3,
+        11,
+        9,
+        6,
+        9,
+        9,
+        15,
+        0,
+        0
+      ],
+      [
+        2,
+        36,
+        5,
+        12,
+        4,
+        19,
+        2,
+        12,
+        0,
+        0
+      ],
+      [
+        2,
+        1,
+        13,
+        0,
+        8,
+        1,
+        1,
+        2,
+        0,
+        0
+      ],
+      [
+        5,
+        12,
+        2,
+        32,
+        1,
+        20,
+        5,
+        15,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        2,
+        0,
+        7,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        8,
+        1,
+        8,
+        3,
+        39,
+        2,
+        12,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        2,
+        2,
+        2,
+        0,
+        16,
+        2,
+        0,
+        0
+      ],
+      [
+        15,
+        2,
+        3,
+        2,
+        0,
+        2,
+        2,
+        28,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "label_order": [
+      "Happiness",
+      "Sadness",
+      "Love",
+      "Anger",
+      "Nostalgia",
+      "Fear",
+      "Excitement",
+      "Hope",
+      "Loneliness",
+      "Calmness"
+    ]
+  },
+  "neural_model": {
+    "model_name": "NeuralEmotionClassifier",
+    "total_test_samples": 484,
+    "overall": {
+      "accuracy": 0.4256,
+      "macro_f1": 0.4071,
+      "weighted_f1": 0.424,
+      "macro_precision": 0.4025,
+      "macro_recall": 0.4626
+    },
+    "per_emotion": {
+      "Happiness": {
+        "precision": 0.5714,
+        "recall": 0.466,
+        "f1": 0.5134,
+        "support": 103
+      },
+      "Sadness": {
+        "precision": 0.4757,
+        "recall": 0.5326,
+        "f1": 0.5026,
+        "support": 92
+      },
+      "Love": {
+        "precision": 0.3333,
+        "recall": 0.5,
+        "f1": 0.4,
+        "support": 28
+      },
+      "Anger": {
+        "precision": 0.4878,
+        "recall": 0.2151,
+        "f1": 0.2985,
+        "support": 93
+      },
+      "Nostalgia": {
+        "precision": 0.1765,
+        "recall": 0.6,
+        "f1": 0.2727,
+        "support": 10
+      },
+      "Fear": {
+        "precision": 0.3974,
+        "recall": 0.4079,
+        "f1": 0.4026,
+        "support": 76
+      },
+      "Excitement": {
+        "precision": 0.4444,
+        "recall": 0.5714,
+        "f1": 0.5,
+        "support": 28
+      },
+      "Hope": {
+        "precision": 0.3333,
+        "recall": 0.4074,
+        "f1": 0.3667,
+        "support": 54
+      },
+      "Loneliness": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "Calmness": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      }
+    },
+    "per_language": {
+      "bn": {
+        "sample_count": 72,
+        "accuracy": 0.4167,
+        "macro_f1": 0.3712,
+        "macro_precision": 0.3803,
+        "macro_recall": 0.4167
+      },
+      "en": {
+        "sample_count": 181,
+        "accuracy": 0.4475,
+        "macro_f1": 0.447,
+        "macro_precision": 0.5085,
+        "macro_recall": 0.4587
+      },
+      "es": {
+        "sample_count": 90,
+        "accuracy": 0.4,
+        "macro_f1": 0.2552,
+        "macro_precision": 0.2836,
+        "macro_recall": 0.25
+      },
+      "fr": {
+        "sample_count": 90,
+        "accuracy": 0.3111,
+        "macro_f1": 0.2145,
+        "macro_precision": 0.2483,
+        "macro_recall": 0.2222
+      },
+      "hi": {
+        "sample_count": 51,
+        "accuracy": 0.6078,
+        "macro_f1": 0.3289,
+        "macro_precision": 0.3703,
+        "macro_recall": 0.3056
+      }
+    },
+    "per_domain": {
+      "general_text": {
+        "sample_count": 303,
+        "accuracy": 0.4125,
+        "macro_f1": 0.2521,
+        "macro_precision": 0.2626,
+        "macro_recall": 0.2584
+      },
+      "lyrics": {
+        "sample_count": 64,
+        "accuracy": 0.3281,
+        "macro_f1": 0.182,
+        "macro_precision": 0.3641,
+        "macro_recall": 0.2087
+      },
+      "social_media": {
+        "sample_count": 117,
+        "accuracy": 0.5128,
+        "macro_f1": 0.5008,
+        "macro_precision": 0.5555,
+        "macro_recall": 0.5048
+      }
+    },
+    "insufficient_samples_notice": {
+      "emotions": [
+        {
+          "emotion": "Loneliness",
+          "support": 0,
+          "reason": "Test set contains fewer than 10 samples for this emotion."
+        },
+        {
+          "emotion": "Calmness",
+          "support": 0,
+          "reason": "Test set contains fewer than 10 samples for this emotion."
+        }
+      ],
+      "languages": []
+    },
+    "confusion_matrix": [
+      [
+        48,
+        5,
+        15,
+        3,
+        5,
+        10,
+        7,
+        10,
+        0,
+        0
+      ],
+      [
+        2,
+        49,
+        4,
+        7,
+        5,
+        14,
+        2,
+        9,
+        0,
+        0
+      ],
+      [
+        3,
+        1,
+        14,
+        0,
+        8,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        8,
+        25,
+        0,
+        20,
+        3,
+        20,
+        4,
+        13,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        0,
+        6,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        19,
+        1,
+        8,
+        4,
+        31,
+        2,
+        9,
+        0,
+        0
+      ],
+      [
+        3,
+        1,
+        4,
+        0,
+        3,
+        0,
+        16,
+        1,
+        0,
+        0
+      ],
+      [
+        18,
+        3,
+        2,
+        3,
+        0,
+        3,
+        3,
+        22,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "label_order": [
+      "Happiness",
+      "Sadness",
+      "Love",
+      "Anger",
+      "Nostalgia",
+      "Fear",
+      "Excitement",
+      "Hope",
+      "Loneliness",
+      "Calmness"
+    ]
+  },
+  "comparison_summary": {
+    "baseline_accuracy": 0.438,
+    "baseline_macro_f1": 0.3806,
+    "neural_accuracy": 0.4256,
+    "neural_macro_f1": 0.4071,
+    "f1_improvement": 0.0265
+  }
+}

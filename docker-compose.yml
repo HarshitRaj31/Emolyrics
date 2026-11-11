@@ -1,0 +1,147 @@
+version: "3.8"
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. MongoDB Database
+  # ----------------------------------------------------------------------------
+  mongo:
+    image: mongo:7.0
+    container_name: emolyrics-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - emolyrics-net
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ----------------------------------------------------------------------------
+  # 2. Python Multilingual Emotion ML Microservice (FastAPI + CPU PyTorch)
+  # ----------------------------------------------------------------------------
+  ml-services:
+    build:
+      context: ./ml-services
+      dockerfile: Dockerfile
+    container_name: emolyrics-ml-services
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8001
+      - TORCH_NUM_THREADS=${TORCH_NUM_THREADS:-4}
+      - PREDICTION_CACHE_SIZE=${PREDICTION_CACHE_SIZE:-1000}
+      - MAX_INPUT_CHARS=${MAX_INPUT_CHARS:-5000}
+      - HF_HOME=/app/cache/huggingface
+    volumes:
+      - ml_cache:/app/cache/huggingface
+    networks:
+      - emolyrics-net
+    deploy:
+      resources:
+        limits:
+          memory: 2048M
+        reservations:
+          memory: 1024M
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+
+  # ----------------------------------------------------------------------------
+  # 3. Node.js Express REST API Backend
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: emolyrics-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000,http://frontend:80}
+      - MONGODB_URI=mongodb://mongo:27017/emolyrics
+      - ML_SERVICE_URL=http://ml-services:8001
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-qwen2.5:3b}
+      - JWT_SECRET=${JWT_SECRET:-emolyrics-super-secure-production-secret-key-2026}
+      - MAX_LYRICS_LENGTH=30000
+    depends_on:
+      mongo:
+        condition: service_healthy
+      ml-services:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - emolyrics-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # ----------------------------------------------------------------------------
+  # 4. React + Vite Frontend (Nginx Alpine)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: emolyrics-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - emolyrics-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost/health || exit 1"]
+      interval: 20s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ----------------------------------------------------------------------------
+  # 5. Optional In-Container Ollama LLM Service (Profile: with-ollama)
+  # Run with: docker compose --profile with-ollama up -d
+  # ----------------------------------------------------------------------------
+  ollama:
+    image: ollama/ollama:latest
+    container_name: emolyrics-ollama
+    profiles:
+      - with-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - emolyrics-net
+
+networks:
+  emolyrics-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local
+  ml_cache:
+    driver: local
+  ollama_data:
+    driver: local
+

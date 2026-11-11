@@ -66,11 +66,69 @@ export const api = {
       body: JSON.stringify(payload)
     }),
 
-  // Mood-Based Recommendations
-  getRecommendations: ({ mood, seedTitle, seedArtist, exclude = [], limit = 6 } = {}) =>
+  // Mood-Based Recommendations (Phase 3)
+  getRecommendations: ({
+    mood = "Happiness",
+    seedTitle = "",
+    seedArtist = "",
+    exclude = [],
+    limit = 6,
+    secondaryEmotions = [],
+    lyricalThemes = [],
+    overallTone = ""
+  } = {}) =>
     request("/music/recommendations", {
       method: "POST",
-      body: JSON.stringify({ mood, seedTitle, seedArtist, exclude, limit })
+      body: JSON.stringify({
+        mood,
+        seedTitle,
+        seedArtist,
+        exclude,
+        limit,
+        secondaryEmotions,
+        lyricalThemes,
+        overallTone
+      })
+    }),
+
+  getSimilarSongs: ({
+    seedTitle,
+    seedArtist = "",
+    mood = "Happiness",
+    themes = [],
+    secondaryEmotions = [],
+    limit = 6
+  } = {}) =>
+    request("/music/similar-songs", {
+      method: "POST",
+      body: JSON.stringify({
+        seedTitle,
+        seedArtist,
+        mood,
+        themes,
+        secondaryEmotions,
+        limit
+      })
+    }),
+
+  explainRecommendation: ({
+    songTitle,
+    artist = "",
+    mood = "Happiness",
+    seedTitle = "",
+    lyricalThemes = [],
+    overallTone = ""
+  } = {}) =>
+    request("/music/explain-recommendation", {
+      method: "POST",
+      body: JSON.stringify({
+        songTitle,
+        artist,
+        mood,
+        seedTitle,
+        lyricalThemes,
+        overallTone
+      })
     }),
 
   // NLP Emotion Analysis
@@ -83,6 +141,19 @@ export const api = {
   // Advanced AI Mood Analysis (Multi-Emotion, Line-by-Line & Ollama Interpretation)
   analyzeLyricsAdvanced: (payload) =>
     request("/analyze-advanced", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    }),
+
+  // Multilingual Neural Emotion Classifier (Stage 4 & Stage 5)
+  getMLHealth: () => request("/ml-health"),
+  analyzeLyricsMultilingual: (payload) =>
+    request("/analyze-multilingual", {
+      method: "POST",
+      body: JSON.stringify(payload)
+    }),
+  analyzeLines: (payload) =>
+    request("/analyze-lines", {
       method: "POST",
       body: JSON.stringify(payload)
     }),

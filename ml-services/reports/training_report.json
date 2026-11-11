@@ -1,0 +1,110 @@
+{
+  "configuration": {
+    "model_version": "v1.0.0-multilingual-minilm",
+    "encoder_name": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "embedding_dim": 384,
+    "hidden_dims": [
+      256,
+      128
+    ],
+    "dropout": 0.3,
+    "num_classes": 10,
+    "target_taxonomy": [
+      "Happiness",
+      "Sadness",
+      "Love",
+      "Anger",
+      "Nostalgia",
+      "Fear",
+      "Excitement",
+      "Hope",
+      "Loneliness",
+      "Calmness"
+    ],
+    "target_languages": [
+      "en",
+      "hi",
+      "bn",
+      "es",
+      "fr"
+    ],
+    "domains": [
+      "lyrics",
+      "social_media",
+      "general_text"
+    ],
+    "training": {
+      "batch_size": 32,
+      "epochs": 40,
+      "learning_rate": 0.001,
+      "weight_decay": 0.01,
+      "early_stopping_patience": 7,
+      "random_seed": 42,
+      "use_class_weights": true
+    },
+    "baseline": {
+      "model_type": "LogisticRegression",
+      "max_iter": 1000,
+      "class_weight": "balanced",
+      "solver": "lbfgs"
+    },
+    "hardware": {
+      "device": "cpu",
+      "num_threads": 4
+    }
+  },
+  "history": {
+    "train_loss": [
+      1.878,
+      1.4295,
+      1.2408,
+      1.1483,
+      1.0608,
+      0.999,
+      0.9103,
+      0.8726,
+      0.8318
+    ],
+    "val_loss": [
+      1.5808,
+      1.4857,
+      1.5273,
+      1.5219,
+      1.5657,
+      1.6309,
+      1.6411,
+      1.7314,
+      1.7343
+    ],
+    "val_accuracy": [
+      0.3381,
+      0.4165,
+      0.4124,
+      0.4186,
+      0.4082,
+      0.4082,
+      0.4227,
+      0.4289,
+      0.3979
+    ],
+    "val_macro_f1": [
+      0.3226,
+      0.3534,
+      0.3455,
+      0.3627,
+      0.3454,
+      0.3386,
+      0.3495,
+      0.3526,
+      0.3456
+    ]
+  },
+  "training_time_seconds": 93.51,
+  "baseline_training_seconds": 0.3,
+  "neural_training_seconds": 2.84,
+  "initial_ram_mb": 436.8,
+  "peak_ram_mb": 1235.6,
+  "best_epoch": 2,
+  "best_val_loss": 1.4857,
+  "best_val_f1": 0.3534
+}

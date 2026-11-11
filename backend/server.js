@@ -33,6 +33,9 @@ const assistantRoutes = require("./routes/assistant.routes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust reverse proxy (Docker, Nginx, Cloudflare, Heroku/Render) for client IP rate limiting
+app.set("trust proxy", 1);
+
 // Hardening: Disable information disclosure headers
 app.disable("x-powered-by");
 
@@ -43,11 +46,20 @@ app.use(securityHeaders);
 app.use(requestLogger);
 
 // Security & Parsing Middleware
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((s) => s.trim()).filter(Boolean)
+  : ["*"];
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "*",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`CORS blocked: Origin "${origin}" is not authorized.`));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "X-Request-ID"]
   })
 );
 app.use(express.json({ limit: "1mb", strict: false }));
@@ -60,21 +72,32 @@ app.use(mongoSanitize);
 app.use("/api", apiLimiter);
 
 // Comprehensive Production Health Check & Monitoring endpoint
-app.get("/api/health", (req, res) => {
+const { multilingualMLService } = require("./services/multilingualMLService");
+
+app.get("/api/health", async (req, res) => {
   const mem = process.memoryUsage();
+  let mlHealth = null;
+  try {
+    mlHealth = await multilingualMLService.checkHealth();
+  } catch (err) {
+    mlHealth = { online: false, status: "offline", error: err.message };
+  }
+
   res.json({
     status: "healthy",
     service: "EmoLyrics Production API",
     version: "2.4.0",
+    environment: process.env.NODE_ENV || "development",
     uptimeSeconds: Math.round(process.uptime()),
     database: {
       status: getIsConnected() ? "connected" : "in-memory-fallback",
       type: getIsConnected() ? "MongoDB" : "MemoryStore"
     },
     mlService: {
-      status: "operational",
-      engine: "MultilingualLexical-9Mood-v2",
-      languagesSupported: ["English", "Hindi", "Bengali", "Spanish", "French"]
+      status: mlHealth?.online ? "online" : "offline",
+      url: multilingualMLService.getBaseUrl(),
+      modelVersion: mlHealth?.modelVersion || "unknown",
+      supportedLanguages: mlHealth?.supportedLanguages || ["en", "hi", "bn", "es", "fr"]
     },
     memory: {
       rssMB: Math.round(mem.rss / 1024 / 1024),
@@ -162,6 +185,8 @@ async function startServer() {
   process.on("SIGINT", () => handleShutdown("SIGINT"));
 }
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
 
 module.exports = app;

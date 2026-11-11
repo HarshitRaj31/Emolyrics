@@ -5,9 +5,13 @@
   "scripts": {
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
+    "dev:ml": "cd ml-services && python -m src.api",
     "build:frontend": "cd frontend && npm run build",
     "build": "cd frontend && npm run build",
-    "start": "cd backend && npm start"
+    "start": "cd backend && npm start",
+    "test:backend": "cd backend && npm test",
+    "test:ml": "cd ml-services && python tests/test_stage7_production.py && python tests/test_stage9_multilingual_qa.py",
+    "test": "npm run test:backend && npm run test:ml"
   },
   "keywords": [
     "emotion-classification",

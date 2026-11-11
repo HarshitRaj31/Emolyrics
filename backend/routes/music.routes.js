@@ -199,12 +199,33 @@ router.post("/analyze-song", optionalJWT, async (req, res, next) => {
  */
 router.get("/recommendations", async (req, res, next) => {
   try {
-    const { mood = "Happy", title = "", artist = "", exclude = "", limit = 6 } = req.query;
+    const {
+      mood = "Happiness",
+      title = "",
+      artist = "",
+      exclude = "",
+      limit = 6,
+      secondary = "",
+      themes = "",
+      tone = ""
+    } = req.query;
 
     const parsedExclude = Array.isArray(exclude)
       ? exclude
       : typeof exclude === "string" && exclude.trim()
       ? exclude.split(",").map((s) => s.trim())
+      : [];
+
+    const parsedSecondary = Array.isArray(secondary)
+      ? secondary
+      : typeof secondary === "string" && secondary.trim()
+      ? secondary.split(",").map((s) => s.trim())
+      : [];
+
+    const parsedThemes = Array.isArray(themes)
+      ? themes
+      : typeof themes === "string" && themes.trim()
+      ? themes.split(",").map((s) => s.trim())
       : [];
 
     const limitNum = Math.min(Math.max(parseInt(limit, 10) || 6, 1), 20);
@@ -214,7 +235,10 @@ router.get("/recommendations", async (req, res, next) => {
       seedTitle: title,
       seedArtist: artist,
       exclude: parsedExclude,
-      limit: limitNum
+      limit: limitNum,
+      secondaryEmotions: parsedSecondary,
+      lyricalThemes: parsedThemes,
+      overallTone: tone
     });
 
     return res.json(result);
@@ -225,11 +249,20 @@ router.get("/recommendations", async (req, res, next) => {
 
 /**
  * POST /api/music/recommendations
- * Flexible body-based recommendations with exclusion list & seed metadata
+ * Flexible body-based recommendations with multi-emotion & theme scoring
  */
 router.post("/recommendations", async (req, res, next) => {
   try {
-    const { mood = "Happy", seedTitle = "", seedArtist = "", exclude = [], limit = 6 } = req.body;
+    const {
+      mood = "Happiness",
+      seedTitle = "",
+      seedArtist = "",
+      exclude = [],
+      limit = 6,
+      secondaryEmotions = [],
+      lyricalThemes = [],
+      overallTone = ""
+    } = req.body;
 
     const limitNum = Math.min(Math.max(parseInt(limit, 10) || 6, 1), 20);
 
@@ -238,10 +271,95 @@ router.post("/recommendations", async (req, res, next) => {
       seedTitle,
       seedArtist,
       exclude: Array.isArray(exclude) ? exclude : [],
+      limit: limitNum,
+      secondaryEmotions: Array.isArray(secondaryEmotions) ? secondaryEmotions : [],
+      lyricalThemes: Array.isArray(lyricalThemes) ? lyricalThemes : [],
+      overallTone
+    });
+
+    return res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/music/similar-songs
+ * Feature 2: Similar Song Discovery based on analyzed lyrics or seed song
+ */
+router.post("/similar-songs", async (req, res, next) => {
+  try {
+    const {
+      seedTitle,
+      seedArtist = "",
+      mood = "Happiness",
+      themes = [],
+      secondaryEmotions = [],
+      limit = 6
+    } = req.body;
+
+    if (!seedTitle || typeof seedTitle !== "string" || !seedTitle.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Seed song title is required to find similar tracks."
+      });
+    }
+
+    const limitNum = Math.min(Math.max(parseInt(limit, 10) || 6, 1), 20);
+
+    const result = await recommendationService.findSimilarSongs({
+      seedTitle: seedTitle.trim(),
+      seedArtist: seedArtist ? seedArtist.trim() : "",
+      mood,
+      themes: Array.isArray(themes) ? themes : [],
+      secondaryEmotions: Array.isArray(secondaryEmotions) ? secondaryEmotions : [],
       limit: limitNum
     });
 
     return res.json(result);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/music/explain-recommendation
+ * Feature 4: Contextual AI Match Explanation using local Ollama AI
+ */
+router.post("/explain-recommendation", async (req, res, next) => {
+  try {
+    const {
+      songTitle,
+      artist = "",
+      mood = "Happiness",
+      seedTitle = "",
+      lyricalThemes = [],
+      overallTone = ""
+    } = req.body;
+
+    if (!songTitle || typeof songTitle !== "string" || !songTitle.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Song title is required to generate match explanation."
+      });
+    }
+
+    const result = await recommendationService.explainRecommendation({
+      songTitle: songTitle.trim(),
+      artist: artist ? artist.trim() : "",
+      mood,
+      seedTitle: seedTitle ? seedTitle.trim() : "",
+      lyricalThemes: Array.isArray(lyricalThemes) ? lyricalThemes : [],
+      overallTone
+    });
+
+    return res.json({
+      success: true,
+      songTitle,
+      artist,
+      mood,
+      ...result
+    });
   } catch (error) {
     next(error);
   }

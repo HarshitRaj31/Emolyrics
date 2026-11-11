@@ -34,6 +34,19 @@ function validateEnv() {
     );
   }
 
+  // 4. ML Service URL validation
+  const mlUrl = process.env.ML_SERVICE_URL;
+  if (mlUrl) {
+    try {
+      const parsed = new URL(mlUrl);
+      if (!["http:", "https:"].includes(parsed.protocol)) {
+        errors.push(`Invalid ML_SERVICE_URL protocol "${parsed.protocol}". Must be http: or https:.`);
+      }
+    } catch {
+      errors.push(`Invalid ML_SERVICE_URL "${mlUrl}". Must be a valid URL (e.g. http://127.0.0.1:8001 or http://ml-services:8001).`);
+    }
+  }
+
   // 4. Summarize (Masking secrets)
   const maskedSummary = {
     NODE_ENV: process.env.NODE_ENV || "development",
@@ -42,7 +55,8 @@ function validateEnv() {
     MONGODB_URI: process.env.MONGODB_URI ? "Configured (Safe Masked)" : "Fallback In-Memory Store",
     JWT_SECRET: jwtSecret ? `${jwtSecret.slice(0, 3)}...****` : "Using Default",
     OLLAMA_BASE_URL: process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434",
-    OLLAMA_MODEL: process.env.OLLAMA_MODEL || "qwen2.5:3b"
+    OLLAMA_MODEL: process.env.OLLAMA_MODEL || "qwen2.5:3b",
+    ML_SERVICE_URL: process.env.ML_SERVICE_URL || "http://127.0.0.1:8001"
   };
 
   return {

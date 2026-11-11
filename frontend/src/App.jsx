@@ -16,6 +16,7 @@ import AnalyzerPage from "./pages/AnalyzerPage";
 // Code-Split Dynamic Route Chunks for optimal performance & minimal initial payload
 const ExplorePage = lazy(() => import("./pages/ExplorePage"));
 const PlaylistsPage = lazy(() => import("./pages/PlaylistsPage"));
+const RecommendationsPage = lazy(() => import("./pages/RecommendationsPage"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const AssistantPage = lazy(() => import("./pages/AssistantPage"));
 const PluginMarketplacePage = lazy(() => import("./pages/PluginMarketplacePage"));
@@ -39,6 +40,7 @@ function AppLayout({ researchModalOpen, setResearchModalOpen }) {
           <Routes>
             <Route path="/" element={<AnalyzerPage />} />
             <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/recommendations" element={<RecommendationsPage />} />
             <Route path="/playlists" element={<PlaylistsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/assistant" element={<AssistantPage />} />

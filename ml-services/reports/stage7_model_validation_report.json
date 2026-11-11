@@ -1,0 +1,412 @@
+{
+  "report_title": "EmoLyrics Stage 7 Production Model Validation & Performance Report",
+  "timestamp": "2026-11-11T18:00:00Z",
+  "modelVersion": "v1.2.0-production-calibrated",
+  "modelArchitecture": "SentenceTransformer(paraphrase-multilingual-MiniLM-L12-v2) + 2-layer Neural MLP (384 -> 256 -> 10) + TemperatureScaler(T=1.0295)",
+  "hardware": "CPU-only (x86_64, Windows, 16 GB RAM)",
+  "data_leakage_audit": {
+    "verified_zero_leakage": true,
+    "sample_counts": {
+      "train": 2321,
+      "val": 485,
+      "test": 484
+    },
+    "unique_text_counts": {
+      "train": 2321,
+      "val": 485,
+      "test": 484
+    },
+    "overlaps": {
+      "train_val_overlap": 0,
+      "train_test_overlap": 0,
+      "val_test_overlap": 0
+    }
+  },
+  "overall_performance": {
+    "accuracy": 0.4256,
+    "macro_f1": 0.4071,
+    "weighted_f1": 0.424,
+    "macro_precision": 0.4025,
+    "macro_recall": 0.4626
+  },
+  "baseline_comparison": {
+    "baseline": {
+      "model": "BaselineLogisticRegression",
+      "accuracy": 0.438,
+      "macro_f1": 0.3806,
+      "weighted_f1": 0.4424
+    },
+    "champion_production": {
+      "accuracy": 0.4256,
+      "macro_f1": 0.4071,
+      "weighted_f1": 0.424,
+      "macro_precision": 0.4025,
+      "macro_recall": 0.4626
+    },
+    "f1_improvement_absolute": 0.0265,
+    "f1_improvement_percent": 6.96
+  },
+  "confidence_calibration": {
+    "temperature": 1.0295,
+    "raw_ece": 0.0614,
+    "calibrated_ece": 0.0538,
+    "ece_reduction_percent": 12.38,
+    "reliability_bins": [
+      {
+        "range": [
+          0.2,
+          0.3
+        ],
+        "count": 112,
+        "accuracy": 0.3482,
+        "confidence": 0.2461,
+        "calibration_gap": 0.1021
+      },
+      {
+        "range": [
+          0.3,
+          0.4
+        ],
+        "count": 120,
+        "accuracy": 0.3417,
+        "confidence": 0.3538,
+        "calibration_gap": 0.0122
+      },
+      {
+        "range": [
+          0.4,
+          0.5
+        ],
+        "count": 103,
+        "accuracy": 0.4175,
+        "confidence": 0.4467,
+        "calibration_gap": 0.0292
+      },
+      {
+        "range": [
+          0.5,
+          0.6
+        ],
+        "count": 80,
+        "accuracy": 0.4875,
+        "confidence": 0.5467,
+        "calibration_gap": 0.0592
+      },
+      {
+        "range": [
+          0.6,
+          0.7
+        ],
+        "count": 52,
+        "accuracy": 0.6731,
+        "confidence": 0.6425,
+        "calibration_gap": 0.0306
+      },
+      {
+        "range": [
+          0.7,
+          0.8
+        ],
+        "count": 14,
+        "accuracy": 0.5,
+        "confidence": 0.7398,
+        "calibration_gap": 0.2398
+      },
+      {
+        "range": [
+          0.8,
+          0.9
+        ],
+        "count": 3,
+        "accuracy": 0.6667,
+        "confidence": 0.8177,
+        "calibration_gap": 0.151
+      }
+    ]
+  },
+  "per_language_metrics": {
+    "bn": {
+      "sample_count": 72,
+      "accuracy": 0.4167,
+      "macro_f1": 0.3712,
+      "macro_precision": 0.3803,
+      "macro_recall": 0.4167
+    },
+    "en": {
+      "sample_count": 181,
+      "accuracy": 0.4475,
+      "macro_f1": 0.447,
+      "macro_precision": 0.5085,
+      "macro_recall": 0.4587
+    },
+    "es": {
+      "sample_count": 90,
+      "accuracy": 0.4,
+      "macro_f1": 0.2552,
+      "macro_precision": 0.2836,
+      "macro_recall": 0.25
+    },
+    "fr": {
+      "sample_count": 90,
+      "accuracy": 0.3111,
+      "macro_f1": 0.2145,
+      "macro_precision": 0.2483,
+      "macro_recall": 0.2222
+    },
+    "hi": {
+      "sample_count": 51,
+      "accuracy": 0.6078,
+      "macro_f1": 0.3289,
+      "macro_precision": 0.3703,
+      "macro_recall": 0.3056
+    }
+  },
+  "per_emotion_metrics": {
+    "Happiness": {
+      "precision": 0.5714,
+      "recall": 0.466,
+      "f1": 0.5134,
+      "support": 103
+    },
+    "Sadness": {
+      "precision": 0.4757,
+      "recall": 0.5326,
+      "f1": 0.5026,
+      "support": 92
+    },
+    "Love": {
+      "precision": 0.3333,
+      "recall": 0.5,
+      "f1": 0.4,
+      "support": 28
+    },
+    "Anger": {
+      "precision": 0.4878,
+      "recall": 0.2151,
+      "f1": 0.2985,
+      "support": 93
+    },
+    "Nostalgia": {
+      "precision": 0.1765,
+      "recall": 0.6,
+      "f1": 0.2727,
+      "support": 10
+    },
+    "Fear": {
+      "precision": 0.3974,
+      "recall": 0.4079,
+      "f1": 0.4026,
+      "support": 76
+    },
+    "Excitement": {
+      "precision": 0.4444,
+      "recall": 0.5714,
+      "f1": 0.5,
+      "support": 28
+    },
+    "Hope": {
+      "precision": 0.3333,
+      "recall": 0.4074,
+      "f1": 0.3667,
+      "support": 54
+    },
+    "Loneliness": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "Calmness": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    }
+  },
+  "per_domain_metrics": {
+    "general_text": {
+      "sample_count": 303,
+      "accuracy": 0.4125,
+      "macro_f1": 0.2521,
+      "macro_precision": 0.2626,
+      "macro_recall": 0.2584
+    },
+    "lyrics": {
+      "sample_count": 64,
+      "accuracy": 0.3281,
+      "macro_f1": 0.182,
+      "macro_precision": 0.3641,
+      "macro_recall": 0.2087
+    },
+    "social_media": {
+      "sample_count": 117,
+      "accuracy": 0.5128,
+      "macro_f1": 0.5008,
+      "macro_precision": 0.5555,
+      "macro_recall": 0.5048
+    }
+  },
+  "length_slice_metrics": {
+    "short_le_20": {
+      "sample_count": 354,
+      "accuracy": 0.4463,
+      "macro_f1": 0.3762
+    },
+    "medium_21_50": {
+      "sample_count": 64,
+      "accuracy": 0.4062,
+      "macro_f1": 0.3132
+    },
+    "long_gt_50": {
+      "sample_count": 66,
+      "accuracy": 0.3333,
+      "macro_f1": 0.2098
+    }
+  },
+  "code_switching_slice_metrics": {
+    "code_switched": {
+      "count": 15,
+      "accuracy": 0.0667,
+      "macro_f1": 0.0303
+    },
+    "monolingual": {
+      "count": 469,
+      "accuracy": 0.4371,
+      "macro_f1": 0.4263
+    }
+  },
+  "confusion_matrix": [
+    [
+      48,
+      5,
+      15,
+      3,
+      5,
+      10,
+      7,
+      10,
+      0,
+      0
+    ],
+    [
+      2,
+      49,
+      4,
+      7,
+      5,
+      14,
+      2,
+      9,
+      0,
+      0
+    ],
+    [
+      3,
+      1,
+      14,
+      0,
+      8,
+      0,
+      0,
+      2,
+      0,
+      0
+    ],
+    [
+      8,
+      25,
+      0,
+      20,
+      3,
+      20,
+      4,
+      13,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      2,
+      0,
+      6,
+      0,
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      2,
+      19,
+      1,
+      8,
+      4,
+      31,
+      2,
+      9,
+      0,
+      0
+    ],
+    [
+      3,
+      1,
+      4,
+      0,
+      3,
+      0,
+      16,
+      1,
+      0,
+      0
+    ],
+    [
+      18,
+      3,
+      2,
+      3,
+      0,
+      3,
+      3,
+      22,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "label_order": [
+    "Happiness",
+    "Sadness",
+    "Love",
+    "Anger",
+    "Nostalgia",
+    "Fear",
+    "Excitement",
+    "Hope",
+    "Loneliness",
+    "Calmness"
+  ]
+}

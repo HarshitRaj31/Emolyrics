@@ -1,0 +1,254 @@
+{
+  "summary": {
+    "total_raw_audited": 32742,
+    "total_valid_pool": 21577,
+    "total_integrated_samples": 3290,
+    "target_languages_covered": 5,
+    "target_emotions_covered": 9,
+    "domains_represented": [
+      "lyrics",
+      "social_media",
+      "general_text"
+    ]
+  },
+  "distributions": {
+    "languages": {
+      "en": 1229,
+      "bn": 490,
+      "fr": 610,
+      "hi": 352,
+      "es": 609
+    },
+    "emotions": {
+      "Excitement": 199,
+      "Love": 186,
+      "Happiness": 685,
+      "Nostalgia": 63,
+      "Sadness": 649,
+      "Anger": 634,
+      "Fear": 504,
+      "Calmness": 5,
+      "Hope": 365
+    },
+    "domains": {
+      "lyrics": 466,
+      "social_media": 801,
+      "general_text": 2023
+    },
+    "sources": {
+      "mirex": 421,
+      "benchmark": 45,
+      "goemotions": 801,
+      "xed": 1200,
+      "bemoc": 480,
+      "hindi_corpus": 343
+    }
+  },
+  "source_breakdown": {
+    "mirex": {
+      "total_raw": 897,
+      "integrated_in_balanced_dataset": 421
+    },
+    "benchmark": {
+      "total_raw": 45,
+      "integrated_in_balanced_dataset": 45
+    },
+    "goemotions": {
+      "total_raw": 5426,
+      "integrated_in_balanced_dataset": 801
+    },
+    "xed": {
+      "total_raw": 18860,
+      "integrated_in_balanced_dataset": 1200
+    },
+    "bemoc": {
+      "total_raw": 7000,
+      "integrated_in_balanced_dataset": 480
+    },
+    "hindi_corpus": {
+      "total_raw": 514,
+      "integrated_in_balanced_dataset": 343
+    }
+  },
+  "cross_matrices": {
+    "language_by_emotion": {
+      "en": {
+        "Excitement": 194,
+        "Love": 182,
+        "Happiness": 201,
+        "Nostalgia": 63,
+        "Sadness": 182,
+        "Anger": 150,
+        "Fear": 135,
+        "Calmness": 1,
+        "Hope": 121
+      },
+      "bn": {
+        "Excitement": 2,
+        "Happiness": 121,
+        "Sadness": 121,
+        "Anger": 121,
+        "Love": 1,
+        "Calmness": 1,
+        "Hope": 1,
+        "Fear": 122
+      },
+      "fr": {
+        "Fear": 123,
+        "Happiness": 121,
+        "Sadness": 121,
+        "Anger": 121,
+        "Love": 1,
+        "Calmness": 1,
+        "Excitement": 1,
+        "Hope": 121
+      },
+      "hi": {
+        "Happiness": 121,
+        "Sadness": 104,
+        "Anger": 121,
+        "Love": 1,
+        "Calmness": 1,
+        "Excitement": 1,
+        "Hope": 1,
+        "Fear": 2
+      },
+      "es": {
+        "Happiness": 121,
+        "Sadness": 121,
+        "Anger": 121,
+        "Love": 1,
+        "Calmness": 1,
+        "Excitement": 1,
+        "Hope": 121,
+        "Fear": 122
+      }
+    },
+    "domain_by_emotion": {
+      "lyrics": {
+        "Excitement": 103,
+        "Love": 66,
+        "Happiness": 85,
+        "Nostalgia": 63,
+        "Sadness": 66,
+        "Anger": 34,
+        "Fear": 39,
+        "Calmness": 5,
+        "Hope": 5
+      },
+      "social_media": {
+        "Sadness": 120,
+        "Hope": 120,
+        "Anger": 120,
+        "Love": 120,
+        "Happiness": 120,
+        "Fear": 105,
+        "Excitement": 96
+      },
+      "general_text": {
+        "Fear": 360,
+        "Sadness": 463,
+        "Hope": 240,
+        "Anger": 480,
+        "Happiness": 480
+      }
+    }
+  },
+  "splits": {
+    "train": {
+      "count": 2321,
+      "percentage": 70.55,
+      "emotions": {
+        "Happiness": 477,
+        "Love": 128,
+        "Sadness": 462,
+        "Hope": 257,
+        "Nostalgia": 46,
+        "Anger": 445,
+        "Fear": 352,
+        "Excitement": 149,
+        "Calmness": 5
+      },
+      "languages": {
+        "bn": 346,
+        "en": 866,
+        "hi": 250,
+        "es": 429,
+        "fr": 430
+      },
+      "domains": {
+        "general_text": 1417,
+        "social_media": 565,
+        "lyrics": 339
+      }
+    },
+    "validation": {
+      "count": 485,
+      "percentage": 14.74,
+      "emotions": {
+        "Sadness": 95,
+        "Happiness": 105,
+        "Fear": 76,
+        "Anger": 96,
+        "Hope": 54,
+        "Excitement": 22,
+        "Love": 30,
+        "Nostalgia": 7
+      },
+      "languages": {
+        "hi": 51,
+        "bn": 72,
+        "en": 182,
+        "es": 90,
+        "fr": 90
+      },
+      "domains": {
+        "general_text": 303,
+        "social_media": 119,
+        "lyrics": 63
+      }
+    },
+    "test": {
+      "count": 484,
+      "percentage": 14.71,
+      "emotions": {
+        "Fear": 76,
+        "Happiness": 103,
+        "Hope": 54,
+        "Anger": 93,
+        "Sadness": 92,
+        "Excitement": 28,
+        "Love": 28,
+        "Nostalgia": 10
+      },
+      "languages": {
+        "fr": 90,
+        "en": 181,
+        "es": 90,
+        "hi": 51,
+        "bn": 72
+      },
+      "domains": {
+        "general_text": 303,
+        "social_media": 117,
+        "lyrics": 64
+      }
+    }
+  },
+  "leakage_verification": {
+    "artist_leakage_in_lyrics": 0,
+    "duplicate_leakage_status": "PASSED"
+  },
+  "top_exclusion_reasons": {
+    "Unmapped GoEmotions label(s): neutral": 1592,
+    "Unmapped XED label: 7": 1406,
+    "Unmapped BEmoC category: disgust": 1356,
+    "Unmapped XED label: 8": 1275,
+    "Unmapped XED label: 3": 863,
+    "Unmapped BEmoC category: surprise": 779,
+    "Unmapped GoEmotions label(s): admiration": 326,
+    "Duplicate text across datasets": 269,
+    "Unmapped GoEmotions label(s): gratitude": 261,
+    "Unmapped GoEmotions label(s): approval": 258
+  }
+}

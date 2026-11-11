@@ -1,0 +1,267 @@
+{
+  "summary": {
+    "total_raw_records": 942,
+    "total_valid_records": 466,
+    "total_excluded_records": 476,
+    "total_duplicate_records": 8,
+    "validation_rate_pct": 49.47
+  },
+  "distributions": {
+    "languages": {
+      "en": 428,
+      "bn": 10,
+      "fr": 10,
+      "hi": 9,
+      "es": 9
+    },
+    "emotions": {
+      "Excitement": 103,
+      "Love": 66,
+      "Happiness": 85,
+      "Nostalgia": 63,
+      "Sadness": 66,
+      "Anger": 34,
+      "Fear": 39,
+      "Calmness": 5,
+      "Hope": 5
+    },
+    "sources": {
+      "mirex": 421,
+      "benchmark": 45
+    }
+  },
+  "per_language_emotion_matrix": {
+    "en": {
+      "Excitement": 98,
+      "Love": 62,
+      "Happiness": 81,
+      "Nostalgia": 63,
+      "Sadness": 62,
+      "Anger": 30,
+      "Fear": 30,
+      "Calmness": 1,
+      "Hope": 1
+    },
+    "bn": {
+      "Excitement": 2,
+      "Happiness": 1,
+      "Sadness": 1,
+      "Anger": 1,
+      "Love": 1,
+      "Calmness": 1,
+      "Hope": 1,
+      "Fear": 2
+    },
+    "fr": {
+      "Fear": 3,
+      "Happiness": 1,
+      "Sadness": 1,
+      "Anger": 1,
+      "Love": 1,
+      "Calmness": 1,
+      "Excitement": 1,
+      "Hope": 1
+    },
+    "hi": {
+      "Happiness": 1,
+      "Sadness": 1,
+      "Anger": 1,
+      "Love": 1,
+      "Calmness": 1,
+      "Excitement": 1,
+      "Hope": 1,
+      "Fear": 2
+    },
+    "es": {
+      "Happiness": 1,
+      "Sadness": 1,
+      "Anger": 1,
+      "Love": 1,
+      "Calmness": 1,
+      "Excitement": 1,
+      "Hope": 1,
+      "Fear": 2
+    }
+  },
+  "splits": {
+    "train": {
+      "count": 339,
+      "percentage": 72.75,
+      "emotions": {
+        "Excitement": 79,
+        "Sadness": 53,
+        "Love": 44,
+        "Nostalgia": 46,
+        "Happiness": 57,
+        "Fear": 25,
+        "Anger": 25,
+        "Hope": 5,
+        "Calmness": 5
+      },
+      "languages": {
+        "en": 301,
+        "hi": 9,
+        "bn": 10,
+        "es": 9,
+        "fr": 10
+      }
+    },
+    "validation": {
+      "count": 63,
+      "percentage": 13.52,
+      "emotions": {
+        "Fear": 7,
+        "Sadness": 8,
+        "Excitement": 8,
+        "Nostalgia": 7,
+        "Happiness": 15,
+        "Love": 12,
+        "Anger": 6
+      },
+      "languages": {
+        "en": 63
+      }
+    },
+    "test": {
+      "count": 64,
+      "percentage": 13.73,
+      "emotions": {
+        "Excitement": 16,
+        "Fear": 7,
+        "Nostalgia": 10,
+        "Happiness": 13,
+        "Love": 10,
+        "Sadness": 5,
+        "Anger": 3
+      },
+      "languages": {
+        "en": 64
+      }
+    }
+  },
+  "exclusions": {
+    "reasons_summary": {
+      "Missing lyric file on disk (instrumental or unavailable)": 133,
+      "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)": 34,
+      "Exact duplicate lyric text of another record": 8,
+      "Unmapped MIREX category: Autumnal (Poetic/seasonal aesthetic metaphor without a single defensible affective category.)": 33,
+      "Unmapped MIREX category: Literate (Lyrical complexity/compositional style descriptor, not an emotional state.)": 37,
+      "Unmapped MIREX category: Campy (Stylistic theatrics and ironic parody, lacking genuine affective valence.)": 30,
+      "Unmapped MIREX category: Humorous (Comedic genre marker; humor functions as entertainment rather than primary emotion.)": 21,
+      "Unmapped MIREX category: Silly (Playful absurdity and lighthearted novelty without distinct emotional grounding.)": 26,
+      "Unmapped MIREX category: whimsical (Quirky creative temperament rather than a standard emotional affect.)": 31,
+      "Unmapped MIREX category: Witty (Intellectual tone and cleverness rather than affective emotional state.)": 27,
+      "Unmapped MIREX category: Wry (Sardonic cynicism and dry mockery without consistent affective category.)": 36,
+      "Unmapped MIREX category: Intense (Non-specific high arousal state applicable equally to rage, passion, or terror.)": 20,
+      "Unmapped MIREX category: Visceral (Somatosensory descriptor indicating bodily sensation without specific valence.)": 24,
+      "Unmapped MIREX category: Volatile (Instability and rapid fluctuation descriptor rather than a specific emotion.)": 16
+    },
+    "sample_exclusions": [
+      {
+        "source": "mirex",
+        "source_id": "002",
+        "title": "Night in Tunisia",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "005",
+        "title": "Bad Reputation",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "006",
+        "title": "Boogie Woogie Stomp",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "014",
+        "title": "High School",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "018",
+        "title": "Just Like Me",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "023",
+        "title": "One Monkey Don't Stop No Show",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "026",
+        "title": "Sing, Sing, Sing, Pts. 1-2",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "031",
+        "title": "Wild Cat Blues",
+        "original_label": "Boisterous",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "032",
+        "title": "Achy Breaky Heart",
+        "original_label": "Confident",
+        "reason": "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "033",
+        "title": "All Right Now",
+        "original_label": "Confident",
+        "reason": "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "034",
+        "title": "Bad",
+        "original_label": "Confident",
+        "reason": "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "035",
+        "title": "Big Pimpin'",
+        "original_label": "Confident",
+        "reason": "Missing lyric file on disk (instrumental or unavailable)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "036",
+        "title": "Big Time Sensuality",
+        "original_label": "Confident",
+        "reason": "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "037",
+        "title": "Blue Suede Shoes",
+        "original_label": "Confident",
+        "reason": "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)"
+      },
+      {
+        "source": "mirex",
+        "source_id": "038",
+        "title": "Brass in Pocket",
+        "original_label": "Confident",
+        "reason": "Unmapped MIREX category: Confident (Cognitive appraisal of self-efficacy rather than a primary emotional affect.)"
+      }
+    ]
+  }
+}

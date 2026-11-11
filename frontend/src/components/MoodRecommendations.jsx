@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -13,7 +14,8 @@ import {
   Disc3,
   Layers,
   ArrowUpRight,
-  Trash2
+  Trash2,
+  Compass
 } from "lucide-react";
 
 function YoutubeIcon({ className = "w-3.5 h-3.5" }) {
@@ -27,22 +29,63 @@ import { api } from "../services/api";
 import { usePersonalization } from "../context/PersonalizationContext";
 import { MOOD_DEFINITIONS } from "../data/examples";
 
-// All 9 Trained ML Emotion Classes
+const CANONICAL_MOOD_MAP = {
+  happy: "Happiness",
+  happiness: "Happiness",
+  sad: "Sadness",
+  sadness: "Sadness",
+  love: "Love",
+  romantic: "Love",
+  anger: "Anger",
+  angry: "Anger",
+  nostalgia: "Nostalgia",
+  fear: "Fear",
+  horror: "Fear",
+  thrilling: "Fear",
+  excitement: "Excitement",
+  exciting: "Excitement",
+  hope: "Hope",
+  patriotic: "Hope",
+  loneliness: "Loneliness",
+  lonely: "Loneliness",
+  calmness: "Calmness",
+  calm: "Calmness",
+  "calm/chill": "Calmness"
+};
+
+// All 10 Advanced Emotion Classes
 const ALL_MOODS = [
-  "Happy",
-  "Sad",
-  "Angry",
-  "Romantic",
-  "Calm/Chill",
-  "Exciting",
-  "Patriotic",
-  "Thrilling",
-  "Horror"
+  "Happiness",
+  "Sadness",
+  "Love",
+  "Anger",
+  "Nostalgia",
+  "Fear",
+  "Excitement",
+  "Hope",
+  "Loneliness",
+  "Calmness"
 ];
 
+const MOOD_META = {
+  Happiness: { emoji: "☀️", color: "#f59e0b" },
+  Sadness: { emoji: "🌧️", color: "#3b82f6" },
+  Love: { emoji: "💖", color: "#ec4899" },
+  Anger: { emoji: "🔥", color: "#ef4444" },
+  Nostalgia: { emoji: "⏳", color: "#8b5cf6" },
+  Fear: { emoji: "👻", color: "#6366f1" },
+  Excitement: { emoji: "⚡", color: "#f97316" },
+  Hope: { emoji: "🌅", color: "#06b6d4" },
+  Loneliness: { emoji: "🥀", color: "#64748b" },
+  Calmness: { emoji: "🌿", color: "#10b981" }
+};
+
 export default function MoodRecommendations({
-  detectedMood = "Happy",
+  detectedMood = "Happiness",
   seedSong = null,
+  secondaryEmotions = [],
+  lyricalThemes = [],
+  overallTone = "",
   onSelectSongForAnalysis = null
 }) {
   const {
@@ -54,7 +97,12 @@ export default function MoodRecommendations({
     clearPersonalizationHistory
   } = usePersonalization();
 
-  const [activeMood, setActiveMood] = useState(detectedMood);
+  const resolveMood = (m) => {
+    if (!m) return "Happiness";
+    return CANONICAL_MOOD_MAP[m.toLowerCase()] || m;
+  };
+
+  const [activeMood, setActiveMood] = useState(resolveMood(detectedMood));
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -62,8 +110,8 @@ export default function MoodRecommendations({
 
   // Sync active mood whenever parent detectedMood changes
   useEffect(() => {
-    if (detectedMood && ALL_MOODS.includes(detectedMood)) {
-      setActiveMood(detectedMood);
+    if (detectedMood) {
+      setActiveMood(resolveMood(detectedMood));
     }
   }, [detectedMood]);
 
@@ -74,7 +122,6 @@ export default function MoodRecommendations({
       setError("");
 
       try {
-        // Collect currently shown titles to avoid duplicates when exploring more
         const excludeList = isExploringMore
           ? [...recommendations.map((r) => r.title), ...getExcludedTitles()]
           : getExcludedTitles();
@@ -83,6 +130,9 @@ export default function MoodRecommendations({
           mood: activeMood,
           seedTitle: seedSong?.title || "",
           seedArtist: seedSong?.artist || "",
+          secondaryEmotions,
+          lyricalThemes,
+          overallTone,
           exclude: excludeList,
           limit: 6
         });
@@ -101,7 +151,7 @@ export default function MoodRecommendations({
         setLoading(false);
       }
     },
-    [activeMood, seedSong, recommendations, getExcludedTitles, trackRecommendations]
+    [activeMood, seedSong, secondaryEmotions, lyricalThemes, overallTone, recommendations, getExcludedTitles, trackRecommendations]
   );
 
   // Initial load or when activeMood / seedSong changes
@@ -158,6 +208,17 @@ export default function MoodRecommendations({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 self-start md:self-auto">
+          {/* Dedicated Recommendations Studio Link */}
+          <Link
+            to="/recommendations"
+            state={{ mood: activeMood, seedSong }}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/30 text-xs font-semibold transition-all"
+            title="Open Dedicated Music Recommendation Studio"
+          >
+            <Compass className="w-3.5 h-3.5 text-purple-400" />
+            <span className="hidden sm:inline">Discovery Studio</span>
+          </Link>
+
           {/* Explore More Button */}
           <button
             type="button"
@@ -188,19 +249,19 @@ export default function MoodRecommendations({
         </div>
       </div>
 
-      {/* 2. Mood Explorer Chips (Switch to any of the 9 ML emotions) */}
+      {/* 2. Mood Explorer Chips (Switch to any of the 10 emotions) */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs text-neutral-400">
           <span className="flex items-center gap-1.5 font-medium">
             <Layers className="w-3.5 h-3.5 text-neutral-400" />
             Explore Recommendations by Detected Emotion:
           </span>
-          <span className="text-[11px] text-neutral-500">9 Core ML Classes</span>
+          <span className="text-[11px] text-neutral-500">10 Core Emotion Spectrums</span>
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-white/10">
           {ALL_MOODS.map((mood) => {
-            const def = MOOD_DEFINITIONS[mood];
+            const def = MOOD_META[mood] || MOOD_DEFINITIONS[mood];
             const isSelected = activeMood === mood;
             return (
               <button
@@ -213,7 +274,7 @@ export default function MoodRecommendations({
                     : "bg-neutral-900/80 border border-white/5 text-neutral-400 hover:text-white hover:bg-white/5"
                 }`}
               >
-                <span>{def?.emoji}</span>
+                <span>{def?.emoji || "🎵"}</span>
                 <span>{mood}</span>
               </button>
             );
