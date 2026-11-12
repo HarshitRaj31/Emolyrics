@@ -7,15 +7,17 @@ Provides high-performance CPU inference across 5 target languages
 import os
 import sys
 import re
+import gc
 import time
 import hashlib
+import threading
 from collections import OrderedDict
 
-# Prevent network timeout checks on local CPU inference
-os.environ["HF_HUB_OFFLINE"] = "1"
-os.environ["TRANSFORMERS_OFFLINE"] = "1"
+# Default to offline HF mode at runtime (can be overridden during Docker image build)
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
-# Configurable CPU Thread Capping to prevent Windows thread exhaustion
+# Configurable CPU Thread Capping to prevent thread contention on 1-CPU containers or Windows
 DEFAULT_NUM_THREADS = int(os.getenv("TORCH_NUM_THREADS", "4"))
 
 import json
@@ -38,15 +40,22 @@ LRU_CACHE_MAX_SIZE = int(os.getenv("PREDICTION_CACHE_SIZE", "1000"))
 
 
 def get_offline_model_path(model_name: str) -> str:
-    """Finds exact local HF snapshot to bypass network latency and sandbox blocking."""
+    """Finds exact local HF snapshot (checking HF_HOME first, then ~/.cache/huggingface) to bypass network latency."""
     org_repo = model_name.replace("/", "--")
-    cache_dir = os.path.expanduser(os.path.join("~", ".cache", "huggingface", "hub", f"models--{org_repo}", "snapshots"))
-    if os.path.exists(cache_dir):
-        snapshots = os.listdir(cache_dir)
-        if snapshots:
-            candidate = os.path.join(cache_dir, snapshots[0])
-            if os.path.isdir(candidate):
-                return candidate
+    candidate_roots = []
+    hf_home = os.getenv("HF_HOME")
+    if hf_home:
+        candidate_roots.append(os.path.join(hf_home, "hub"))
+    candidate_roots.append(os.path.expanduser(os.path.join("~", ".cache", "huggingface", "hub")))
+
+    for hub_root in candidate_roots:
+        cache_dir = os.path.join(hub_root, f"models--{org_repo}", "snapshots")
+        if os.path.exists(cache_dir):
+            snapshots = sorted(os.listdir(cache_dir))
+            for snap in snapshots:
+                candidate = os.path.join(cache_dir, snap)
+                if os.path.isdir(candidate):
+                    return candidate
     return model_name
 
 
@@ -66,9 +75,10 @@ class MultilingualEmotionPredictor:
         self.code_switch_analyzer = CodeSwitchAnalyzer()
         self.temperature = 1.0295
 
-        # High-Performance In-Memory LRU Prediction Cache
+        # High-Performance Thread-Safe In-Memory LRU Prediction Cache
         self._cache: OrderedDict = OrderedDict()
         self._cache_max_size: int = LRU_CACHE_MAX_SIZE
+        self._cache_lock = threading.Lock()
 
         self._load_components()
 
@@ -113,6 +123,7 @@ class MultilingualEmotionPredictor:
             self.encoder = SentenceTransformer(self.encoder_name, device=self.device, local_files_only=True)
         except Exception:
             self.encoder = SentenceTransformer(self.encoder_name, device=self.device)
+        gc.collect()
 
     def predict(self, text: str, specified_language: Optional[str] = None) -> Dict[str, Any]:
         start_time = time.time()
@@ -137,14 +148,15 @@ class MultilingualEmotionPredictor:
         # Language-aware normalization (preserves diacritics & handles elongated slang)
         norm_text = normalize_lyric_text(raw_input)
 
-        # LRU Cache Lookup (Sub-millisecond duplicate query handling)
+        # Thread-safe LRU Cache Lookup (Sub-millisecond duplicate query handling)
         cache_key = hashlib.md5(f"{specified_language or ''}::{norm_text}".encode("utf-8")).hexdigest()
-        if cache_key in self._cache:
-            cached_res = dict(self._cache[cache_key])
-            self._cache.move_to_end(cache_key)
-            cached_res["isCached"] = True
-            cached_res["durationMs"] = round((time.time() - start_time) * 1000, 2)
-            return cached_res
+        with self._cache_lock:
+            if cache_key in self._cache:
+                cached_res = dict(self._cache[cache_key])
+                self._cache.move_to_end(cache_key)
+                cached_res["isCached"] = True
+                cached_res["durationMs"] = round((time.time() - start_time) * 1000, 2)
+                return cached_res
 
         # Code-Switching & Language Audit
         cs_info = self.code_switch_analyzer.analyze(norm_text)
@@ -219,10 +231,11 @@ class MultilingualEmotionPredictor:
             "model_version": getattr(self, "model_version", "v1.2.0-production-calibrated")
         }
 
-        # Add to LRU Cache
-        if len(self._cache) >= self._cache_max_size:
-            self._cache.popitem(last=False)
-        self._cache[cache_key] = result
+        # Add to thread-safe LRU Cache
+        with self._cache_lock:
+            if len(self._cache) >= self._cache_max_size:
+                self._cache.popitem(last=False)
+            self._cache[cache_key] = result
 
         return result
 

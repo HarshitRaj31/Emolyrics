@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: emolyrics-ml-service
+    runtime: docker
+    rootDir: ml-services
+    dockerfilePath: ./Dockerfile
+    plan: standard
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: TORCH_NUM_THREADS
+        value: "1"
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: MKL_NUM_THREADS
+        value: "1"
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
+      - key: HF_HOME
+        value: "/app/cache/huggingface"
+      - key: HF_HUB_OFFLINE
+        value: "1"
+      - key: TRANSFORMERS_OFFLINE
+        value: "1"
+      - key: PREDICTION_CACHE_SIZE
+        value: "1000"
+      - key: MAX_INPUT_CHARS
+        value: "5000"
+

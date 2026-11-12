@@ -1,0 +1,67 @@
+{
+  "modelVersion": "v1.2.0-production-calibrated",
+  "championModel": "NeuralEmotionClassifier",
+  "architecture": "SentenceTransformer(paraphrase-multilingual-MiniLM-L12-v2) + 2-layer Neural MLP (384 -> 256 -> 10) + TemperatureScaler(T=1.0295)",
+  "encoder": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embeddingDim": 384,
+  "hiddenDims": [256, 128],
+  "dropout": 0.3,
+  "numClasses": 10,
+  "labelOrder": [
+    "Happiness",
+    "Sadness",
+    "Love",
+    "Anger",
+    "Nostalgia",
+    "Fear",
+    "Excitement",
+    "Hope",
+    "Loneliness",
+    "Calmness"
+  ],
+  "targetLanguages": ["en", "hi", "bn", "es", "fr"],
+  "temperature": 1.0295,
+  "trainingDate": "2026-11-11T18:00:00Z",
+  "randomSeed": 42,
+  "datasetSources": [
+    "mirex",
+    "benchmark",
+    "goemotions",
+    "xed",
+    "bemoc",
+    "hindi_corpus"
+  ],
+  "datasetSplits": {
+    "train": 2321,
+    "val": 485,
+    "test": 484,
+    "zeroLeakageVerified": true,
+    "trainValOverlap": 0,
+    "trainTestOverlap": 0,
+    "valTestOverlap": 0
+  },
+  "evaluationMetrics": {
+    "accuracy": 0.4256,
+    "macroF1": 0.4071,
+    "weightedF1": 0.4240,
+    "macroPrecision": 0.4025,
+    "macroRecall": 0.4626,
+    "calibratedECE": 0.0538,
+    "rawECE": 0.0614,
+    "eceReductionPercent": 12.38
+  },
+  "baselineComparison": {
+    "baselineModel": "BaselineLogisticRegression",
+    "baselineAccuracy": 0.4380,
+    "baselineMacroF1": 0.3806,
+    "macroF1ImprovementPercent": 6.96
+  },
+  "runtimeOptimization": {
+    "hardware": "CPU-only (Windows x86_64, 16 GB RAM)",
+    "defaultCpuThreads": 4,
+    "maxInputLengthCharacters": 5000,
+    "lruCacheMaxSize": 1000,
+    "fastApiWorkers": 1,
+    "rollbackCheckpoint": "models/multilingual_classifier.pt.bak"
+  }
+}

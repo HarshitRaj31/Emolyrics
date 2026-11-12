@@ -55,7 +55,9 @@ venv/
 *.bin
 *.safetensors
 *.onnx
-ml-services/models/
+ml-services/models/*
+!ml-services/models/multilingual_classifier.pt
+!ml-services/models/model_metadata.json
 ml-services/checkpoints/
 ml-services/cache/
 *.npz

@@ -17,6 +17,7 @@ import sys
 import time
 import uuid
 import logging
+import threading
 from typing import Dict, Any, List, Optional
 from contextlib import asynccontextmanager
 
@@ -45,19 +46,29 @@ SUPPORTED_LANGUAGES = {
     "fr": "French"
 }
 
-# Global predictor instance (loaded once on startup)
+# Global predictor instance (loaded once on startup, thread-safe)
 predictor_instance: Optional[MultilingualEmotionPredictor] = None
+_predictor_lock = threading.Lock()
+_startup_error: Optional[str] = None
 
 
 def get_predictor() -> MultilingualEmotionPredictor:
-    """Returns singleton MultilingualEmotionPredictor, loading once if needed."""
-    global predictor_instance
+    """Returns singleton MultilingualEmotionPredictor, loading once thread-safely if needed."""
+    global predictor_instance, _startup_error
     if predictor_instance is None:
-        logger.info("Initializing MultilingualEmotionPredictor on CPU...")
-        start_time = time.time()
-        predictor_instance = MultilingualEmotionPredictor(device="cpu")
-        load_duration = round((time.time() - start_time) * 1000, 2)
-        logger.info(f"Model successfully loaded in {load_duration}ms. Checkpoint: {DEFAULT_CHECKPOINT}")
+        with _predictor_lock:
+            if predictor_instance is None:
+                logger.info("Initializing MultilingualEmotionPredictor on CPU...")
+                start_time = time.time()
+                try:
+                    predictor_instance = MultilingualEmotionPredictor(device="cpu")
+                    _startup_error = None
+                    load_duration = round((time.time() - start_time) * 1000, 2)
+                    logger.info(f"Model successfully loaded in {load_duration}ms. Checkpoint: {DEFAULT_CHECKPOINT}")
+                except Exception as exc:
+                    _startup_error = str(exc)
+                    logger.error(f"Failed to initialize MultilingualEmotionPredictor: {exc}")
+                    raise
     return predictor_instance
 
 
@@ -65,6 +76,10 @@ def get_predictor() -> MultilingualEmotionPredictor:
 async def lifespan(app: FastAPI):
     """Lifecycle manager for the FastAPI service."""
     logger.info("Starting up Multilingual Emotion ML Service...")
+    try:
+        get_predictor()
+    except Exception as exc:
+        logger.error(f"Model initialization failed during startup; /health will report 503 degraded: {exc}")
     yield
     logger.info("Shutting down Multilingual Emotion ML Service...")
 
@@ -190,17 +205,22 @@ def health_check():
     try:
         predictor = get_predictor()
     except Exception as e:
-        return {
-            "status": "degraded",
-            "message": f"Model loading error: {str(e)}",
-            "checkpointPath": DEFAULT_CHECKPOINT,
-            "checkpointExists": os.path.exists(DEFAULT_CHECKPOINT)
-        }
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "status": "degraded",
+                "modelReady": False,
+                "message": f"Model loading error: {str(e)}",
+                "checkpointPath": DEFAULT_CHECKPOINT,
+                "checkpointExists": os.path.exists(DEFAULT_CHECKPOINT)
+            }
+        )
 
     telemetry = predictor.get_system_telemetry() if hasattr(predictor, "get_system_telemetry") else {}
 
     return {
         "status": "healthy",
+        "modelReady": True,
         "modelVersion": getattr(predictor, "model_version", "v1.2.0-production-calibrated"),
         "device": predictor.device,
         "supportedLanguages": list(SUPPORTED_LANGUAGES.keys()),
@@ -365,7 +385,7 @@ def predict_lines_endpoint(req: PredictLinesRequest, request: Request = None):
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("ML_SERVICE_PORT", 8001))
-    host = os.environ.get("ML_SERVICE_HOST", "127.0.0.1")
+    port = int(os.environ.get("PORT") or os.environ.get("ML_SERVICE_PORT", 8001))
+    host = os.environ.get("HOST") or os.environ.get("ML_SERVICE_HOST", "127.0.0.1")
     logger.info(f"Starting EmoLyrics Multilingual ML Service on http://{host}:{port}")
     uvicorn.run(app, host=host, port=port, log_level="info")
