@@ -85,7 +85,7 @@ function validateEnv() {
   const maskedSummary = {
     NODE_ENV: process.env.NODE_ENV || "development",
     VERCEL: isVercel,
-    PORT: process.env.PORT || 5000,
+    PORT: process.env.PORT || 3001,
     CORS_ORIGIN: corsOrigin || (isProd ? "Not Set" : "Local Dev Defaults"),
     MONGODB_URI: mongoUri ? "Configured (Masked)" : "Not Set (MemoryStore Fallback)",
     JWT_SECRET: jwtSecret ? "Configured (Masked)" : "Not Set",
