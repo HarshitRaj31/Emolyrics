@@ -12,19 +12,18 @@ export default function Footer({ onOpenResearch }) {
           {/* Brand & Platform Summary */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-3 group inline-flex">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-0.5 shadow-md shadow-purple-500/20">
-                <div className="w-full h-full bg-neutral-950 light:bg-slate-900 rounded-[10px] flex items-center justify-center">
-                  <Music2 className="w-4 h-4 text-amber-400" />
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-400 p-0.5 shadow-md shadow-orange-500/25">
+                <div className="w-full h-full bg-[#111827] light:bg-slate-900 rounded-[10px] flex items-center justify-center">
+                  <Music2 className="w-4 h-4 text-orange-400" />
                 </div>
               </div>
-              <span className="font-display font-extrabold text-xl text-ink-main tracking-tight">
+              <span className="font-display font-extrabold text-xl text-ink-main tracking-tight group-hover:text-orange-400 transition-colors">
                 EmoLyrics
               </span>
             </Link>
 
             <p className="text-xs leading-relaxed max-w-sm text-ink-muted">
-              A state-of-the-art music intelligence platform mapping the emotional valence, arousal,
-              and sentiment of multilingual song lyrics across 10 core mood spectrums.
+              EmoLyrics transforms song lyrics into emotional insights using advanced AI, Natural Language Processing, sentiment analysis, and music intelligence. Discover the emotions behind every song and explore music that resonates with your emotional journey.
             </p>
 
             <div className="flex items-center gap-2 pt-1 text-xs">
@@ -32,7 +31,7 @@ export default function Footer({ onOpenResearch }) {
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 light:bg-emerald-600 animate-pulse" />
                 All Systems Operational
               </span>
-              <span className="text-[11px] text-ink-dim font-mono">NLP Engine v2.4</span>
+              <span className="text-[11px] text-ink-dim font-mono">Music Intelligence v2.4</span>
             </div>
           </div>
 
@@ -171,13 +170,13 @@ export default function Footer({ onOpenResearch }) {
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ink-dim">
           <div>
-            © {new Date().getFullYear()} EmoLyrics • Advanced Song Lyrics Mood Classification Project.
+            © {new Date().getFullYear()} EmoLyrics. Analyze. Feel. Discover.
           </div>
 
           <div className="flex items-center gap-1">
             <span>Crafted with</span>
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 inline mx-0.5" />
-            <span>by Chandrima & Team</span>
+            <span>for music lovers worldwide</span>
           </div>
         </div>
       </div>

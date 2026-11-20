@@ -58,11 +58,11 @@ const STARTER_PROMPTS = [
 ];
 
 const QUICK_ACTIONS = [
-  { label: "Discover Songs", prompt: "Discover popular upbeat happy songs" },
+  { label: "Discover Similar Songs", prompt: "Discover popular upbeat happy songs" },
   { label: "Analyze Lyrics", prompt: "Analyze lyrics: " },
   { label: "Create Playlist", prompt: "Create a mood playlist with " },
-  { label: "Mood Analytics", prompt: "Show mood trends and analytics breakdown" },
-  { label: "Why Is It Sad?", prompt: "Explain how sad lyrics are detected by the ML model" }
+  { label: "View Analytics", prompt: "Show mood trends and analytics breakdown" },
+  { label: "Ask AI", prompt: "Explain how lyrical emotions are detected by the AI model" }
 ];
 
 export default function AssistantPage() {
@@ -409,11 +409,11 @@ export default function AssistantPage() {
                 </span>
                 <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-500/15 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-purple-400 light:text-purple-600" />
-                  {isStreaming ? "Streaming Live" : "Ollama Stream (CPU)"}
+                  {isStreaming ? "Streaming Live" : "AI Intelligence"}
                 </span>
               </div>
               <p className="text-[11px] text-ink-muted hidden sm:block mt-0.5">
-                Conversational music intelligence • Natural Language Search • Lyrics Mood NLU
+                Your conversational companion for emotional music exploration, lyrical interpretation, and personalized recommendations.
               </p>
             </div>
           </div>
@@ -480,8 +480,7 @@ export default function AssistantPage() {
                 What music do you want to explore today?
               </h2>
               <p className="text-sm text-ink-muted leading-relaxed">
-                Ask for mood-based recommendations, analyze song lyrics, generate themed playlists,
-                or explore how songs connect emotionally.
+                Ask for mood-based recommendations, analyze song lyrics, generate themed playlists, or discover the emotional story behind your favorite tracks.
               </p>
             </div>
 
@@ -505,7 +504,7 @@ export default function AssistantPage() {
                     </p>
                   </div>
                   <div className="mt-3 flex items-center text-[11px] text-purple-400 light:text-purple-600 font-medium group-hover:translate-x-1 transition-transform">
-                    <span>Ask assistant</span>
+                    <span>Ask AI</span>
                     <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
                   </div>
                 </button>
@@ -639,7 +638,7 @@ export default function AssistantPage() {
                     <span className="w-1.5 h-1.5 bg-purple-400 light:bg-purple-600 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
                     <span className="w-1.5 h-1.5 bg-purple-400 light:bg-purple-600 rounded-full animate-bounce"></span>
                   </span>
-                  <span>Connecting to CPU-optimized Ollama stream...</span>
+                  <span>Connecting to EmoLyrics AI...</span>
                 </div>
               </div>
             )}
@@ -681,7 +680,7 @@ export default function AssistantPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask for songs, moods, playlists, or paste lyrics to analyze..."
+              placeholder="Ask anything about song moods, lyrics, or request custom recommendations..."
               className="flex-1 glass-input rounded-2xl px-4 py-3 text-sm text-ink-main placeholder-neutral-500 light:placeholder-slate-400 transition-all resize-none max-h-32"
             />
 
@@ -709,7 +708,7 @@ export default function AssistantPage() {
 
           <div className="flex items-center justify-between text-[11px] text-ink-dim mt-2 px-1">
             <span>Press Enter to send, Shift+Enter for newline</span>
-            <span className="hidden sm:inline">Powered by EmoLyrics AI & Multilingual ML</span>
+            <span className="hidden sm:inline">Powered by EmoLyrics AI & Music Intelligence</span>
           </div>
         </div>
       </div>

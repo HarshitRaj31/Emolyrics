@@ -126,10 +126,10 @@ export default function EmotionDashboard({
           <Music2 className="w-7 h-7" />
         </div>
         <h4 className="font-display font-bold text-base text-ink-main">
-          Awaiting Emotion Analysis Data
+          🎵 Your emotional journey starts here.
         </h4>
         <p className="text-xs text-ink-muted max-w-sm mx-auto">
-          Run standard or deep AI analysis on your song lyrics to unlock the interactive visualization dashboard.
+          Analyze lyrics, upload a song, or paste a music link to uncover emotional patterns and explore sentiment visualizations.
         </p>
       </div>
     );
@@ -151,10 +151,10 @@ export default function EmotionDashboard({
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="font-display font-extrabold text-lg sm:text-xl text-ink-main tracking-tight">
-                Emotion Visualization Dashboard
+                Emotional Insights & Visualizations
               </h3>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-700 border border-purple-500/30 light:border-purple-200 font-bold">
-                Phase 2
+                AI Intelligence
               </span>
               {metadata.isCodeSwitched && (
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 light:bg-amber-100 text-amber-300 light:text-amber-800 border border-amber-500/30 light:border-amber-300 font-bold">
@@ -164,7 +164,7 @@ export default function EmotionDashboard({
               {metadata.isUncertain && (
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-orange-500/20 light:bg-orange-100 text-orange-300 light:text-orange-800 border border-orange-500/30 light:border-orange-300 font-bold flex items-center gap-1">
                   <AlertTriangle className="w-3 h-3 text-orange-400 light:text-orange-600" />
-                  <span>Calibrated Margin</span>
+                  <span>Calibrated</span>
                 </span>
               )}
             </div>
@@ -286,10 +286,10 @@ export default function EmotionDashboard({
           <div>
             <h4 className="text-base font-bold text-ink-main flex items-center gap-2">
               <FileText className="w-4 h-4 text-purple-400 light:text-purple-600" />
-              <span>Interactive Lyrics & Sentiment Explorer</span>
+              <span>Lyrical Sentiment Explorer</span>
             </h4>
             <p className="text-xs text-ink-muted mt-0.5">
-              Explore emotional classifications and matched cues line by line
+              Explore emotional patterns and sentiment cues line by line
             </p>
           </div>
 
@@ -298,7 +298,7 @@ export default function EmotionDashboard({
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-ink-dim" />
             <input
               type="text"
-              placeholder="Search lyrics or cues..."
+              placeholder="Search lyrics or emotional cues..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-8 pr-3 py-1.5 rounded-xl glass-input text-xs"

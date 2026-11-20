@@ -27,7 +27,7 @@ export default function AnalyticsFilters({
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink-muted">
             <Filter className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-            <span>Analytics Filters</span>
+            <span>Filter Insights</span>
           </div>
 
           {isAuthenticated ? (
@@ -60,7 +60,7 @@ export default function AnalyticsFilters({
           ) : (
             <span className="text-[11px] text-ink-secondary font-medium px-2.5 py-1 rounded-lg bg-white/5 light:bg-slate-900/5 border border-white/10 light:border-slate-200 flex items-center gap-1.5">
               <Globe className="w-3 h-3 text-sky-400 light:text-sky-600" />
-              <span>Global Dataset Analysis</span>
+              <span>Global Catalog Analytics</span>
             </span>
           )}
         </div>
@@ -73,7 +73,7 @@ export default function AnalyticsFilters({
             className="flex items-center gap-1 text-xs text-amber-400 hover:text-amber-300 light:text-amber-700 light:hover:text-amber-800 font-semibold self-start lg:self-auto transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            <span>Reset All Filters</span>
+            <span>Reset Filters</span>
           </button>
         )}
       </div>
@@ -91,7 +91,7 @@ export default function AnalyticsFilters({
             onChange={(e) => onTimeframeChange(e.target.value)}
             className="w-full glass-input rounded-xl px-3 py-2 text-xs text-ink-main"
           >
-            <option value="all">All Time History</option>
+            <option value="all">All Time</option>
             <option value="7d">Last 7 Days</option>
             <option value="30d">Last 30 Days</option>
             <option value="90d">Last 90 Days</option>
@@ -109,7 +109,7 @@ export default function AnalyticsFilters({
             onChange={(e) => onMoodChange(e.target.value)}
             className="w-full glass-input rounded-xl px-3 py-2 text-xs text-ink-main"
           >
-            <option value="All">All 9 Emotions</option>
+            <option value="All">All Emotions</option>
             {availableMoods.map((m) => (
               <option key={m} value={m}>
                 {m}
@@ -122,7 +122,7 @@ export default function AnalyticsFilters({
         <div className="space-y-1">
           <label className="text-[11px] text-ink-muted font-semibold flex items-center gap-1">
             <User className="w-3 h-3 text-ink-dim" />
-            <span>Artist Filter</span>
+            <span>Artist</span>
           </label>
           <select
             value={artist}

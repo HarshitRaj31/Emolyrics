@@ -47,7 +47,7 @@ export default function PdfDownloadButton({
           ? "bg-emerald-600/90 text-white border border-emerald-400"
           : "bg-white/10 hover:bg-white/20 text-white border border-white/15 light:bg-white light:hover:bg-slate-100 light:text-slate-800 light:border-slate-300/80 light:shadow-sm"
       } ${className}`}
-      title="Download comprehensive PDF analysis report including line-by-line sentiment, timeline, and Ollama interpretation"
+      title="Download comprehensive emotional analysis report including line-by-line sentiment and AI insights"
     >
       {downloading ? (
         <>

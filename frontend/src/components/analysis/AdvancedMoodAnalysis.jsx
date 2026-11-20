@@ -312,11 +312,11 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-lg font-bold text-ink-main tracking-tight">
-                Advanced AI Mood Analysis
+                AI-Powered Lyrics Analysis
               </h3>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-800 border border-purple-500/30 font-semibold flex items-center gap-1">
                 <Cpu className="w-3 h-3 text-purple-400 light:text-purple-600" />
-                {data.metadata?.modelVersion || "v1.2.0-production-calibrated"}
+                {data.metadata?.modelVersion || "v1.2.0-calibrated"}
               </span>
               {(data.metadata?.mlDurationMs || data.metadata?.durationMs) && (
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 light:bg-indigo-100 text-indigo-300 light:text-indigo-800 border border-indigo-500/30 font-medium flex items-center gap-1" title="ML Inference Latency">
@@ -326,16 +326,16 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
               )}
               {data.metadata?.mlServiceOnline ? (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 font-medium">
-                  Neural ML Engine
+                  Music Intelligence Engine
                 </span>
               ) : (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 light:bg-amber-50 text-amber-300 light:text-amber-700 border border-amber-500/30 font-medium">
-                  Lexical Fallback
+                  Heuristic Analysis
                 </span>
               )}
             </div>
             <p className="text-xs text-ink-muted">
-              10-Class Multi-Emotion Detection • Line-by-Line Sentiment • Lyrical Narrative
+              10-Emotion Spectrum • Line-by-Line Sentiment • Narrative Intelligence
             </p>
           </div>
         </div>
@@ -381,7 +381,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
               <span className="text-[11px] uppercase tracking-wider font-bold text-ink-muted flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400 light:text-amber-600" />
-                Primary Lyrical Mood
+                Primary Emotion
               </span>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <span className="text-xs px-2.5 py-0.5 rounded-full theme-well text-ink-secondary flex items-center gap-1.5 font-medium">
@@ -461,7 +461,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
             <div className="flex items-center justify-between text-xs">
               <div className="flex items-center gap-1.5">
                 <span className="font-semibold text-ink-secondary">
-                  Model Statistical Confidence
+                  AI Confidence Score
                 </span>
                 <button
                   type="button"
@@ -522,12 +522,12 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] uppercase tracking-wider font-bold text-ink-muted flex items-center gap-1.5">
                 <Layers className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-                Co-Occurring Emotions
+                Secondary Mood Cues
               </span>
               <span className="text-[10px] text-ink-muted font-mono">Ranked</span>
             </div>
             <p className="text-xs text-ink-muted mb-4">
-              Secondary emotional currents interweaving with the primary mood.
+              Secondary emotional currents that shape this song's sonic feel.
             </p>
 
             <div className="space-y-3">
@@ -586,7 +586,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-sky-400 light:text-sky-600" />
             <h4 className="text-sm font-bold text-ink-main">
-              10-Emotion Lyrical Spectrum Distribution
+              Emotion Spectrum Distribution
             </h4>
           </div>
           <span className="text-[11px] text-ink-muted">
@@ -645,15 +645,15 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h4 className="text-base font-bold text-ink-main">
-                  Overall Song Interpretation
+                  AI Lyrical Summary
                 </h4>
                 <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 light:bg-emerald-50 text-emerald-400 light:text-emerald-700 border border-emerald-500/30 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 light:bg-emerald-500 animate-pulse" />
-                  {aiInterpretation.provider || "Ollama (qwen2.5:3b)"}
+                  {aiInterpretation.provider || "AI Model"}
                 </span>
               </div>
               <p className="text-xs text-ink-muted">
-                AI Deep Lyrical Synthesis & Narrative Breakdown
+                Deep lyrical analysis and emotional narrative breakdown
               </p>
             </div>
           </div>
@@ -672,7 +672,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
           <div className="p-4 sm:p-5 rounded-2xl theme-well space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-ink-secondary uppercase tracking-wider">
               <FileText className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-              <span>Overall Emotional Meaning</span>
+              <span>Emotional Meaning</span>
             </div>
             <p className="text-xs sm:text-sm text-ink-main leading-relaxed font-sans">
               {aiInterpretation.overallMeaning}
@@ -683,7 +683,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
           <div className="p-4 sm:p-5 rounded-2xl theme-well space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-ink-secondary uppercase tracking-wider">
               <Compass className="w-3.5 h-3.5 text-amber-400 light:text-amber-600" />
-              <span>Why {primaryEmotion} Was Detected</span>
+              <span>Why This Emotion Resonates</span>
             </div>
             <p className="text-xs sm:text-sm text-ink-main leading-relaxed font-sans">
               {aiInterpretation.whyPrimaryEmotion}
@@ -695,7 +695,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
         {aiInterpretation.mainThemes?.length > 0 && (
           <div className="space-y-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-              Main Lyrical Themes
+              Core Themes
             </span>
             <div className="flex flex-wrap gap-2 pt-0.5">
               {aiInterpretation.mainThemes.map((theme, i) => (
@@ -714,7 +714,7 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
         {aiInterpretation.emotionalProgression?.length > 0 && (
           <div className="space-y-3 pt-2">
             <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-              Emotional Progression
+              Emotional Journey
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {aiInterpretation.emotionalProgression.map((prog, idx) => (
@@ -762,10 +762,10 @@ Analyzed with EmoLyrics AI NLP & Ollama`;
           <div>
             <h4 className="text-base font-bold text-ink-main flex items-center gap-2">
               <ListFilter className="w-4 h-4 text-purple-400 light:text-purple-600" />
-              <span>Multilingual Lyrical Emotion Analysis</span>
+              <span>Lyrical Sentiment Breakdown</span>
             </h4>
             <p className="text-xs text-ink-muted mt-0.5">
-              Context-aware neural classification across lines, structural sections, and emotional trajectory
+              Line-by-line emotional sentiment and structural narrative analysis
             </p>
           </div>
 

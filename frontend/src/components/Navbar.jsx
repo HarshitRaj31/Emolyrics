@@ -47,30 +47,30 @@ export default function Navbar({ onOpenResearch }) {
         {/* Brand / Logo */}
         <Link
           to="/"
-          className="flex items-center gap-3 group focus-visible:ring-2 focus-visible:ring-purple-500 rounded-2xl p-1"
+          className="flex items-center gap-3 group focus-visible:ring-2 focus-visible:ring-orange-500 rounded-2xl p-1"
           aria-label="EmoLyrics Home"
         >
           <div className="relative">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 p-0.5 shadow-lg shadow-purple-500/20 group-hover:shadow-purple-500/40 transition-all duration-300 group-hover:scale-105">
-              <div className="w-full h-full bg-neutral-950 light:bg-slate-900 rounded-[14px] flex items-center justify-center">
-                <Music2 className="w-5 h-5 text-amber-400 group-hover:rotate-12 transition-transform duration-300" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-400 p-0.5 shadow-lg shadow-orange-500/25 group-hover:shadow-orange-500/45 transition-all duration-300 group-hover:scale-105">
+              <div className="w-full h-full bg-[#111827] light:bg-slate-900 rounded-[14px] flex items-center justify-center">
+                <Music2 className="w-5 h-5 text-orange-400 group-hover:rotate-12 transition-transform duration-300" />
               </div>
             </div>
             {/* Ambient Pulse indicator */}
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-surface-page ring-1 ring-emerald-400/50" />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-surface-page ring-1 ring-orange-400/50" />
           </div>
 
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-display font-extrabold text-xl tracking-tight text-ink-main group-hover:text-amber-400 light:group-hover:text-amber-600 transition-colors">
+              <span className="font-display font-extrabold text-xl tracking-tight text-ink-main group-hover:text-orange-400 light:group-hover:text-orange-600 transition-colors">
                 EmoLyrics
               </span>
-              <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-full bg-gradient-to-r from-purple-500/20 to-indigo-500/20 text-purple-300 light:text-purple-700 border border-purple-500/30">
-                AI NLP v2
+              <span className="text-[10px] font-mono font-bold uppercase px-1.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500/20 to-amber-500/20 text-orange-400 light:text-orange-700 border border-orange-500/30">
+                AI Intelligence
               </span>
             </div>
             <p className="text-[11px] text-ink-muted hidden sm:block">
-              Song Lyrics Mood Classification
+              Analyze. Feel. Discover.
             </p>
           </div>
         </Link>
@@ -94,7 +94,7 @@ export default function Navbar({ onOpenResearch }) {
                 <Icon
                   className={`w-3.5 h-3.5 ${
                     isActive
-                      ? "text-purple-600 light:text-purple-300"
+                      ? "text-orange-500 light:text-orange-600"
                       : "text-ink-muted"
                   }`}
                 />
@@ -103,8 +103,8 @@ export default function Navbar({ onOpenResearch }) {
                   <span
                     className={`text-[9px] px-1.5 py-0.2 rounded-full font-mono font-bold leading-none ${
                       isActive
-                        ? "bg-purple-600 light:bg-purple-500 text-white"
-                        : "bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-700 border border-purple-500/30 light:border-purple-200"
+                        ? "bg-orange-500 light:bg-orange-600 text-white"
+                        : "bg-orange-500/15 light:bg-orange-100 text-orange-400 light:text-orange-700 border border-orange-500/30 light:border-orange-200"
                     }`}
                   >
                     {link.badge}
@@ -131,14 +131,14 @@ export default function Navbar({ onOpenResearch }) {
             type="button"
             onClick={toggleTheme}
             aria-pressed={!isDark}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-card border border-white/10 light:border-slate-900/10 text-ink-secondary hover:text-ink-main hover:border-purple-500/40 transition-colors shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface-card border border-white/10 light:border-slate-900/10 text-ink-secondary hover:text-ink-main hover:border-orange-500/40 transition-colors shadow-sm"
             title={`Switch to ${isDark ? "Light" : "Dark"} Mode`}
             aria-label={`Switch to ${isDark ? "Light" : "Dark"} Mode (currently ${theme} mode)`}
           >
             {isDark ? (
-              <Sun className="w-4 h-4 text-amber-400" />
+              <Sun className="w-4 h-4 text-orange-400" />
             ) : (
-              <Moon className="w-4 h-4 text-indigo-600" />
+              <Moon className="w-4 h-4 text-orange-600" />
             )}
             <span className="text-xs font-semibold hidden xl:inline">
               {isDark ? "Light" : "Dark"}
@@ -195,8 +195,8 @@ export default function Navbar({ onOpenResearch }) {
                   <span
                     className={`text-[10px] px-2 py-0.5 rounded-full font-mono font-bold ${
                       isActive
-                        ? "bg-purple-600 text-white"
-                        : "bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-700 border border-purple-500/30 light:border-purple-200"
+                        ? "bg-orange-500 text-white"
+                        : "bg-orange-500/15 light:bg-orange-100 text-orange-400 light:text-orange-700 border border-orange-500/30 light:border-orange-200"
                     }`}
                   >
                     {link.badge}

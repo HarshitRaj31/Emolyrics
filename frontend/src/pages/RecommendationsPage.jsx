@@ -118,7 +118,7 @@ export default function RecommendationsPage() {
         trackRecommendations(res.recommendations, selectedMood);
       } else {
         setRecommendations([]);
-        setError("No recommendation matches found for this filter combination.");
+        setError("No mood matches found for this filter combination. Try adjusting your mood selection.");
       }
     } catch (err) {
       console.error("Recommendations fetch error:", err);
@@ -280,7 +280,7 @@ export default function RecommendationsPage() {
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-purple-500/20 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-              <span>Phase 3 Engine</span>
+              <span>Music Intelligence</span>
             </span>
             <span className="text-xs font-mono px-3 py-1 rounded-full theme-well text-ink-secondary">
               10-Emotion Spectrum
@@ -293,11 +293,11 @@ export default function RecommendationsPage() {
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl font-black text-ink-main tracking-tight">
-            Personalized Music Recommendations
+            Discover Similar Songs & Mood Matches
           </h1>
           <p className="text-sm sm:text-base text-ink-secondary leading-relaxed font-sans">
-            Discover emotionally aligned songs matched through natural language lyrical analysis,
-            sentiment valence, arousal densities, and intelligent Ollama AI explanations.
+            Explore curated tracks that share the emotional heartbeat and sonic sentiment of your favorite music.
+            Matched through AI natural language lyrics analysis and emotional valence.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -310,7 +310,7 @@ export default function RecommendationsPage() {
               className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 shadow-lg hover:opacity-95 transition-all"
             >
               <ListPlus className="w-4 h-4" />
-              <span>Create Mood Playlist</span>
+              <span>Create Playlist</span>
             </button>
 
             <Link
@@ -318,7 +318,7 @@ export default function RecommendationsPage() {
               className="px-4 py-2.5 rounded-2xl theme-well hover:border-purple-500/40 text-ink-main font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
             >
               <Compass className="w-4 h-4 text-purple-400 light:text-purple-600" />
-              <span>Analyze New Lyrics</span>
+              <span>Analyze Lyrics</span>
             </Link>
           </div>
         </div>
@@ -330,7 +330,7 @@ export default function RecommendationsPage() {
           <div className="flex items-center gap-2">
             <Volume2 className="w-4 h-4 text-purple-400 light:text-purple-600" />
             <h2 className="text-sm font-bold uppercase tracking-wider text-ink-secondary">
-              Select Dominant Emotional Frequency
+              Select Dominant Emotion
             </h2>
           </div>
           <span className="text-xs text-ink-muted font-mono hidden sm:inline">
@@ -407,7 +407,7 @@ export default function RecommendationsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Filter by title, artist, trait..."
+              placeholder="Filter by title, artist, or emotion..."
               className="w-full pl-9 pr-3 py-1.5 rounded-xl glass-input text-xs text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 font-sans"
             />
           </div>
@@ -417,7 +417,7 @@ export default function RecommendationsPage() {
             onClick={() => fetchRecommendations(true)}
             disabled={loading}
             className="px-3 py-1.5 rounded-xl theme-well hover:border-purple-500/40 text-ink-main text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40 shrink-0"
-            title="Explore more recommendations without duplicates"
+            title="Discover more recommendations"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-purple-400 light:text-purple-600 ${loading ? "animate-spin" : ""}`} />
             <span className="hidden sm:inline">Shuffle</span>
@@ -432,10 +432,10 @@ export default function RecommendationsPage() {
             <div className="flex items-center gap-2">
               <Compass className="w-4 h-4 text-sky-400 light:text-sky-600" />
               <h3 className="font-display font-bold text-base text-ink-main">
-                Similar Song Discovery
+                Discover Similar Songs
               </h3>
               <span className="text-xs text-sky-300 light:text-sky-700 font-mono">
-                Matching "{seedTitle}"
+                Matching emotional profile of "{seedTitle}"
               </span>
             </div>
             <button
@@ -452,7 +452,7 @@ export default function RecommendationsPage() {
 
           {similarLoading ? (
             <div className="py-6 text-center text-xs text-ink-muted animate-pulse">
-              Finding emotionally similar song profiles...
+              Finding songs that share this emotional signature...
             </div>
           ) : similarSongs.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -489,7 +489,7 @@ export default function RecommendationsPage() {
             </div>
           ) : (
             <div className="text-xs text-ink-muted">
-              No directly similar tracks found. Explore the general recommendation grid below!
+              No direct matches found for this track. Explore the mood recommendations below.
             </div>
           )}
         </div>
@@ -501,12 +501,12 @@ export default function RecommendationsPage() {
           <div className="flex items-center gap-2">
             <Disc3 className="w-4 h-4 text-purple-400 light:text-purple-600 animate-spin-slow" />
             <h3 className="font-display font-bold text-lg text-ink-main">
-              Curated {selectedMood} Tracklist
-              {secondaryMood && ` (with ${secondaryMood} cues)`}
+              Curated {selectedMood} Recommendations
+              {secondaryMood && ` (with ${secondaryMood} undertones)`}
             </h3>
           </div>
           <span className="text-xs text-ink-muted font-mono">
-            {filteredRecommendations.length} verified songs
+            {filteredRecommendations.length} songs
           </span>
         </div>
 
@@ -535,7 +535,7 @@ export default function RecommendationsPage() {
         ) : error ? (
           <div className="p-8 rounded-3xl bg-red-500/10 light:bg-red-50 border border-red-500/30 text-center space-y-3">
             <AlertTriangle className="w-8 h-8 text-red-400 light:text-red-600 mx-auto" />
-            <h4 className="font-bold text-red-200 light:text-red-800">Recommendation Engine Notice</h4>
+            <h4 className="font-bold text-red-200 light:text-red-800">Music Intelligence Notice</h4>
             <p className="text-xs text-ink-muted max-w-md mx-auto">{error}</p>
             <button
               onClick={() => fetchRecommendations(false)}
@@ -547,9 +547,9 @@ export default function RecommendationsPage() {
         ) : filteredRecommendations.length === 0 ? (
           <div className="py-16 text-center rounded-3xl theme-card space-y-3">
             <Music2 className="w-10 h-10 text-ink-dim mx-auto" />
-            <h4 className="font-bold text-ink-secondary">No Tracks Matched Query</h4>
+            <h4 className="font-bold text-ink-secondary">No Mood Matches Found</h4>
             <p className="text-xs text-ink-dim">
-              Try adjusting your search query or switching to another emotional vibe.
+              Try adjusting your search keywords or exploring another emotional tone.
             </p>
           </div>
         ) : (
@@ -636,7 +636,7 @@ export default function RecommendationsPage() {
                         <div className="flex items-center justify-between text-[10px] font-mono font-bold text-purple-300 light:text-purple-700">
                           <span className="flex items-center gap-1">
                             <Bot className="w-3 h-3 text-purple-400 light:text-purple-600" />
-                            <span>AI Explanation</span>
+                            <span>AI Emotional Insights</span>
                           </span>
                           <span>{aiExp.model}</span>
                         </div>
@@ -651,13 +651,13 @@ export default function RecommendationsPage() {
                       >
                         {isExplaining ? (
                           <>
-                            <div className="w-3 h-3 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
-                            <span>Consulting Ollama AI...</span>
+                            <div className="w-3.5 h-3.5 border-2 border-purple-400 border-t-transparent rounded-full animate-spin" />
+                            <span>Generating AI Summary...</span>
                           </>
                         ) : (
                           <>
-                            <Bot className="w-3 h-3 text-purple-400 light:text-purple-600" />
-                            <span>Why does this match? (AI)</span>
+                            <Bot className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
+                            <span>Generate AI Summary</span>
                           </>
                         )}
                       </button>
@@ -692,7 +692,7 @@ export default function RecommendationsPage() {
                       onClick={() => handleAnalyzeSong(track)}
                       className="text-[11px] font-semibold text-purple-400 hover:text-purple-300 light:text-purple-700 light:hover:text-purple-800 flex items-center gap-1 transition-colors"
                     >
-                      <span>Analyze</span>
+                      <span>Analyze Lyrics</span>
                       <ArrowRight className="w-3 h-3" />
                     </button>
                   </div>
@@ -713,10 +713,10 @@ export default function RecommendationsPage() {
               </div>
               <div>
                 <h3 className="font-display font-bold text-xl text-ink-main">
-                  Smart Mood Playlist Generator
+                  Smart Mood Playlist Studio
                 </h3>
                 <p className="text-xs text-ink-muted">
-                  Compose single or mixed-emotion playlists with customized track lengths
+                  Compose single or blended-emotion playlists tuned to your desired vibe.
                 </p>
               </div>
             </div>
@@ -734,7 +734,7 @@ export default function RecommendationsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-xs font-semibold text-ink-secondary uppercase tracking-wider">
-                Select Target Emotions (Mixed Emotion Supported)
+                Select Target Emotions (Blend Multiple Emotions)
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {ADVANCED_MOODS.map((m) => {
@@ -769,7 +769,7 @@ export default function RecommendationsPage() {
 
             <div className="space-y-2">
               <label className="text-xs font-semibold text-ink-secondary uppercase tracking-wider">
-                Playlist Track Count
+                Playlist Length
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[5, 10, 15, 20].map((count) => (
@@ -804,12 +804,12 @@ export default function RecommendationsPage() {
               {generatingPlaylist ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                  <span>Synthesizing Playlist...</span>
+                  <span>Creating Playlist...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
-                  <span>Generate Playlist</span>
+                  <span>Create Playlist</span>
                 </>
               )}
             </button>

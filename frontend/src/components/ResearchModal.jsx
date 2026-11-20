@@ -47,12 +47,12 @@ export default function ResearchModal({ isOpen, onClose }) {
               <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink-main">
                 EmoLyrics Architecture & Research
               </h2>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-100 text-purple-300 light:text-purple-700 border border-purple-500/30 light:border-purple-200 font-semibold">
+              <span className="text-xs px-2 py-0.5 rounded-full bg-orange-500/20 light:bg-orange-100 text-orange-400 light:text-orange-700 border border-orange-500/30 light:border-orange-200 font-semibold">
                 Larana, Inc.
               </span>
             </div>
             <p className="text-sm text-ink-muted">
-              Song Lyrics Mood Classification System • Project Benchmarks & Methodology
+              Music Intelligence System • Project Benchmarks & Methodology
             </p>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function ResearchModal({ isOpen, onClose }) {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4 text-ink-main font-display font-semibold text-lg">
             <Layers className="w-5 h-5 text-purple-400 light:text-purple-600" />
-            <span>End-to-End System Pipeline</span>
+            <span>End-to-End AI Intelligence Pipeline</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {pipeline.map((p) => (
@@ -109,7 +109,7 @@ export default function ResearchModal({ isOpen, onClose }) {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-4 text-ink-main font-display font-semibold text-lg">
             <Users className="w-5 h-5 text-indigo-400 light:text-indigo-600" />
-            <span>Research & Engineering Team (EmoLyrics)</span>
+            <span>EmoLyrics Research & Development Team</span>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {team.map((m) => (

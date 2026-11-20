@@ -79,7 +79,7 @@ export default function PluginSettingsModal({
               <h3 className="font-display font-bold text-lg text-ink-main">
                 {plugin.name} Settings
               </h3>
-              <p className="text-xs text-ink-muted">Configure parameters & user preferences</p>
+              <p className="text-xs text-ink-muted">Configure preferences and integration parameters</p>
             </div>
           </div>
 
@@ -159,13 +159,13 @@ export default function PluginSettingsModal({
             ))
           ) : (
             <div className="text-center py-8 text-ink-muted text-xs">
-              This plugin does not require any additional user configuration.
+              This plugin does not require additional configuration.
             </div>
           )}
 
           <div className="p-3 rounded-xl theme-well flex items-center gap-2 text-[11px] text-ink-muted">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600 shrink-0" />
-            <span>Settings are stored locally in your browser workspace.</span>
+            <span>Preferences are saved locally in your music workspace.</span>
           </div>
         </form>
 

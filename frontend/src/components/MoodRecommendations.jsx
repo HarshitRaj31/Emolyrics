@@ -174,13 +174,13 @@ export default function MoodRecommendations({
           <div className="flex items-center gap-2 mb-1.5 flex-wrap">
             <span className="text-2xl select-none">{activeMoodInfo?.emoji || activeToken.emoji}</span>
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-ink-main tracking-tight">
-              Personalized {activeMood} Recommendations
+              Explore Mood Matches & Recommendations
             </h2>
             <span
               className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border"
               style={getEmotionBadgeStyle(activeMood, isDark)}
             >
-              Emotion-Aligned
+              Mood Match
             </span>
           </div>
 
@@ -197,11 +197,11 @@ export default function MoodRecommendations({
               </>
             ) : (
               <>
-                Discover hand-picked tracks matching the{" "}
+                Discover hand-picked tracks sharing the{" "}
                 <span className="font-semibold" style={{ color: activeMoodTextColor }}>
                   {activeMood}
                 </span>{" "}
-                emotional spectrum with Spotify and YouTube listening links.
+                emotional spectrum with verified listening links.
               </>
             )}
           </p>
@@ -213,11 +213,11 @@ export default function MoodRecommendations({
           <Link
             to="/recommendations"
             state={{ mood: activeMood, seedSong }}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-purple-600/30 hover:bg-purple-600/45 light:bg-purple-50 light:hover:bg-purple-100 text-purple-200 light:text-purple-700 border border-purple-500/30 text-xs font-semibold transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-600/20 hover:bg-orange-600/35 light:bg-orange-50 light:hover:bg-orange-100 text-orange-300 light:text-orange-900 border border-orange-500/30 text-xs font-semibold transition-all"
             title="Open Dedicated Music Recommendation Studio"
           >
-            <Compass className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-            <span className="hidden sm:inline">Discovery Studio</span>
+            <Compass className="w-3.5 h-3.5 text-orange-400 light:text-orange-600" />
+            <span className="hidden sm:inline">Explore Mood Matches</span>
           </Link>
 
           {/* Explore More Button */}
@@ -229,7 +229,7 @@ export default function MoodRecommendations({
             title="Fetch new recommendations without repeats"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin text-amber-400 light:text-amber-600" : ""}`} />
-            <span>Explore More</span>
+            <span>Discover Similar Songs</span>
           </button>
 
           {/* Personalized History Toggle */}
@@ -239,10 +239,10 @@ export default function MoodRecommendations({
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 light:bg-slate-100 light:hover:bg-slate-200 border border-white/10 light:border-slate-200 text-xs font-semibold text-ink-secondary hover:text-ink-main transition-all"
             title="View personal analyzed and recommended history"
           >
-            <History className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-            <span className="hidden sm:inline">Personal History</span>
+            <History className="w-3.5 h-3.5 text-orange-400 light:text-orange-600" />
+            <span className="hidden sm:inline">Listening Journey</span>
             {recentlyAnalyzed.length > 0 && (
-              <span className="w-4 h-4 rounded-full bg-purple-500/30 light:bg-purple-100 text-purple-200 light:text-purple-700 text-[10px] flex items-center justify-center font-bold">
+              <span className="w-4 h-4 rounded-full bg-orange-500/30 light:bg-orange-100 text-orange-300 light:text-orange-800 text-[10px] flex items-center justify-center font-bold">
                 {recentlyAnalyzed.length}
               </span>
             )}
@@ -255,7 +255,7 @@ export default function MoodRecommendations({
         <div className="flex items-center justify-between text-xs text-ink-muted">
           <span className="flex items-center gap-1.5 font-medium">
             <Layers className="w-3.5 h-3.5 text-ink-muted" />
-            Explore Recommendations by Detected Emotion:
+            Explore Music by Emotional Signature:
           </span>
           <span className="text-[11px] text-ink-dim">10 Core Emotion Spectrums</span>
         </div>

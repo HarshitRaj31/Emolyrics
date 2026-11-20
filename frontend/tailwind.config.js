@@ -25,6 +25,52 @@ export default {
           secondary: "rgb(var(--rgb-text-secondary) / <alpha-value>)",
           muted: "rgb(var(--rgb-text-muted) / <alpha-value>)",
           dim: "rgb(var(--rgb-text-dim) / <alpha-value>)"
+        },
+        palette: {
+          dark: "#111827",
+          slate: "#374151",
+          muted: "#9CA3AF",
+          orange: "#F97316",
+          light: "#F3F4F6"
+        },
+        brand: {
+          DEFAULT: "#F97316",
+          50: "#fff7ed",
+          100: "#ffedd5",
+          200: "#fed7aa",
+          300: "#fdba74",
+          400: "#fb923c",
+          500: "#F97316",
+          600: "#ea580c",
+          700: "#c2410c",
+          800: "#9a3412",
+          900: "#7c2d12"
+        },
+        purple: {
+          50: "#fff7ed",
+          100: "#ffedd5",
+          200: "#fed7aa",
+          300: "#fdba74",
+          400: "#fb923c",
+          500: "#f97316",
+          600: "#ea580c",
+          700: "#c2410c",
+          800: "#9a3412",
+          900: "#7c2d12",
+          950: "#431407"
+        },
+        indigo: {
+          50: "#f3f4f6",
+          100: "#fed7aa",
+          200: "#fdba74",
+          300: "#fb923c",
+          400: "#f97316",
+          500: "#ea580c",
+          600: "#c2410c",
+          700: "#9a3412",
+          800: "#374151",
+          900: "#1f2937",
+          950: "#111827"
         }
       },
       animation: {

@@ -50,25 +50,25 @@ const HOW_IT_WORKS_STEPS = [
     step: "01",
     title: "Select or Discover Lyrics",
     description:
-      "Type or paste song lyrics in 5 supported languages, or search millions of songs instantly via authorized MusicBrainz and LRCLIB APIs.",
+      "Paste lyrics in 5 supported languages or search millions of songs instantly across our global music catalog.",
     icon: Search,
-    color: "#a855f7"
+    color: "#f97316"
   },
   {
     step: "02",
-    title: "Multi-Layered NLP Processing",
+    title: "AI Sentiment Modeling",
     description:
-      "Our native ML engine identifies script, evaluates semantic valence & arousal densities, and extracts subtle emotional nuances without machine translation distortion.",
+      "Our intelligent natural language model analyzes emotional valence, lyrical motifs, and poetic nuance with deep semantic awareness.",
     icon: Layers,
     color: "#3b82f6"
   },
   {
     step: "03",
-    title: "Emotion Spectrum & Music Discovery",
+    title: "Emotional Insights & Music Discovery",
     description:
-      "Receive real-time confidence scores across 9 discrete mood classes, generated explanations, and personalized song recommendations matching that emotional vibe.",
+      "Receive calibrated confidence scores, mood breakdowns, and handpicked song recommendations tuned to that exact emotional vibe.",
     icon: Sparkles,
-    color: "#f59e0b"
+    color: "#10b981"
   }
 ];
 
@@ -463,49 +463,54 @@ export default function AnalyzerPage() {
       {/* ============================================================ */}
       {/* 1. PREMIUM LANDING HERO SECTION */}
       {/* ============================================================ */}
+      {/* 1. PREMIUM LANDING HERO SECTION */}
+      {/* ============================================================ */}
       <section className="relative pt-12 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-4xl mx-auto space-y-6">
           {/* Animated Header Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 dark:bg-white/5 light:bg-purple-100/80 border border-white/10 dark:border-white/10 light:border-purple-200 text-xs font-semibold text-neutral-300 dark:text-neutral-300 light:text-purple-800 shadow-sm backdrop-blur-md">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 dark:bg-white/5 light:bg-orange-100/80 border border-white/10 dark:border-white/10 light:border-orange-200 text-xs font-semibold text-neutral-300 dark:text-neutral-300 light:text-orange-900 shadow-sm backdrop-blur-md">
             <span className="flex items-center gap-1">
-              <span className="w-1.5 h-3 bg-purple-500 rounded-full soundwave-bar" />
+              <span className="w-1.5 h-3 bg-orange-500 rounded-full soundwave-bar" />
               <span className="w-1.5 h-4 bg-amber-400 rounded-full soundwave-bar [animation-delay:-0.2s]" />
               <span className="w-1.5 h-2 bg-emerald-400 rounded-full soundwave-bar [animation-delay:-0.4s]" />
             </span>
-            <span>Next-Generation Multilingual Music Emotion Intelligence</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-200/80 text-purple-300 light:text-purple-800 font-mono">
-              9-Emotion NLP
+            <span>Next-Generation Music Emotion Intelligence</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500/20 light:bg-orange-200 text-orange-400 light:text-orange-900 font-mono font-bold">
+              AI Powered
             </span>
           </div>
 
           {/* Hero Main Heading */}
           <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-ink-main leading-[1.1]">
-            Decode the Emotion Behind{" "}
-            <span className="gradient-text-purple">Every Lyric</span>
+            <span className="gradient-text-orange">Analyze. Feel. Discover.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-ink-muted max-w-2xl mx-auto leading-relaxed font-sans">
-            Explore how song lyrics evoke joy, sorrow, adrenaline, or tranquility. Powered by a
-            fine-tuned 9-mood lexical NLP model, MusicBrainz song search, and an interactive AI Music Assistant.
+          <p className="text-base sm:text-xl font-semibold text-ink-main max-w-2xl mx-auto leading-relaxed font-display">
+            Transform lyrics into deep emotional insights with AI-powered mood detection and personalized music recommendations.
+          </p>
+
+          {/* Master Description */}
+          <p className="text-xs sm:text-sm text-ink-muted max-w-2xl mx-auto leading-relaxed font-sans">
+            Understand the emotions behind every song, explore sentiment patterns, and discover music that shares the same emotional signature.
           </p>
 
           {/* Action CTAs */}
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <button
               onClick={scrollToWorkbench}
-              className="py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-sm sm:text-base flex items-center gap-2 shadow-xl shadow-purple-600/25 hover:shadow-purple-600/40 hover:scale-102 transition-all"
+              className="py-3.5 px-6 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-sm sm:text-base flex items-center gap-2 shadow-xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-102 transition-all"
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>Analyze Lyrics Now</span>
+              <Sparkles className="w-4 h-4 text-amber-200" />
+              <span>Analyze Lyrics</span>
             </button>
 
             <Link
               to="/assistant"
               className="py-3.5 px-6 rounded-2xl bg-white/10 light:bg-white hover:bg-white/15 light:hover:bg-slate-100 text-ink-main font-bold text-sm sm:text-base flex items-center gap-2 border border-white/15 light:border-slate-300 hover:scale-102 transition-all shadow-md"
             >
-              <Bot className="w-4 h-4 text-purple-400 light:text-purple-600" />
-              <span>Ask AI Music Assistant</span>
+              <Bot className="w-4 h-4 text-orange-400 light:text-orange-600" />
+              <span>Ask AI</span>
             </Link>
 
             <Link
@@ -513,7 +518,7 @@ export default function AnalyzerPage() {
               className="py-3.5 px-5 rounded-2xl bg-white/5 light:bg-white hover:bg-white/10 light:hover:bg-slate-100 text-ink-secondary font-semibold text-sm flex items-center gap-1.5 border border-white/10 light:border-slate-200 transition-colors"
             >
               <Compass className="w-4 h-4 text-sky-400 light:text-sky-600" />
-              <span>Explore Songs</span>
+              <span>Explore Mood Matches</span>
             </Link>
           </div>
 
@@ -521,19 +526,19 @@ export default function AnalyzerPage() {
           <div className="pt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-ink-muted font-medium">
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>9 Trained Emotion Classes</span>
+              <span>10 Emotion Spectrums</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>5 Languages & Native Scripts</span>
+              <span>5 Languages & Scripts</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>MusicBrainz Live Search</span>
+              <span>Global Song Catalog</span>
             </div>
             <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>Zero-Scraping Policy</span>
+              <span>Ethical & Transparent AI</span>
             </div>
           </div>
         </div>
@@ -544,11 +549,11 @@ export default function AnalyzerPage() {
       {/* ============================================================ */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-y border-white/5 light:border-slate-200/80">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider text-purple-400 light:text-purple-600 mb-1.5">
-            Architecture Workflow
+          <div className="text-xs font-bold uppercase tracking-wider text-orange-400 light:text-orange-600 mb-1.5">
+            How EmoLyrics Works
           </div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink-main">
-            How EmoLyrics Analyzes Music Emotion
+            Three Steps to Deeper Musical Understanding
           </h2>
         </div>
 
@@ -558,7 +563,7 @@ export default function AnalyzerPage() {
             return (
               <div
                 key={idx}
-                className="relative p-6 rounded-3xl theme-card shadow-lg group hover:border-purple-500/40 transition-all hover:-translate-y-1"
+                className="relative p-6 rounded-3xl theme-card shadow-lg group hover:border-orange-500/40 transition-all hover:-translate-y-1"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div
@@ -592,15 +597,15 @@ export default function AnalyzerPage() {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16"
       >
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 light:bg-purple-50 border border-white/10 light:border-purple-200 text-xs font-semibold text-ink-secondary light:text-purple-800 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400 light:text-amber-600" />
-            <span>Interactive Classification Studio</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 light:bg-orange-50 border border-white/10 light:border-orange-200 text-xs font-semibold text-ink-secondary light:text-orange-800 mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-orange-400 light:text-orange-600" />
+            <span>Interactive Lyrics Studio</span>
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-            Submit Lyrics or Search a Song
+            AI-Powered Lyrics Analysis
           </h2>
           <p className="text-xs sm:text-sm text-ink-muted mt-1">
-            Analyze lyrical sentiment in English, Hindi, Bengali, Spanish, or French with instant confidence scoring.
+            Uncover emotional patterns, lyrical sentiment, and the heart of every track with cutting-edge AI.
           </p>
         </div>
 
@@ -627,7 +632,7 @@ export default function AnalyzerPage() {
                 <Search className="w-4 h-4 text-sky-400 light:text-sky-600" />
                 <span>Song Discovery</span>
                 <span className="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded-full bg-sky-500/20 light:bg-sky-100 text-sky-200 light:text-sky-700 border border-sky-500/30">
-                  MusicBrainz + LRCLIB
+                  Global Catalog
                 </span>
               </button>
               <button
@@ -635,11 +640,11 @@ export default function AnalyzerPage() {
                 onClick={() => setInputMode("custom")}
                 className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                   inputMode === "custom"
-                    ? "bg-purple-500/20 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 shadow-md"
+                    ? "bg-orange-500/20 light:bg-orange-50 text-orange-300 light:text-orange-700 border border-orange-500/30 shadow-md"
                     : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
                 }`}
               >
-                <FileText className="w-4 h-4 text-purple-400 light:text-purple-600" />
+                <FileText className="w-4 h-4 text-orange-400 light:text-orange-600" />
                 <span>Custom Lyrics Input</span>
               </button>
             </div>
@@ -654,14 +659,14 @@ export default function AnalyzerPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                   <input
                     type="text"
-                    placeholder="Song Title (optional)"
+                    placeholder="Song Title (e.g. Fix You)"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="glass-input px-4 py-2 rounded-xl text-sm text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400"
                   />
                   <input
                     type="text"
-                    placeholder="Artist / Band (optional)"
+                    placeholder="Artist / Band (e.g. Coldplay)"
                     value={artist}
                     onChange={(e) => setArtist(e.target.value)}
                     className="glass-input px-4 py-2 rounded-xl text-sm text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400"
@@ -672,7 +677,7 @@ export default function AnalyzerPage() {
                 <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 mb-3.5 rounded-2xl theme-well text-xs">
                   <div className="flex items-center gap-2">
                     <Globe className="w-3.5 h-3.5 text-sky-400 light:text-sky-600" />
-                    <span className="text-ink-muted font-medium">Automatic Script & Language:</span>
+                    <span className="text-ink-muted font-medium">Detected Script & Language:</span>
                     {detectingLanguage ? (
                       <span className="text-ink-secondary animate-pulse">Detecting language...</span>
                     ) : detectedLanguageInfo ? (
@@ -694,7 +699,7 @@ export default function AnalyzerPage() {
                   </div>
                   {detectedLanguageInfo && detectedLanguageInfo.supported && (
                     <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 font-semibold">
-                      Native Model Ready
+                      Multilingual AI Ready
                     </span>
                   )}
                 </div>
@@ -716,7 +721,7 @@ export default function AnalyzerPage() {
                     rows={10}
                     value={lyrics}
                     onChange={(e) => setLyrics(e.target.value)}
-                    placeholder="Paste song lyrics in English, Hindi, Bengali, Spanish, French...&#10;&#10;e.g.&#10;• English: Walking on sunshine, smiles all around me, feeling alive&#10;• Hindi: केसरिया तेरा इश्क़ है पिया, दिल की चाहत सनम&#10;• Bengali: আনন্দধারা বহিছে ভুবনে, হাসিমুখ উল্লাস আর সুখের গান&#10;• Spanish: Qué alegría y felicidad bailar bajo el sol brillante&#10;• French: C'est l'amour de ma vie et la tendresse de mon cœur"
+                    placeholder="Paste song lyrics in English, Hindi, Bengali, Spanish, French...&#10;&#10;Every lyric tells a story. Enter verses to uncover their emotional signature, explore sentiment breakdowns, and receive personalized music recommendations."
                     className="w-full bg-transparent border-0 text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 text-lg sm:text-xl font-sans leading-relaxed resize-none focus:outline-none focus:ring-0 min-h-[260px]"
                   />
                 </div>
@@ -749,12 +754,12 @@ export default function AnalyzerPage() {
                     {loading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-neutral-400 border-t-black light:border-t-white rounded-full animate-spin" />
-                        <span>Classifying...</span>
+                        <span>Analyzing Emotions...</span>
                       </>
                     ) : (
                       <>
-                        <Sparkles className="w-4 h-4 text-purple-600 light:text-amber-300 group-hover:rotate-12 transition-transform" />
-                        <span>Analyze Mood</span>
+                        <Sparkles className="w-4 h-4 text-orange-600 light:text-amber-300 group-hover:rotate-12 transition-transform" />
+                        <span>Analyze Lyrics</span>
                       </>
                     )}
                   </button>
@@ -762,17 +767,17 @@ export default function AnalyzerPage() {
                   <button
                     onClick={() => handleAdvancedAnalyze()}
                     disabled={loading || advancedLoading || !lyrics.trim()}
-                    className="w-full py-3.5 px-4 rounded-2xl font-display font-bold text-sm sm:text-base bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 text-white hover:opacity-95 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-purple-600/25 transition-all flex items-center justify-center gap-2 group"
+                    className="w-full py-3.5 px-4 rounded-2xl font-display font-bold text-sm sm:text-base bg-gradient-to-r from-orange-600 via-amber-600 to-orange-600 text-white hover:opacity-95 active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-orange-600/25 transition-all flex items-center justify-center gap-2 group"
                   >
                     {advancedLoading ? (
                       <>
                         <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                        <span>Analyzing Multi-Emotions...</span>
+                        <span>Generating AI Insights...</span>
                       </>
                     ) : (
                       <>
-                        <Bot className="w-4 h-4 text-amber-300 group-hover:scale-110 transition-transform" />
-                        <span>Deep AI Mood Analysis</span>
+                        <Bot className="w-4 h-4 text-amber-200 group-hover:scale-110 transition-transform" />
+                        <span>View Emotional Insights</span>
                       </>
                     )}
                   </button>
@@ -815,8 +820,8 @@ export default function AnalyzerPage() {
                             <span className="text-[10px] text-ink-muted">({result.script} script)</span>
                           )}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 font-semibold">
-                          Multilingual NLP v2
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/20 light:bg-orange-50 text-orange-400 light:text-orange-700 border border-orange-500/30 font-semibold">
+                          AI Sentiment Model
                         </span>
                       </div>
                     </div>
@@ -825,7 +830,7 @@ export default function AnalyzerPage() {
                     <div className="flex justify-center py-2">
                       <CircularProgress
                         value={result.confidence}
-                        color={activeMoodInfo?.color || "#a855f7"}
+                        color={activeMoodInfo?.color || "#f97316"}
                         size={170}
                       />
                     </div>
@@ -834,7 +839,7 @@ export default function AnalyzerPage() {
                     <div className="p-4 rounded-2xl theme-well space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
-                          NLP Linguistic Analysis
+                          AI Emotional Narrative
                         </span>
                         <Disc3 className="w-4 h-4 text-ink-muted animate-spin-slow" />
                       </div>
@@ -843,7 +848,7 @@ export default function AnalyzerPage() {
                       </p>
                       {result.detectedKeywords?.length > 0 && (
                         <div className="pt-2 flex flex-wrap gap-1.5 items-center">
-                          <span className="text-[11px] text-ink-muted font-medium">Matched cues:</span>
+                          <span className="text-[11px] text-ink-muted font-medium">Emotional Cues:</span>
                           {result.detectedKeywords.map((kw, i) => (
                             <span
                               key={i}
@@ -863,15 +868,15 @@ export default function AnalyzerPage() {
                           type="button"
                           onClick={handleTranslate}
                           disabled={translating}
-                          className="w-full py-2.5 px-3 rounded-xl theme-well hover:border-purple-500/30 text-ink-main text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
+                          className="w-full py-2.5 px-3 rounded-xl theme-well hover:border-orange-500/30 text-ink-main text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
                         >
                           <Languages className="w-4 h-4 text-sky-400 light:text-sky-600" />
                           <span>
                             {translating
-                              ? "Translating with authorized service..."
+                              ? "Translating lyrics..."
                               : showTranslation
                               ? "Hide English Translation"
-                              : "View Optional English Translation"}
+                              : "View English Translation"}
                           </span>
                         </button>
 
@@ -907,7 +912,7 @@ export default function AnalyzerPage() {
                       <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="py-2.5 px-3 rounded-xl theme-well hover:border-purple-500/40 text-ink-main text-xs font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+                        className="py-2.5 px-3 rounded-xl theme-well hover:border-orange-500/40 text-ink-main text-xs font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                       >
                         {saved ? (
                           <>
@@ -916,24 +921,24 @@ export default function AnalyzerPage() {
                           </>
                         ) : (
                           <>
-                            <BookmarkPlus className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-                            <span>{saving ? "Saving..." : "Save Analysis"}</span>
+                            <BookmarkPlus className="w-3.5 h-3.5 text-orange-400 light:text-orange-600" />
+                            <span>{saving ? "Saving..." : "Save to Library"}</span>
                           </>
                         )}
                       </button>
                       <button
                         onClick={handleCopy}
-                        className="py-2.5 px-3 rounded-xl theme-well hover:border-purple-500/40 text-ink-main text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+                        className="py-2.5 px-3 rounded-xl theme-well hover:border-orange-500/40 text-ink-main text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
                       >
                         {copied ? (
                           <>
                             <Check className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-                            <span>Copied!</span>
+                            <span>Copied to Clipboard!</span>
                           </>
                         ) : (
                           <>
-                            <Share2 className="w-3.5 h-3.5 text-indigo-400 light:text-indigo-600" />
-                            <span>Copy Summary</span>
+                            <Share2 className="w-3.5 h-3.5 text-orange-400 light:text-orange-600" />
+                            <span>Generate AI Summary</span>
                           </>
                         )}
                       </button>
@@ -950,17 +955,17 @@ export default function AnalyzerPage() {
                         }
                       }}
                       disabled={advancedLoading || !lyrics.trim()}
-                      className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-purple-600/20 via-indigo-600/20 to-purple-600/20 light:from-purple-50 light:via-indigo-50 light:to-purple-50 hover:from-purple-600/35 hover:to-indigo-600/35 light:hover:from-purple-100 light:hover:to-indigo-100 text-purple-200 light:text-purple-800 text-xs font-semibold flex items-center justify-center gap-2 border border-purple-500/30 transition-all shadow-md group disabled:opacity-40"
+                      className="w-full mt-2 py-2.5 px-3 rounded-xl bg-gradient-to-r from-orange-600/20 via-amber-600/20 to-orange-600/20 light:from-orange-50 light:via-amber-50 light:to-orange-50 hover:from-orange-600/35 hover:to-amber-600/35 light:hover:from-orange-100 light:hover:to-amber-100 text-orange-300 light:text-orange-900 text-xs font-semibold flex items-center justify-center gap-2 border border-orange-500/30 transition-all shadow-md group disabled:opacity-40"
                     >
-                      <Bot className="w-4 h-4 text-purple-400 light:text-purple-600 group-hover:scale-110 transition-transform" />
+                      <Bot className="w-4 h-4 text-orange-400 light:text-orange-600 group-hover:scale-110 transition-transform" />
                       <span>
                         {advancedLoading
-                          ? "Running Deep AI Multi-Emotion Analysis..."
+                          ? "Generating Emotional Insights..."
                           : advancedResult
-                          ? "View Emotion Visualization Dashboard & Report"
-                          : "Run Deep AI Multi-Emotion & Line-by-Line Analysis"}
+                          ? "View Emotional Insights & Visualization"
+                          : "View Emotional Insights & Deep Analysis"}
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5 text-purple-400 light:text-purple-600 group-hover:translate-x-0.5 transition-transform" />
+                      <ArrowRight className="w-3.5 h-3.5 text-orange-400 light:text-orange-600 group-hover:translate-x-0.5 transition-transform" />
                     </button>
                   </motion.div>
                 ) : (
@@ -971,14 +976,14 @@ export default function AnalyzerPage() {
                     exit={{ opacity: 0 }}
                     className="flex flex-col items-center justify-center text-center my-auto py-12"
                   >
-                    <div className="w-20 h-20 rounded-full theme-well flex items-center justify-center mb-5 text-ink-dim">
+                    <div className="w-20 h-20 rounded-full theme-well flex items-center justify-center mb-5 text-orange-400">
                       <Music2 className="w-10 h-10" />
                     </div>
                     <h3 className="font-display font-bold text-xl text-ink-main mb-2">
-                      Awaiting Song Lyrics
+                      🎵 Your emotional journey starts here.
                     </h3>
                     <p className="text-sm text-ink-muted max-w-xs leading-relaxed">
-                      Type or paste lyrics on the left, or pick one of the sample tracks below to view real-time emotion metrics.
+                      Analyze lyrics, upload a song, or paste a music link to uncover emotional patterns and receive personalized recommendations.
                     </p>
                   </motion.div>
                 )}
@@ -996,11 +1001,11 @@ export default function AnalyzerPage() {
                   <div className="flex items-center gap-2">
                     <Volume2 className="w-4 h-4 text-amber-400 light:text-amber-600" />
                     <span className="font-display text-sm font-bold text-ink-main">
-                      Recommended Track Matches
+                      Explore Mood Matches
                     </span>
                   </div>
                   <span className="text-[11px] text-ink-muted uppercase tracking-wider font-semibold">
-                    {curatedPlaylist.mood} Vibes
+                    {curatedPlaylist.mood} Resonance
                   </span>
                 </div>
                 <div className="space-y-1.5">
@@ -1155,15 +1160,14 @@ export default function AnalyzerPage() {
       {/* ============================================================ */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="text-xs font-bold uppercase tracking-wider text-purple-400 light:text-purple-600 mb-1.5">
-            Lyrical Taxonomy
+          <div className="text-xs font-bold uppercase tracking-wider text-orange-400 light:text-orange-600 mb-1.5">
+            Lyrical Emotion Taxonomy
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-            The 9 Core Emotion Spectrums
+            Explore Emotion Spectrums
           </h2>
           <p className="text-sm text-ink-muted mt-2">
-            Derived from empirical music emotion research datasets. Click any mood to preview its
-            emotional character.
+            Discover how music articulates human emotion across our calibrated sentiment taxonomy.
           </p>
         </div>
 
@@ -1172,7 +1176,7 @@ export default function AnalyzerPage() {
             return (
               <div
                 key={idx}
-                className="p-5 rounded-3xl theme-card hover:border-purple-500/40 transition-all hover:-translate-y-1 group shadow-md"
+                className="p-5 rounded-3xl theme-card hover:border-orange-500/40 transition-all hover:-translate-y-1 group shadow-md"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div
@@ -1188,7 +1192,7 @@ export default function AnalyzerPage() {
                     {moodKey}
                   </span>
                 </div>
-                <h4 className="font-display font-bold text-base text-ink-main group-hover:text-purple-300 light:group-hover:text-purple-700 transition-colors">
+                <h4 className="font-display font-bold text-base text-ink-main group-hover:text-orange-400 light:group-hover:text-orange-600 transition-colors">
                   {moodKey}
                 </h4>
                 <p className="text-xs text-ink-muted mt-1.5 leading-relaxed">
@@ -1204,36 +1208,34 @@ export default function AnalyzerPage() {
       {/* 5. AI MUSIC ASSISTANT SPOTLIGHT BANNER */}
       {/* ============================================================ */}
       <section className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="p-8 sm:p-10 rounded-3xl theme-card bg-gradient-to-br from-purple-900/40 via-indigo-950/40 to-neutral-950 light:from-purple-50 light:via-indigo-50/70 light:to-white border-purple-500/30 light:border-purple-200 shadow-2xl relative overflow-hidden">
+        <div className="p-8 sm:p-10 rounded-3xl theme-card bg-gradient-to-br from-[#111827] via-[#1f2937] to-[#111827] light:from-orange-50 light:via-amber-50/70 light:to-white border-orange-500/30 light:border-orange-200 shadow-2xl relative overflow-hidden">
           {/* Subtle background glow circle */}
-          <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-purple-600/20 light:bg-purple-400/15 blur-3xl pointer-events-none" />
+          <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-orange-600/20 light:bg-orange-400/15 blur-3xl pointer-events-none" />
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
             <div className="lg:col-span-7 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 light:bg-purple-100 border border-purple-500/30 text-purple-300 light:text-purple-800 text-xs font-semibold">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 light:bg-orange-100 border border-orange-500/30 text-orange-400 light:text-orange-900 text-xs font-semibold">
                 <Bot className="w-3.5 h-3.5" />
                 <span>Conversational Music Intelligence</span>
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-ink-main">
-                Meet Your AI Music Assistant
+                Meet Your Personal AI Music Companion
               </h2>
               <p className="text-sm text-ink-secondary leading-relaxed max-w-xl font-sans">
-                Ask naturally for road trip anthems, Bollywood romance, study soundtracks, or detailed
-                explanations of why certain lyrics trigger sad or calm classifications. Equipped with
-                multi-turn context and direct Spotify links.
+                Have natural conversations about music moods, unpack emotional subtext in your favorite tracks, and generate tailor-made playlists on demand.
               </p>
               <div className="pt-2 flex flex-wrap gap-3">
                 <Link
                   to="/assistant"
-                  className="py-3 px-6 rounded-2xl bg-white text-black light:bg-purple-600 light:text-white font-bold text-sm flex items-center gap-2 shadow-lg hover:bg-neutral-200 light:hover:bg-purple-700 transition-all hover:scale-102"
+                  className="py-3 px-6 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-sm flex items-center gap-2 shadow-lg transition-all hover:scale-102"
                 >
-                  <Bot className="w-4 h-4 text-purple-600 light:text-amber-300" />
-                  <span>Start Chatting Now</span>
+                  <Bot className="w-4 h-4 text-white" />
+                  <span>Ask AI</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <div className="flex items-center gap-2 text-xs text-purple-200 light:text-purple-800 px-3 py-2 rounded-xl bg-purple-500/10 light:bg-purple-100/70 border border-purple-500/20">
+                <div className="flex items-center gap-2 text-xs text-orange-300 light:text-orange-800 px-3 py-2 rounded-xl bg-orange-500/10 light:bg-orange-100/70 border border-orange-500/20">
                   <Sparkles className="w-3.5 h-3.5 text-amber-300 light:text-amber-600" />
-                  <span>Powered by Gemini & Local NLU</span>
+                  <span>Powered by Advanced Music Intelligence</span>
                 </div>
               </div>
             </div>
@@ -1243,9 +1245,9 @@ export default function AnalyzerPage() {
               <div className="p-3 rounded-2xl theme-well text-ink-secondary ml-8 text-right shadow-md">
                 "Recommend high-energy happy songs for a scenic road trip"
               </div>
-              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-purple-950/80 to-indigo-950/80 light:from-purple-600 light:to-indigo-600 border border-purple-500/30 text-purple-100 light:text-white mr-8 shadow-md">
+              <div className="p-3.5 rounded-2xl bg-gradient-to-r from-orange-950/80 to-amber-950/80 light:from-orange-500 light:to-amber-500 border border-orange-500/30 text-orange-100 light:text-white mr-8 shadow-md">
                 <span className="font-bold text-amber-300 light:text-amber-200 block mb-1">🤖 AI Assistant:</span>
-                "Here are 5 hand-curated Happy & Exciting tracks including Katrina & The Waves and Pharrell Williams..."
+                "Here are 5 hand-curated Happy & Exciting tracks that bring buoyant, uplifting joy to your journey..."
               </div>
               <div className="p-3 rounded-2xl theme-well text-ink-secondary ml-8 text-right shadow-md">
                 "Create a soothing playlist for a quiet rainy evening"
@@ -1260,11 +1262,11 @@ export default function AnalyzerPage() {
       {/* ============================================================ */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-xs font-bold uppercase tracking-wider text-purple-400 light:text-purple-600 mb-1.5">
-            Full-Stack Features
+          <div className="text-xs font-bold uppercase tracking-wider text-orange-400 light:text-orange-600 mb-1.5">
+            Core Capabilities
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-            Engineered for Modern Music Discovery
+            Engineered for Deep Music Intelligence
           </h2>
         </div>
 
@@ -1274,10 +1276,10 @@ export default function AnalyzerPage() {
             return (
               <div
                 key={idx}
-                className="p-6 rounded-3xl theme-card hover:border-purple-500/30 transition-all shadow-md group"
+                className="p-6 rounded-3xl theme-card hover:border-orange-500/30 transition-all shadow-md group"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-purple-600/15 light:bg-purple-50 border border-purple-500/30 flex items-center justify-center text-purple-400 light:text-purple-600 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-2xl bg-orange-600/15 light:bg-orange-50 border border-orange-500/30 flex items-center justify-center text-orange-400 light:text-orange-600 group-hover:scale-105 transition-transform">
                     <Icon className="w-5 h-5" />
                   </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full theme-well text-ink-muted">
@@ -1308,11 +1310,10 @@ export default function AnalyzerPage() {
                 <span>Academic & Benchmark Provenance</span>
               </div>
               <h3 className="font-display font-bold text-xl text-ink-main">
-                Ground-Truth Lyrical Emotion Benchmarks
+                Validated Music Emotion Science
               </h3>
               <p className="text-xs text-ink-muted max-w-2xl leading-relaxed">
-                Emotion classes and sentiment polarities are modeled after the annotated IIIT Hyderabad
-                Multilingual Lyrics Emotion Dataset and Stanford CoreNLP valence lexicons.
+                Ground-truth benchmarked dataset foundations designed for research-grade emotional nuance and lyrical comprehension.
               </p>
             </div>
 
@@ -1321,7 +1322,7 @@ export default function AnalyzerPage() {
                 href="https://share.google/4KtdJSaRmEiQjCvHD"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-2.5 px-4 rounded-xl theme-well hover:border-purple-500/40 text-ink-main text-xs font-semibold flex items-center gap-2 transition-colors"
+                className="py-2.5 px-4 rounded-xl theme-well hover:border-orange-500/40 text-ink-main text-xs font-semibold flex items-center gap-2 transition-colors"
               >
                 <span>View Dataset Archive</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -1338,10 +1339,10 @@ export default function AnalyzerPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-display text-2xl font-bold text-ink-main">
-              Try an Example from Our Curated Dataset
+              Explore Sample Songs & Lyrics
             </h3>
             <p className="text-xs sm:text-sm text-ink-muted">
-              Click any mood card to instantly load its verse and run classification
+              Select a track below to reveal its emotional signature and start exploring.
             </p>
           </div>
         </div>

@@ -59,7 +59,7 @@ export default function PlaylistDraftCard({ playlist, onSave, isSaved = false })
                 </span>
               </div>
               <h4 className="text-sm sm:text-base font-bold text-ink-main leading-tight">
-                {playlist.name || "AI Generated Mood Playlist"}
+                {playlist.name || "Custom Mood Playlist"}
               </h4>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function PlaylistDraftCard({ playlist, onSave, isSaved = false })
               </>
             ) : (
               <>
-                <span>View all {tracks.length} songs</span>
+                <span>View all {tracks.length} tracks</span>
                 <ChevronDown className="w-3 h-3" />
               </>
             )}

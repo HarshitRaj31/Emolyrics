@@ -52,8 +52,8 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
               <Plus className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-display font-bold text-lg text-ink-main">Add Song to Playlist</h3>
-              <p className="text-xs text-ink-muted">Append track with automatic listening links</p>
+              <h3 className="font-display font-bold text-lg text-ink-main">Add Track to Playlist</h3>
+              <p className="text-xs text-ink-muted">Add a custom song with automatic listening links</p>
             </div>
           </div>
           <button
@@ -116,7 +116,7 @@ export default function AddSongModal({ isOpen, onClose, onAddSong, defaultMood =
             </div>
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-1.5">
-                Emotion Mood
+                Primary Mood
               </label>
               <select
                 value={mood}

@@ -85,16 +85,15 @@ export default function ExplorePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 transition-colors duration-200">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-400 light:text-purple-600 mb-2">
+        <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-orange-400 light:text-orange-600 mb-2">
           <Compass className="w-4 h-4" />
-          <span>Lyrical Emotion Database</span>
+          <span>Global Song Catalog & Emotion Library</span>
         </div>
         <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-          Explore Analyzed Song Lyrics
+          Explore Lyrical Emotion & Mood Profiles
         </h1>
         <p className="text-xs sm:text-sm text-ink-muted mt-1 max-w-2xl leading-relaxed">
-          Browse community tracks, benchmark dataset classifications, and lyrical sentiment across
-          all 9 discrete mood spectrums.
+          Browse global tracks, explore sentiment patterns, and discover the emotions behind every lyric across all calibrated mood spectrums.
         </p>
       </div>
 
@@ -104,14 +103,14 @@ export default function ExplorePage() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-dim" />
           <input
             type="text"
-            placeholder="Search by song title, artist, or lyrical phrase..."
+            placeholder="Search by song title, artist, or lyric line..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-11 pr-24 py-3 rounded-2xl glass-input text-ink-main text-sm placeholder:text-neutral-500 light:placeholder:text-slate-400"
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold transition-colors"
           >
             Search
           </button>
@@ -147,17 +146,17 @@ export default function ExplorePage() {
       {/* Grid of Analyses */}
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 text-ink-muted">
-          <Loader2 className="w-8 h-8 animate-spin text-purple-500 mb-3" />
-          <p className="text-sm">Fetching lyric analyses...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-orange-500 mb-3" />
+          <p className="text-sm">Discovering analyzed tracks...</p>
         </div>
       ) : analyses.length === 0 ? (
         <div className="text-center py-20 theme-card rounded-3xl p-8 max-w-lg mx-auto">
           <Music className="w-12 h-12 text-ink-dim mx-auto mb-3" />
           <h3 className="font-display font-bold text-lg text-ink-main mb-1">
-            No Analyses Found
+            No Tracks Found
           </h3>
           <p className="text-xs text-ink-muted mb-4">
-            Try adjusting your search keywords or mood filter to explore more tracks.
+            Try adjusting your keywords or mood filters to continue exploring the library.
           </p>
           <button
             onClick={() => {
@@ -165,9 +164,9 @@ export default function ExplorePage() {
               setSelectedMood("All");
               setPage(1);
             }}
-            className="px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-semibold hover:bg-purple-500 transition-colors"
+            className="px-4 py-2 rounded-xl bg-orange-600 text-white text-xs font-semibold hover:bg-orange-500 transition-colors"
           >
-            Reset Filters
+            Clear Filters
           </button>
         </div>
       ) : (
@@ -256,11 +255,11 @@ export default function ExplorePage() {
                     </a>
                     <button
                       onClick={() => handleReanalyze(item)}
-                      className="py-1 px-2.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 light:bg-purple-50 light:hover:bg-purple-100 text-purple-200 light:text-purple-700 border border-purple-500/30 text-[10px] font-semibold flex items-center gap-1 transition-colors"
-                      title="Re-analyze in Studio"
+                      className="py-1 px-2.5 rounded-xl bg-orange-600/20 hover:bg-orange-600/30 light:bg-orange-50 light:hover:bg-orange-100 text-orange-300 light:text-orange-900 border border-orange-500/30 text-[10px] font-semibold flex items-center gap-1 transition-colors"
+                      title="Analyze Lyrics in Studio"
                     >
                       <Sparkles className="w-3 h-3" />
-                      <span>Studio</span>
+                      <span>Analyze Lyrics</span>
                     </button>
                   </div>
 

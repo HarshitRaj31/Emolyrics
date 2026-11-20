@@ -27,7 +27,7 @@ function AppLayout({ researchModalOpen, setResearchModalOpen }) {
 
   return (
     <div
-      className={`flex flex-col bg-surface-page text-ink-main font-sans selection:bg-purple-600 selection:text-white transition-colors duration-200 ${
+      className={`flex flex-col bg-surface-page text-ink-main font-sans selection:bg-orange-500 selection:text-white transition-colors duration-200 ${
         isAssistant ? "h-[100dvh] overflow-hidden" : "min-h-screen"
       }`}
     >

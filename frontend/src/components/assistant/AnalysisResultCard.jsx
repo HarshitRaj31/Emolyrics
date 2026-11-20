@@ -36,7 +36,7 @@ export default function AnalysisResultCard({ analysis, onFollowUp }) {
 
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 light:text-emerald-700 light:bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-1">
                 <CheckCircle2 className="w-2.5 h-2.5" />
-                <span>ML {confidence}% Conf</span>
+                <span>AI {confidence}% Conf</span>
               </span>
 
               {language && (
@@ -105,14 +105,14 @@ export default function AnalysisResultCard({ analysis, onFollowUp }) {
             className="flex-1 py-1.5 px-2.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-200 light:bg-purple-50 light:hover:bg-purple-100 light:text-purple-700 border border-purple-500/30 text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors"
           >
             <Compass className="w-3 h-3 text-purple-400 light:text-purple-600" />
-            <span>Find More {mood} Songs</span>
+            <span>Discover Similar Songs</span>
           </button>
           <button
             onClick={() => onFollowUp(`Create a playlist based on ${mood} mood`)}
             className="flex-1 py-1.5 px-2.5 rounded-xl bg-white/5 hover:bg-white/10 light:bg-slate-100 light:hover:bg-slate-200 text-ink-secondary border border-white/10 light:border-slate-200 text-[11px] font-medium flex items-center justify-center gap-1.5 transition-colors"
           >
             <Music className="w-3 h-3 text-amber-400 light:text-amber-600" />
-            <span>Generate Playlist</span>
+            <span>Create Playlist</span>
           </button>
         </div>
       )}

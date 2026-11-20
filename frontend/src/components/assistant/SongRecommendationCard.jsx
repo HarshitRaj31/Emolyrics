@@ -26,17 +26,17 @@ export default function SongRecommendationCard({ song }) {
           {isMLAnalyzed ? (
             <span
               className="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 flex items-center gap-1"
-              title="Verified by EmoLyrics Multilingual NLP Model"
+              title="Verified by EmoLyrics AI Music Intelligence"
             >
               <CheckCircle2 className="w-2.5 h-2.5" />
-              <span>ML {song.confidence ? `${song.confidence}%` : "Verified"}</span>
+              <span>AI {song.confidence ? `${song.confidence}%` : "Verified"}</span>
             </span>
           ) : (
             <span
               className="text-[9px] font-mono px-1.5 py-0.5 rounded text-ink-muted bg-white/5 light:bg-slate-100 border border-white/10 light:border-slate-200"
-              title="Recommended based on musical & emotional metadata"
+              title="Recommended based on musical and emotional resonance"
             >
-              Mood Suggestion
+              Mood Match
             </span>
           )}
         </div>

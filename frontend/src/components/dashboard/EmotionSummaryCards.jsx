@@ -108,7 +108,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
       >
         <div>
           <div className="flex items-center justify-between text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">
-            <span>Secondary Cues</span>
+            <span>Secondary Moods</span>
             <Layers className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
           </div>
 
@@ -138,7 +138,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
           )}
         </div>
         <div className="text-[10px] text-ink-dim mt-2 pt-2 border-t border-white/5 light:border-slate-900/10">
-          {secondaryEmotions.length > 2 ? `+${secondaryEmotions.length - 2} other co-occurring tones` : "Ranked secondary presence"}
+          {secondaryEmotions.length > 2 ? `+${secondaryEmotions.length - 2} other co-occurring tones` : "Secondary emotional currents"}
         </div>
       </motion.div>
 
@@ -152,7 +152,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
         <div>
           <div className="flex items-center justify-between text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-1">
             <span className="flex items-center gap-1">
-              Confidence
+              AI Confidence
               <button
                 type="button"
                 onClick={() => setShowConfidenceHelp(!showConfidenceHelp)}
@@ -190,10 +190,10 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
         <div className="text-[10px] text-ink-dim pt-2 border-t border-white/5 light:border-slate-900/10">
           {showConfidenceHelp ? (
             <span className="text-purple-300 light:text-purple-700">
-              Statistical model match probability, distinct from human subjective certainty.
+              Model certainty based on semantic patterns and lyrical structure.
             </span>
           ) : (
-            "Model statistical probability"
+            "AI classification certainty"
           )}
         </div>
       </motion.div>
@@ -207,7 +207,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
       >
         <div>
           <div className="flex items-center justify-between text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">
-            <span>Spectrum Range</span>
+            <span>Mood Spectrum</span>
             <TrendingUp className="w-3.5 h-3.5 text-sky-400 light:text-sky-600" />
           </div>
 
@@ -247,7 +247,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
         </div>
 
         <div className="text-[10px] text-ink-dim mt-2 pt-2 border-t border-white/5 light:border-slate-900/10 truncate">
-          Aesthetic lyrical valence
+          Overall emotional feel
         </div>
       </motion.div>
 
@@ -260,7 +260,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
       >
         <div>
           <div className="flex items-center justify-between text-[11px] font-semibold text-ink-muted uppercase tracking-wider mb-2">
-            <span>Dominant Theme</span>
+            <span>Core Theme</span>
             <FileText className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
           </div>
 
@@ -283,7 +283,7 @@ export default function EmotionSummaryCards({ data, onSelectEmotionFilter }) {
         </div>
 
         <div className="text-[10px] text-ink-dim mt-2 pt-2 border-t border-white/5 light:border-slate-900/10 truncate">
-          Synthesized narrative motif
+          Dominant lyrical motif
         </div>
       </motion.div>
     </div>

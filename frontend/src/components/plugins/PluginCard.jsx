@@ -156,7 +156,7 @@ function PluginCardComponent({
         ) : (
           <div className="flex items-center gap-1.5 text-xs text-ink-dim">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400/80 light:text-emerald-600" />
-            <span>Verified Integration</span>
+            <span>Verified Extension</span>
           </div>
         )}
 
@@ -203,7 +203,7 @@ function PluginCardComponent({
               className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-black hover:bg-amber-300 light:bg-purple-600 light:text-white light:hover:bg-purple-700 text-xs font-semibold shadow-md transition-all hover:scale-102"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Install</span>
+              <span>Install Plugin</span>
             </button>
           )}
         </div>

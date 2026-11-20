@@ -179,15 +179,15 @@ export default function SongDiscovery({ onAnalysisComplete }) {
         <div className="flex items-center gap-2 mb-3">
           <Disc3 className="w-5 h-5 text-sky-400 light:text-sky-600" />
           <h2 className="font-display font-bold text-lg text-ink-main">
-            MusicBrainz Song Discovery
+            Global Song Catalog & Discovery
           </h2>
           <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-sky-500/15 light:bg-sky-50 text-sky-300 light:text-sky-700 border border-sky-500/30 ml-auto">
-            Open Metadata + LRCLIB
+            Global Metadata • Verified Lyrics
           </span>
         </div>
 
         <p className="text-xs text-ink-muted leading-relaxed mb-4">
-          Search the open MusicBrainz database by title, artist, or album. Select any track to retrieve legally authorized lyrics and run our 9-mood ML emotion model.
+          Search millions of songs by title, artist, or album. Select any track to retrieve lyrics and uncover its emotional journey.
         </p>
 
         {/* Search Input Bar */}
@@ -197,7 +197,7 @@ export default function SongDiscovery({ onAnalysisComplete }) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by song title, artist, or album (e.g. Coldplay, Bohemian Rhapsody)..."
+            placeholder="Search songs, artists, or albums (e.g., Coldplay, Arijit Singh, Queen)..."
             className="w-full glass-input rounded-2xl pl-12 pr-10 py-3.5 text-sm text-ink-main placeholder:text-neutral-500 light:placeholder:text-slate-400 transition-all shadow-inner"
           />
           {searching ? (
@@ -215,13 +215,13 @@ export default function SongDiscovery({ onAnalysisComplete }) {
 
         {/* Preset Quick Chips */}
         <div className="flex items-center gap-2 flex-wrap mt-3 pt-3 border-t border-white/10 light:border-slate-200">
-          <span className="text-[11px] font-medium text-ink-muted">Popular:</span>
+          <span className="text-[11px] font-medium text-ink-muted">Trending Searches:</span>
           {PRESET_QUERIES.map((preset) => (
             <button
               key={preset.label}
               type="button"
               onClick={() => setQuery(preset.query)}
-              className="text-xs px-2.5 py-1 rounded-full theme-well text-ink-secondary hover:text-ink-main hover:border-purple-500/40 transition-colors"
+              className="text-xs px-2.5 py-1 rounded-full theme-well text-ink-secondary hover:text-ink-main hover:border-orange-500/40 transition-colors"
             >
               {preset.label}
             </button>
@@ -393,10 +393,10 @@ export default function SongDiscovery({ onAnalysisComplete }) {
             <div className="text-center py-12 space-y-3">
               <Loader2 className="w-8 h-8 text-sky-400 light:text-sky-600 animate-spin mx-auto" />
               <p className="text-xs text-ink-secondary font-medium">
-                Retrieving authorized lyrics via LRCLIB REST provider...
+                Retrieving verified lyrics...
               </p>
               <span className="text-[11px] text-ink-dim block">
-                Verifying license and content without scraping
+                Verifying license and content from global catalog
               </span>
             </div>
           )}
@@ -406,11 +406,11 @@ export default function SongDiscovery({ onAnalysisComplete }) {
             <div className="p-5 rounded-2xl bg-amber-950/20 light:bg-amber-50 border border-amber-500/30 text-amber-300 light:text-amber-800 text-xs space-y-2">
               <div className="flex items-center gap-2 font-semibold">
                 <AlertCircle className="w-4 h-4 text-amber-400 light:text-amber-600 shrink-0" />
-                <span>Lyrics Unavailable for this Track</span>
+                <span>Lyrics Not Found for This Track</span>
               </div>
               <p className="text-ink-muted leading-relaxed">{lyricsError}</p>
               <p className="text-[11px] text-ink-dim pt-1">
-                Tip: You can switch to the &quot;Custom Lyrics&quot; tab above to paste lyrics manually.
+                You can paste or write lyrics manually in the Custom Lyrics tab above.
               </p>
             </div>
           )}
@@ -419,10 +419,10 @@ export default function SongDiscovery({ onAnalysisComplete }) {
             <div className="p-5 rounded-2xl bg-sky-950/20 light:bg-sky-50 border border-sky-500/30 text-sky-300 light:text-sky-800 text-xs space-y-2">
               <div className="flex items-center gap-2 font-semibold">
                 <Music2 className="w-4 h-4 text-sky-400 light:text-sky-600 shrink-0" />
-                <span>Instrumental Track Verified</span>
+                <span>Instrumental Track</span>
               </div>
               <p className="text-ink-muted leading-relaxed">
-                MusicBrainz and LRCLIB community records verify that this recording is instrumental. Emotion classification requires lyrical text content.
+                This recording is verified as an instrumental track. Lyrical emotion analysis requires written lyrics or vocal verses.
               </p>
             </div>
           )}
@@ -433,7 +433,7 @@ export default function SongDiscovery({ onAnalysisComplete }) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-emerald-400 light:text-emerald-600" />
-                  <span className="text-xs font-semibold text-ink-main">Authorized Lyrics Preview</span>
+                  <span className="text-xs font-semibold text-ink-main">Verified Lyrics Preview</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-300 light:text-emerald-700 bg-emerald-500/10 light:bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-500/20">
@@ -453,23 +453,23 @@ export default function SongDiscovery({ onAnalysisComplete }) {
               {/* Action Button: Run Existing ML Model */}
               <div className="flex items-center justify-between pt-2">
                 <span className="text-[11px] text-ink-muted">
-                  Ready to classify with 9-mood NLP dimensional model
+                  Ready to uncover emotional patterns
                 </span>
                 <button
                   type="button"
                   onClick={handleAnalyzeSelectedSong}
                   disabled={analyzing}
-                  className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-black hover:bg-amber-300 light:bg-purple-600 light:text-white light:hover:bg-purple-700 font-semibold text-xs sm:text-sm shadow-xl transition-transform hover:scale-102 disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-white text-black hover:bg-orange-400 light:bg-orange-600 light:text-white light:hover:bg-orange-700 font-semibold text-xs sm:text-sm shadow-xl transition-transform hover:scale-102 disabled:opacity-50"
                 >
                   {analyzing ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Classifying Mood...</span>
+                      <span>Analyzing Emotions...</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4 text-purple-600 light:text-amber-300" />
-                      <span>Analyze Mood with EmoLyrics ML</span>
+                      <Sparkles className="w-4 h-4 text-orange-600 light:text-amber-300" />
+                      <span>Analyze Lyrics</span>
                     </>
                   )}
                 </button>

@@ -257,10 +257,10 @@ export default function ProfilePage({ onOpenAuth }) {
 
         <div className="space-y-3">
           <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-white">
-            Guest User Session Active
+            Your Personal Music Journey
           </h1>
           <p className="text-sm text-neutral-400 max-w-lg mx-auto leading-relaxed">
-            You are currently exploring EmoLyrics as a guest. All core features—song discovery, lyrics retrieval, mood prediction, and recommendations—are fully functional.
+            You are exploring EmoLyrics as a guest. Analyze lyrics, discover similar songs, and explore mood matches freely.
           </p>
         </div>
 
@@ -269,7 +269,7 @@ export default function ProfilePage({ onOpenAuth }) {
           <div className="glass-panel rounded-3xl p-6 border border-white/10 max-w-xl mx-auto text-left space-y-4">
             <div className="flex items-center justify-between text-xs text-neutral-400 pb-2 border-b border-white/10">
               <span className="font-bold uppercase tracking-wider text-neutral-300">
-                Session History ({recentlyAnalyzed.length})
+                Recent Analysis History ({recentlyAnalyzed.length})
               </span>
               <span>Stored in Local Storage</span>
             </div>
@@ -310,7 +310,7 @@ export default function ProfilePage({ onOpenAuth }) {
             onClick={() => navigate("/")}
             className="px-6 py-3 rounded-2xl bg-white/10 hover:bg-white/15 text-white font-semibold text-sm transition-all"
           >
-            Continue as Guest
+            Continue Exploring
           </button>
         </div>
       </div>
@@ -353,7 +353,7 @@ export default function ProfilePage({ onOpenAuth }) {
                   {profileData?.name || user.name}
                 </h1>
                 <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
-                  {profileData?.role || "Explorer"}
+                  {profileData?.role || "Music Explorer"}
                 </span>
               </div>
               <p className="text-xs sm:text-sm text-neutral-400 flex items-center gap-1.5">
@@ -402,19 +402,19 @@ export default function ProfilePage({ onOpenAuth }) {
         {/* Total Analyses */}
         <div className="glass-panel rounded-2xl p-5 border border-white/10 space-y-1">
           <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Analyzed</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Analyzed Tracks</span>
             <Sparkles className="w-4 h-4 text-amber-400" />
           </div>
           <div className="font-display font-extrabold text-3xl text-white">
             {stats ? stats.totalAnalyses : "0"}
           </div>
-          <p className="text-[11px] text-neutral-500">Lyrics emotion classifications</p>
+          <p className="text-[11px] text-neutral-500">Lyrical emotion classifications</p>
         </div>
 
         {/* Most Frequent Mood */}
         <div className="glass-panel rounded-2xl p-5 border border-white/10 space-y-1">
           <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-xs font-semibold uppercase tracking-wider">Top Lyrical Mood</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Dominant Emotion</span>
             <span className="text-base select-none">{topMoodDef?.emoji || "🎵"}</span>
           </div>
           <div className="font-display font-extrabold text-2xl text-white truncate">
@@ -428,25 +428,25 @@ export default function ProfilePage({ onOpenAuth }) {
         {/* Saved Songs */}
         <div className="glass-panel rounded-2xl p-5 border border-white/10 space-y-1">
           <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-xs font-semibold uppercase tracking-wider">Saved Favorites</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Saved Tracks</span>
             <Heart className="w-4 h-4 text-rose-400" />
           </div>
           <div className="font-display font-extrabold text-3xl text-white">
             {stats ? stats.totalSavedSongs : "0"}
           </div>
-          <p className="text-[11px] text-neutral-500">Bookmarked in personal library</p>
+          <p className="text-[11px] text-neutral-500">Saved to your personal collection</p>
         </div>
 
         {/* Emotion Coverage */}
         <div className="glass-panel rounded-2xl p-5 border border-white/10 space-y-1">
           <div className="flex items-center justify-between text-neutral-400">
-            <span className="text-xs font-semibold uppercase tracking-wider">Mood Spectrum</span>
+            <span className="text-xs font-semibold uppercase tracking-wider">Emotion Spectrum</span>
             <Disc3 className="w-4 h-4 text-sky-400" />
           </div>
           <div className="font-display font-extrabold text-3xl text-white">
             {stats?.moodDistribution ? Object.keys(stats.moodDistribution).length : 0} / 9
           </div>
-          <p className="text-[11px] text-neutral-500">Trained emotions explored</p>
+          <p className="text-[11px] text-neutral-500">Trained mood classes explored</p>
         </div>
       </div>
 
@@ -462,7 +462,7 @@ export default function ProfilePage({ onOpenAuth }) {
           }`}
         >
           <Clock className="w-4 h-4" />
-          <span>Mood Timeline & Distribution</span>
+          <span>Emotional Journey</span>
         </button>
 
         <button
@@ -488,7 +488,7 @@ export default function ProfilePage({ onOpenAuth }) {
           }`}
         >
           <Bookmark className="w-4 h-4" />
-          <span>Saved Songs ({savedSongs.length || stats?.totalSavedSongs || 0})</span>
+          <span>Saved Tracks ({savedSongs.length || stats?.totalSavedSongs || 0})</span>
         </button>
       </div>
 
@@ -578,7 +578,7 @@ export default function ProfilePage({ onOpenAuth }) {
                   onClick={() => navigate("/")}
                   className="px-4 py-2 rounded-xl bg-white/10 text-white font-semibold hover:bg-white/20"
                 >
-                  Analyze Your First Song
+                  Analyze Lyrics
                 </button>
               </div>
             ) : (
@@ -729,7 +729,7 @@ export default function ProfilePage({ onOpenAuth }) {
                         onClick={() => setSelectedHistoryDetail(item)}
                         className="text-xs text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1"
                       >
-                        <span>View Details</span>
+                        <span>View Emotional Insights</span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </button>
 
@@ -761,7 +761,7 @@ export default function ProfilePage({ onOpenAuth }) {
           ) : savedSongs.length === 0 ? (
             <div className="glass-panel rounded-3xl p-12 border border-white/10 text-center space-y-3">
               <Bookmark className="w-10 h-10 text-neutral-500 mx-auto" />
-              <h3 className="font-display font-bold text-lg text-white">No Saved Songs Yet</h3>
+              <h3 className="font-display font-bold text-lg text-white">No Saved Tracks Yet</h3>
               <p className="text-xs text-neutral-400 max-w-sm mx-auto">
                 Bookmark tracks from the Song Discovery or Analyzer page to access your favorite songs and external listening links here anytime.
               </p>
@@ -770,7 +770,7 @@ export default function ProfilePage({ onOpenAuth }) {
                 onClick={() => navigate("/")}
                 className="mt-2 px-5 py-2.5 rounded-xl bg-white text-black font-semibold text-xs hover:bg-neutral-200 transition-all"
               >
-                Discover & Save Songs
+                Discover Similar Songs
               </button>
             </div>
           ) : (
@@ -846,7 +846,7 @@ export default function ProfilePage({ onOpenAuth }) {
                           className="flex items-center gap-1 text-[11px] text-purple-400 hover:text-purple-300 font-semibold"
                         >
                           <RotateCcw className="w-3 h-3" />
-                          <span>Re-Analyze Lyrics</span>
+                          <span>Analyze Lyrics</span>
                         </button>
 
                         <button

@@ -399,14 +399,13 @@ export default function PlaylistsPage() {
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 light:text-amber-700 mb-2">
             <ListMusic className="w-4 h-4" />
-            <span>Smart Mood-Based Playlist Architecture</span>
+            <span>AI Music Intelligence</span>
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-            Mood Soundtracks & Playlists
+            Smart Mood Playlists
           </h1>
           <p className="text-sm text-ink-muted mt-1 max-w-2xl leading-relaxed">
-            Create intelligent soundtracks synchronized with predicted lyrical emotions. Harmonize
-            single or multi-mood emotional journeys with verified NLP confidence and listening links.
+            Craft personalized soundtracks that mirror your emotional state or guide you toward the mood you want to feel.
           </p>
         </div>
 
@@ -420,7 +419,7 @@ export default function PlaylistsPage() {
             className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2 group transition-all"
           >
             <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform text-amber-200" />
-            <span>Generate Smart Playlist</span>
+            <span>Create Playlist</span>
           </button>
         </div>
       </div>
@@ -436,7 +435,7 @@ export default function PlaylistsPage() {
           }`}
         >
           <Compass className="w-4 h-4" />
-          <span>Mood Categories ({presetPlaylists.length})</span>
+          <span>Curated Mood Mixes ({presetPlaylists.length})</span>
         </button>
 
         <button
@@ -448,7 +447,7 @@ export default function PlaylistsPage() {
           }`}
         >
           <Sparkles className="w-4 h-4 text-amber-300" />
-          <span>Generator Studio</span>
+          <span>Playlist Studio</span>
           <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 light:text-amber-700 light:bg-amber-100 border border-amber-400/30">
             Multi-Emotion
           </span>
@@ -473,21 +472,20 @@ export default function PlaylistsPage() {
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-400 light:text-purple-600 mb-1">
               <SlidersHorizontal className="w-4 h-4" />
-              <span>Intelligent Emotion Synthesizer</span>
+              <span>AI Playlist Studio</span>
             </div>
             <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-ink-main">
               Create a Custom Mood Playlist
             </h2>
             <p className="text-xs sm:text-sm text-ink-muted mt-1 max-w-2xl">
-              Select one or combine multiple emotions. The algorithm selects songs from verified ML
-              analyzed history and curated catalog tracks while enforcing artist diversity.
+              Compose single or blended-emotion playlists tuned to your desired vibe. Songs are selected based on emotional harmony and lyrical resonance.
             </p>
           </div>
 
           {/* 1. Emotion Selection Chips (Multi-Select Supported) */}
           <div className="space-y-3">
             <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary">
-              Target Emotions (Select Single or Combine Mixed Emotions) *
+              Select Emotions (Blend Multiple Moods)
             </label>
             <div className="flex flex-wrap gap-2.5">
               {ALL_EMOTIONS.map((emotion) => {
@@ -517,7 +515,7 @@ export default function PlaylistsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-2">
-                Number of Songs ({generatorCount} tracks)
+                Playlist Length ({generatorCount} tracks)
               </label>
               <div className="flex items-center gap-2">
                 {[5, 10, 15, 20, 25].map((cnt) => (
@@ -539,7 +537,7 @@ export default function PlaylistsPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-2">
-                Custom Title (Optional)
+                Playlist Title (Optional)
               </label>
               <input
                 type="text"
@@ -552,7 +550,7 @@ export default function PlaylistsPage() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-ink-secondary mb-2">
-                Custom Description (Optional)
+                Description (Optional)
               </label>
               <input
                 type="text"
@@ -574,13 +572,13 @@ export default function PlaylistsPage() {
               {generating ? (
                 <>
                   <Disc3 className="w-4 h-4 animate-spin" />
-                  <span>Synthesizing Harmonized Tracks...</span>
+                  <span>Creating Playlist...</span>
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 text-amber-300" />
                   <span>
-                    Generate Smart Playlist ({generatorEmotions.join(" + ")} • {generatorCount} tracks)
+                    Create Playlist ({generatorEmotions.join(" + ")} • {generatorCount} tracks)
                   </span>
                 </>
               )}
@@ -593,7 +591,7 @@ export default function PlaylistsPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10 light:border-slate-200">
                 <div>
                   <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30">
-                    Draft Generated Successfully
+                    Playlist Draft Ready
                   </span>
                   <h3 className="font-display font-bold text-xl text-ink-main mt-1">
                     {generatedDraft.title}
@@ -614,7 +612,7 @@ export default function PlaylistsPage() {
                     className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black light:text-white text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all"
                   >
                     <Check className="w-4 h-4 stroke-[3]" />
-                    <span>Save to My Playlists</span>
+                    <span>Save Playlist</span>
                   </button>
                 </div>
               </div>
@@ -624,7 +622,7 @@ export default function PlaylistsPage() {
                 <span>{generatedDraft.songs.length} Tracks Selected</span>
                 <span>•</span>
                 <span>
-                  {generatedDraft.songs.filter((s) => s.source === "analyzed").length} ML Analyzed History
+                  {generatedDraft.songs.filter((s) => s.source === "analyzed").length} Analyzed Matches
                 </span>
                 <span>•</span>
                 <span>
@@ -662,9 +660,9 @@ export default function PlaylistsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-display font-bold text-lg text-ink-main">
-              Official Emotion Presets ({presetPlaylists.length})
+              Curated Mood Mixes ({presetPlaylists.length})
             </h3>
-            <span className="text-xs text-ink-muted">Click any preset to view & listen</span>
+            <span className="text-xs text-ink-muted">Explore playlists crafted for every emotional mood</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
@@ -711,10 +709,10 @@ export default function PlaylistsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-display font-bold text-lg text-ink-main">
-                My Custom Collections ({myPlaylists.length})
+                My Saved Playlists ({myPlaylists.length})
               </h3>
               <p className="text-xs text-ink-muted">
-                Saved locally in your browser library
+                Personalized playlists saved to your music library
               </p>
             </div>
             <button
@@ -722,23 +720,22 @@ export default function PlaylistsPage() {
               className="px-3.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Create New</span>
+              <span>Create Playlist</span>
             </button>
           </div>
 
           {myPlaylists.length === 0 ? (
             <div className="text-center py-16 rounded-3xl theme-card space-y-3">
               <FolderPlus className="w-10 h-10 text-ink-dim mx-auto" />
-              <h4 className="font-display font-bold text-base text-ink-main">No Custom Playlists Yet</h4>
+              <h4 className="font-display font-bold text-base text-ink-main">Your playlist library is empty</h4>
               <p className="text-xs text-ink-muted max-w-sm mx-auto">
-                Use the Generator Studio to generate your first multi-mood soundtrack or save customized
-                track sequences.
+                Create a custom playlist in the Playlist Studio or save your favorite mood mixes here.
               </p>
               <button
                 onClick={() => setActiveTab("studio")}
                 className="px-4 py-2 rounded-xl bg-white light:bg-slate-900 text-black light:text-white text-xs font-bold hover:bg-neutral-200 light:hover:bg-slate-800 transition-colors"
               >
-                Launch Generator Studio
+                Open Playlist Studio
               </button>
             </div>
           ) : (
@@ -816,11 +813,11 @@ export default function PlaylistsPage() {
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono uppercase tracking-widest text-white/80 font-bold px-2 py-0.5 rounded bg-black/20">
-                      {selectedPlaylist.isSystemPreset ? "System Preset" : "Custom Playlist"}
+                      {selectedPlaylist.isSystemPreset ? "Curated Mix" : "Custom Mix"}
                     </span>
                     {selectedPlaylist.emotions?.length > 1 && (
                       <span className="text-[10px] font-mono uppercase tracking-widest text-amber-200 font-bold px-2 py-0.5 rounded bg-amber-400/20">
-                        Mixed Harmony
+                        Blended Moods
                       </span>
                     )}
                   </div>
@@ -949,7 +946,7 @@ export default function PlaylistsPage() {
                   onClick={() => setIsAddSongModalOpen(true)}
                   className="px-3.5 py-1.5 rounded-xl bg-purple-600 text-white text-xs font-semibold"
                 >
-                  Add First Track
+                  Add Track
                 </button>
               </div>
             ) : (
@@ -991,14 +988,14 @@ export default function PlaylistsPage() {
                             {song.source === "analyzed" ? (
                               <span
                                 className="text-[9px] px-1.5 py-0.5 rounded font-mono font-semibold bg-emerald-500/20 light:bg-emerald-50 text-emerald-300 light:text-emerald-700 border border-emerald-500/30 shrink-0"
-                                title="Verified by EmoLyrics ML Emotion Classifier"
+                                title="Verified by EmoLyrics AI Emotion Classifier"
                               >
-                                ML {song.confidence ? `${song.confidence}%` : "Verified"}
+                                AI {song.confidence ? `${song.confidence}%` : "Verified"}
                               </span>
                             ) : (
                               <span
                                 className="text-[9px] px-1.5 py-0.5 rounded font-mono text-ink-muted bg-white/5 light:bg-white border border-white/10 light:border-slate-200 shrink-0"
-                                title="Curated Discovery based on emotional resonance"
+                                title="Curated discovery based on emotional resonance"
                               >
                                 Discovery
                               </span>

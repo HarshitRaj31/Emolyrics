@@ -135,7 +135,7 @@ export default function PluginDetailsModal({
         <div className="flex border-b border-white/10 light:border-slate-200 px-6 md:px-8 bg-neutral-900/40 light:bg-slate-50/90">
           {[
             { id: "overview", label: "Overview" },
-            { id: "features", label: "Features & Output" },
+            { id: "features", label: "Features & Capabilities" },
             { id: "permissions", label: "Permissions & Security" }
           ].map((tab) => (
             <button
@@ -183,17 +183,17 @@ export default function PluginDetailsModal({
                   <div>
                     <strong className="block text-ink-main text-xs font-semibold">
                       {isActive
-                        ? "Integration Active & Ready"
+                        ? "Extension Active & Ready"
                         : isInstalled
-                        ? "Installed (Currently Disabled)"
+                        ? "Installed (Disabled)"
                         : "Ready for Installation"}
                     </strong>
                     <span className="text-[11px] opacity-80">
                       {isActive
-                        ? "Hooks are connected to the lyrics analysis pipeline."
+                        ? "Hooks are connected to the music intelligence pipeline."
                         : isInstalled
-                        ? "Enable this integration below to start using its capabilities."
-                        : "Safe one-click activation. No system restart needed."}
+                        ? "Enable this extension below to start using its capabilities."
+                        : "Safe one-click activation without system restarts."}
                     </span>
                   </div>
                 </div>
@@ -283,7 +283,7 @@ export default function PluginDetailsModal({
               className="flex items-center gap-2 px-4 py-2 rounded-xl theme-well text-ink-secondary hover:text-ink-main text-xs font-semibold transition-colors"
             >
               <Settings className="w-3.5 h-3.5" />
-              <span>Configure Settings</span>
+              <span>Configure Plugin</span>
             </button>
           )}
 
@@ -318,7 +318,7 @@ export default function PluginDetailsModal({
                 className="flex items-center gap-1.5 px-5 py-2 rounded-xl bg-white text-black hover:bg-amber-300 light:bg-purple-600 light:text-white light:hover:bg-purple-700 font-semibold text-xs transition-transform hover:scale-102 shadow-lg"
               >
                 <Download className="w-3.5 h-3.5" />
-                <span>Install Integration</span>
+                <span>Install Plugin</span>
               </button>
             )}
           </div>
