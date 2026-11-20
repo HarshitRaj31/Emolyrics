@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const app = require("./app");
 const { connectDB } = require("./db");
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3001;
 
 // Start Local HTTP Server (never executed during Vercel serverless imports)
 async function startServer() {

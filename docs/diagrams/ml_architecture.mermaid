@@ -1,0 +1,68 @@
+flowchart TD
+    subgraph S1 ["01. LYRICS INPUT"]
+        direction TB
+        IN_NODE["Node.js Express Backend\n(/api/analyze-advanced)"]
+        IN_PAYLOAD["JSON Payload: { text, language }"]
+        IN_NODE -->|"HTTP POST :8001/predict"| IN_PAYLOAD
+    end
+
+    subgraph S2 ["02. TEXT PREPROCESSING (code_switch.py)"]
+        direction TB
+        TRUNC["Length Guard (max 5,000 chars)"]
+        NORM_SPACE["Unicode Sanitization\n(strip \\u200b & \\xa0)"]
+        ELONG["Elongation Compression\nRegex: (.)\\1{2,} -> \\1\\1"]
+        SCRIPT["Script & Code-Switch Audit\n(Devanagari, Bengali, Latin, Hinglish, Banglish)"]
+        CACHE_CHECK{"In-Memory LRU Cache\nKey: lang::md5(text)"}
+        
+        TRUNC --> NORM_SPACE --> ELONG --> SCRIPT --> CACHE_CHECK
+    end
+
+    subgraph S3 ["03. FEATURE EXTRACTION (embedding_manager.py)"]
+        direction TB
+        ENCODER["Encoder: paraphrase-multilingual-MiniLM-L12-v2\n(12-Layer Transformer, 117M params)"]
+        TOKENIZE["Subword Tokenizer (Max Length: 128)"]
+        POOLING["Mean Pooling over Token Representations"]
+        L2_NORM["L2 Vector Normalization"]
+        EMBED_OUT["Dense Semantic Embedding Vector\nx ∈ ℝ³⁸⁴ (384-dimensional)"]
+
+        ENCODER --> TOKENIZE --> POOLING --> L2_NORM --> EMBED_OUT
+    end
+
+    subgraph S4 ["04. PYTORCH NEURAL CLASSIFIER (model.py)"]
+        direction TB
+        LN_IN["nn.LayerNorm(384)"]
+        DENSE_1["nn.Linear(384, 256) + nn.LayerNorm(256) + nn.ReLU() + nn.Dropout(0.3)"]
+        DENSE_2["nn.Linear(256, 128) + nn.LayerNorm(128) + nn.ReLU() + nn.Dropout(0.3)"]
+        HEAD["nn.Linear(128, 10) Output Logits Head"]
+        LOGITS["Raw Emotion Logits Vector\nz = [z₁, z₂, ..., z₁₀] ∈ ℝ¹⁰"]
+
+        LN_IN --> DENSE_1 --> DENSE_2 --> HEAD --> LOGITS
+    end
+
+    subgraph S5 ["05. EMOTION CLASSIFICATION & CALIBRATION (calibration.py)"]
+        direction TB
+        TEMP["Temperature Scaler (T = 1.0295)\nz_scaled = z / 1.0295"]
+        SOFTMAX["Calibrated Softmax Probabilities\np_i = exp(z_i / T) / Σ exp(z_j / T)"]
+        ECE_STAT["Calibrated ECE: 0.0538 (-12.38% error)"]
+        UNCERTAIN["Uncertainty Assessor\n(Entropy, Top Margin, Confidence Thresholds)"]
+        CLASSES["10 Canonical Emotion Categories\n(Happiness, Sadness, Love, Anger, Nostalgia,\nFear, Excitement, Hope, Loneliness, Calmness)"]
+
+        TEMP --> SOFTMAX --> ECE_STAT --> UNCERTAIN --> CLASSES
+    end
+
+    subgraph S6 ["06. PREDICTION OUTPUT (api.py)"]
+        direction TB
+        RESP_JSON["FastAPI JSON Response\n{ success, language, primaryEmotion, secondaryEmotions,\nconfidence, emotionProbabilities, isCodeSwitched, isUncertain }"]
+        NODE_BACKEND["Node.js Backend Delivery"]
+        REACT_FRONTEND["React 19 Frontend Dashboard\n(Cards, SVG Donut, Timeline, Recommendations)"]
+
+        RESP_JSON --> NODE_BACKEND --> REACT_FRONTEND
+    end
+
+    %% Pipeline Inter-stage Connections
+    S1 -->|"Raw Input"| S2
+    CACHE_CHECK -->|"Cache Miss"| S3
+    CACHE_CHECK -.->|"Cache Hit (<1ms)"| S6
+    S3 -->|"384-d Embedding"| S4
+    S4 -->|"Logits z"| S5
+    S5 -->|"Calibrated Predictions"| S6

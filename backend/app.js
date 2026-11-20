@@ -42,8 +42,10 @@ const assistantRoutes = require("./routes/assistant.routes");
 
 const DEFAULT_LOCAL_ORIGINS = [
   "http://localhost:3000",
+  "http://localhost:3001",
   "http://localhost:5173",
   "http://127.0.0.1:3000",
+  "http://127.0.0.1:3001",
   "http://127.0.0.1:5173"
 ];
 
@@ -63,13 +65,23 @@ function createCorsMiddleware() {
   const rawCors = (process.env.CORS_ORIGIN || "").trim();
   const isProd = isProductionRuntime();
 
-  let configuredOrigins;
+  let configuredOrigins = [];
   if (rawCors) {
-    configuredOrigins = rawCors.split(",").map((s) => s.trim()).filter(Boolean);
-  } else if (!isProd) {
-    configuredOrigins = DEFAULT_LOCAL_ORIGINS;
-  } else {
-    configuredOrigins = [];
+    configuredOrigins = rawCors
+      .split(",")
+      .map((s) => s.trim().replace(/^["']|["']$/g, ""))
+      .filter(Boolean);
+  }
+
+  // Ensure standard local development origins (including http://localhost:3000) are always allowed in development
+  if (!isProd) {
+    for (const devOrigin of DEFAULT_LOCAL_ORIGINS) {
+      if (!configuredOrigins.includes(devOrigin)) {
+        configuredOrigins.push(devOrigin);
+      }
+    }
+  } else if (configuredOrigins.length === 0) {
+    configuredOrigins = [...DEFAULT_LOCAL_ORIGINS];
   }
 
   const allowsWildcard = configuredOrigins.includes("*");

@@ -9,7 +9,7 @@ function resolveApiBaseUrl() {
     return `${configuredUrl}/api`;
   }
 
-  // Preserve local Vite dev proxy (/api -> http://localhost:5000) in development
+  // Preserve local Vite dev proxy (/api -> http://localhost:3001) in development
   if (import.meta.env.DEV) {
     return "/api";
   }
