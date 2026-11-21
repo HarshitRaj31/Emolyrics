@@ -51,8 +51,15 @@ class MusicBrainzAdapter {
       if (!Array.isArray(items) || items.length === 0) return null;
 
       const recordings = items.slice(0, limit).map((item) => {
-        const title = item.name || item.trackName || "Unknown Title";
-        const artist = item.artistName || "Unknown Artist";
+        let title = item.name || item.trackName || "Unknown Title";
+        let artist = item.artistName || "Unknown Artist";
+        if (title.includes(" - ")) {
+          const parts = title.split(" - ");
+          if (parts.length === 2 && (!artist || artist.toLowerCase() === parts[0].trim().toLowerCase())) {
+            artist = parts[0].trim();
+            title = parts[1].trim();
+          }
+        }
         const album = item.albumName || "Unknown Album";
         const durationMs = item.duration ? Math.round(item.duration * 1000) : null;
         const spotifySearchQuery = encodeURIComponent(`${title} ${artist}`);

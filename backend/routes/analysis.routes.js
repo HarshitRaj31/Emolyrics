@@ -1,5 +1,6 @@
 const express = require("express");
 const { classifyLyrics } = require("../nlp/emotionClassifier");
+const { detectLanguage } = require("../nlp/languageDetector");
 const { advancedEmotionService } = require("../services/advancedEmotionService");
 const { multilingualMLService } = require("../services/multilingualMLService");
 const { getIsConnected, memoryStore } = require("../db");
@@ -83,6 +84,32 @@ router.get("/ml-health", async (req, res, next) => {
     return res.json({
       success: true,
       ...health
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
+ * POST /api/detect-language
+ * Real-time language detection for lyrics using statistical n-grams & character profiles
+ */
+router.post("/detect-language", (req, res, next) => {
+  try {
+    const { lyrics, text } = req.body || {};
+    const input = (typeof lyrics === "string" ? lyrics : typeof text === "string" ? text : "").trim();
+
+    if (!input) {
+      return res.status(400).json({
+        success: false,
+        message: "Lyrics or text string is required for language detection."
+      });
+    }
+
+    const detected = detectLanguage(input);
+    return res.json({
+      success: true,
+      ...detected
     });
   } catch (error) {
     next(error);

@@ -32,6 +32,14 @@ ML_DIR = os.path.dirname(CURRENT_DIR)
 if ML_DIR not in sys.path:
     sys.path.insert(0, ML_DIR)
 
+try:
+    from dotenv import load_dotenv
+    env_path = os.path.join(ML_DIR, ".env")
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+except Exception:
+    pass
+
 from src.predict import MultilingualEmotionPredictor, DEFAULT_CHECKPOINT
 from src.embedding_manager import TARGET_TAXONOMY
 
@@ -385,7 +393,7 @@ def predict_lines_endpoint(req: PredictLinesRequest, request: Request = None):
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT") or os.environ.get("ML_SERVICE_PORT", 8001))
-    host = os.environ.get("HOST") or os.environ.get("ML_SERVICE_HOST", "127.0.0.1")
+    port = int(os.environ.get("ML_SERVICE_PORT") or (os.environ.get("PORT") if os.environ.get("PORT") not in ["3000", "3001", "5000"] else None) or 8001)
+    host = os.environ.get("ML_SERVICE_HOST") or os.environ.get("HOST") or "127.0.0.1"
     logger.info(f"Starting EmoLyrics Multilingual ML Service on http://{host}:{port}")
     uvicorn.run(app, host=host, port=port, log_level="info")

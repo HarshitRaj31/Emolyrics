@@ -5,6 +5,7 @@
  */
 
 const express = require("express");
+const mongoose = require("mongoose");
 const { getIsConnected, memoryStore } = require("../db");
 const Playlist = require("../models/Playlist");
 const playlistGeneratorService = require("../services/playlistGeneratorService");
@@ -102,31 +103,65 @@ router.post("/generate", optionalJWT, async (req, res, next) => {
 
 /**
  * GET /api/playlists/:idOrMood
- * Retrieve a playlist by MongoDB ObjectId or preset Mood name
+ * Retrieve a playlist by MongoDB ObjectId or preset Mood / title name
  */
 router.get("/:idOrMood", optionalJWT, async (req, res, next) => {
   try {
-    const { idOrMood } = req.params;
+    await playlistGeneratorService.ensurePresetsSeeded();
+    const rawIdOrMood = req.params.idOrMood;
+    const idOrMood = decodeURIComponent(rawIdOrMood).trim();
     let playlist = null;
 
+    const isObjectId = mongoose.Types.ObjectId.isValid(idOrMood) && /^[0-9a-fA-F]{24}$/.test(idOrMood);
+
     if (getIsConnected()) {
-      if (idOrMood.match(/^[0-9a-fA-F]{24}$/)) {
+      if (isObjectId) {
         playlist = await Playlist.findById(idOrMood).lean();
       } else {
-        playlist = await Playlist.findOne({
-          $or: [
-            { _id: idOrMood },
-            { mood: new RegExp(`^${idOrMood}$`, "i") }
-          ]
-        }).lean();
+        const escapedMood = idOrMood.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const slugSpace = idOrMood.replace(/[-_]/g, " ").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const slugSlash = idOrMood.replace(/[-_]/g, "/").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+        const orFilters = [
+          { mood: new RegExp(`^${escapedMood}$`, "i") },
+          { title: new RegExp(`^${escapedMood}$`, "i") },
+          { emotions: new RegExp(`^${escapedMood}$`, "i") }
+        ];
+
+        if (slugSpace !== escapedMood) {
+          orFilters.push(
+            { mood: new RegExp(`^${slugSpace}$`, "i") },
+            { title: new RegExp(`^${slugSpace}$`, "i") },
+            { emotions: new RegExp(`^${slugSpace}$`, "i") }
+          );
+        }
+
+        if (slugSlash !== escapedMood && slugSlash !== slugSpace) {
+          orFilters.push(
+            { mood: new RegExp(`^${slugSlash}$`, "i") },
+            { title: new RegExp(`^${slugSlash}$`, "i") },
+            { emotions: new RegExp(`^${slugSlash}$`, "i") }
+          );
+        }
+
+        playlist = await Playlist.findOne({ $or: orFilters }).lean();
       }
     }
 
     if (!playlist) {
+      const targetLower = idOrMood.toLowerCase();
+      const targetSpace = idOrMood.replace(/[-_]/g, " ").toLowerCase();
+      const targetSlash = idOrMood.replace(/[-_]/g, "/").toLowerCase();
+
       playlist = memoryStore.playlists.find(
         (p) =>
           p._id === idOrMood ||
-          (p.mood && p.mood.toLowerCase() === idOrMood.toLowerCase())
+          (p.mood && (p.mood.toLowerCase() === targetLower || p.mood.toLowerCase() === targetSpace || p.mood.toLowerCase() === targetSlash)) ||
+          (p.title && (p.title.toLowerCase() === targetLower || p.title.toLowerCase() === targetSpace)) ||
+          (Array.isArray(p.emotions) && p.emotions.some((e) => {
+            const eLow = e.toLowerCase();
+            return eLow === targetLower || eLow === targetSpace || eLow === targetSlash;
+          }))
       );
     }
 
@@ -189,6 +224,10 @@ router.put("/:id", optionalJWT, async (req, res, next) => {
     const userId = req.user ? req.user._id : null;
 
     if (getIsConnected()) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(id) && /^[0-9a-fA-F]{24}$/.test(id);
+      if (!isObjectId) {
+        return res.status(404).json({ success: false, message: "Playlist not found." });
+      }
       const existing = await Playlist.findById(id);
       if (!existing) {
         return res.status(404).json({ success: false, message: "Playlist not found." });
@@ -250,6 +289,10 @@ router.delete("/:id", optionalJWT, async (req, res, next) => {
     const userId = req.user ? req.user._id : null;
 
     if (getIsConnected()) {
+      const isObjectId = mongoose.Types.ObjectId.isValid(id) && /^[0-9a-fA-F]{24}$/.test(id);
+      if (!isObjectId) {
+        return res.status(404).json({ success: false, message: "Playlist not found." });
+      }
       const existing = await Playlist.findById(id);
       if (!existing) {
         return res.status(404).json({ success: false, message: "Playlist not found." });

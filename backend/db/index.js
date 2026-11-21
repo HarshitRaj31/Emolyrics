@@ -168,6 +168,81 @@ const memoryStore = {
   ]
 };
 
+async function syncMemoryStoreToDB() {
+  if (mongoose.connection.readyState !== 1) return;
+
+  try {
+    // 1. Synchronize any user-created analyses from MemoryStore to MongoDB
+    const userAnalyses = memoryStore.analyses.filter(
+      (a) => a && a._id && (String(a._id).startsWith("analysis-") || String(a._id).startsWith("analysis-adv-"))
+    );
+    if (userAnalyses.length > 0) {
+      const Analysis = mongoose.models.Analysis || require("../models/Analysis");
+      for (const item of userAnalyses) {
+        const query = item.user
+          ? { user: item.user, title: item.title, lyrics: item.lyrics }
+          : { title: item.title, lyrics: item.lyrics, createdAt: item.createdAt };
+        const exists = await Analysis.findOne(query);
+        if (!exists) {
+          const doc = { ...item };
+          delete doc._id;
+          await Analysis.create(doc);
+        }
+      }
+    }
+
+    // 2. Synchronize any custom playlists created in MemoryStore to MongoDB
+    const customPlaylists = memoryStore.playlists.filter(
+      (p) => p && !p.isSystemPreset && p._id && String(p._id).startsWith("pl-") && String(p._id).length > 10
+    );
+    if (customPlaylists.length > 0) {
+      const Playlist = mongoose.models.Playlist || require("../models/Playlist");
+      for (const item of customPlaylists) {
+        const query = item.user
+          ? { user: item.user, title: item.title }
+          : { title: item.title, createdAt: item.createdAt };
+        const exists = await Playlist.findOne(query);
+        if (!exists) {
+          const doc = { ...item };
+          delete doc._id;
+          await Playlist.create(doc);
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("⚠ [DB] Synchronization notice:", err.message);
+  }
+}
+
+// Lifecycle listeners to preserve connection consistency and prevent silent data loss
+if (!global.__emolyricsDbListenersAttached && mongoose.connection) {
+  global.__emolyricsDbListenersAttached = true;
+
+  mongoose.connection.on("connected", () => {
+    dbCache.conn = mongoose.connection;
+    dbCache.lastError = null;
+    dbCache.loggedFallback = false;
+    syncMemoryStoreToDB().catch(() => {});
+  });
+
+  mongoose.connection.on("reconnected", () => {
+    dbCache.conn = mongoose.connection;
+    dbCache.lastError = null;
+    dbCache.loggedFallback = false;
+    console.log(" Reconnected successfully to MongoDB");
+    syncMemoryStoreToDB().catch(() => {});
+  });
+
+  mongoose.connection.on("disconnected", () => {
+    dbCache.conn = null;
+    dbCache.promise = null;
+  });
+
+  mongoose.connection.on("error", (err) => {
+    dbCache.lastError = err.message;
+  });
+}
+
 async function connectDB() {
   // Reuse warm established connection
   if (mongoose.connection.readyState === 1) {
@@ -205,13 +280,15 @@ async function connectDB() {
     .connect(uri, {
       maxPoolSize: 5,
       minPoolSize: 0,
-      serverSelectionTimeoutMS: isProd ? 5000 : 2000,
+      serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000
     })
-    .then((m) => {
+    .then(async (m) => {
       dbCache.conn = m.connection;
       dbCache.lastError = null;
+      dbCache.loggedFallback = false;
       console.log(` Connected successfully to MongoDB (${targetLabel})`);
+      await syncMemoryStoreToDB();
       return true;
     })
     .catch((error) => {
@@ -229,16 +306,17 @@ async function connectDB() {
 }
 
 function getIsConnected() {
-  return mongoose.connection.readyState === 1;
+  return mongoose.connection && mongoose.connection.readyState === 1;
 }
 
 function getDbStatus() {
+  const isConnected = getIsConnected();
   return {
-    connected: getIsConnected(),
-    readyState: mongoose.connection.readyState,
-    type: getIsConnected() ? "MongoDB" : "MemoryStore",
-    persistent: getIsConnected(),
-    lastError: getIsConnected() ? null : dbCache.lastError
+    connected: isConnected,
+    readyState: mongoose.connection ? mongoose.connection.readyState : 0,
+    type: isConnected ? "MongoDB" : "MemoryStore",
+    persistent: isConnected,
+    lastError: isConnected ? null : dbCache.lastError
   };
 }
 
@@ -246,5 +324,6 @@ module.exports = {
   connectDB,
   getIsConnected,
   getDbStatus,
+  syncMemoryStoreToDB,
   memoryStore
 };
