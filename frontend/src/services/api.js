@@ -257,6 +257,8 @@ export const api = {
     return request(`/analytics?${params.toString()}`);
   },
 
+  getAdminAnalytics: () => request("/analytics/admin"),
+
   // Stats & Team Benchmarks
   getStats: () => request("/stats"),
 

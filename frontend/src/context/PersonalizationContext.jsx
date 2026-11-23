@@ -77,6 +77,18 @@ export function PersonalizationProvider({ children }) {
           !(item.title.trim().toLowerCase() === cleanTitle && (item.artist || "").trim().toLowerCase() === cleanArtist)
       );
 
+      // Derive secondary emotion if scores provided and secondary not set
+      let secondaryMood = song.secondaryMood || song.secondaryEmotion || null;
+      if (!secondaryMood && song.scores && typeof song.scores === "object") {
+        const primary = (song.mood || "").toLowerCase();
+        const candidates = Object.entries(song.scores)
+          .filter(([m, score]) => m.toLowerCase() !== primary && Number(score) > 0)
+          .sort((a, b) => Number(b[1]) - Number(a[1]));
+        if (candidates.length > 0 && candidates[0][1] > 0) {
+          secondaryMood = candidates[0][0];
+        }
+      }
+
       const entry = {
         id: song._id || song.id || `analyzed-${Date.now()}`,
         title: song.title.trim(),
@@ -85,6 +97,9 @@ export function PersonalizationProvider({ children }) {
         emoji: song.emoji || "☀️",
         confidence: song.confidence || 90,
         color: song.color || "#f59e0b",
+        language: song.language || "English",
+        scores: song.scores || null,
+        secondaryMood: secondaryMood || null,
         timestamp: new Date().toISOString()
       };
 

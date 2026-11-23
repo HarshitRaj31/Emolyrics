@@ -88,8 +88,22 @@ async function optionalJWT(req, res, next) {
   next();
 }
 
+/**
+ * Require Admin role: enforces that req.user exists and has role === 'admin'
+ */
+function requireAdmin(req, res, next) {
+  if (!req.user || req.user.role !== "admin") {
+    return res.status(403).json({
+      success: false,
+      message: "Admin privileges required to access this resource."
+    });
+  }
+  next();
+}
+
 module.exports = {
   authenticateJWT,
   optionalJWT,
+  requireAdmin,
   getJwtSecret
 };

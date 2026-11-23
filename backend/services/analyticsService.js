@@ -6,6 +6,7 @@
 
 const { getIsConnected, memoryStore } = require("../db");
 const Analysis = require("../models/Analysis");
+const { classifyLyrics } = require("../nlp/emotionClassifier");
 
 // All 9 Trained ML Emotion Classes with Design Metadata
 const MOOD_METADATA = {
@@ -20,6 +21,79 @@ const MOOD_METADATA = {
   Horror: { emoji: "👻", color: "#dc2626" }
 };
 
+// Supported Languages with Design & Metadata
+const LANGUAGE_METADATA = {
+  English: { flag: "🇬🇧", name: "English", color: "#3b82f6" },
+  Hindi: { flag: "🇮🇳", name: "Hindi", color: "#f97316" },
+  Bengali: { flag: "🇧🇩", name: "Bengali", color: "#10b981" },
+  Spanish: { flag: "🇪🇸", name: "Spanish", color: "#ef4444" },
+  French: { flag: "🇫🇷", name: "French", color: "#8b5cf6" },
+  Other: { flag: "🌐", name: "Other", color: "#64748b" }
+};
+
+/**
+ * Normalize any input language string into one of the supported languages or Other
+ */
+function normalizeLanguage(langStr) {
+  if (!langStr || typeof langStr !== "string") return "English";
+  const lower = langStr.toLowerCase().trim();
+  if (lower.includes("hindi") || lower.includes("hinglish") || lower === "hi") return "Hindi";
+  if (lower.includes("bengali") || lower.includes("bangla") || lower.includes("banglish") || lower === "bn") return "Bengali";
+  if (lower.includes("spanish") || lower.includes("español") || lower === "es") return "Spanish";
+  if (lower.includes("french") || lower.includes("français") || lower === "fr") return "French";
+  if (lower.includes("english") || lower === "en") return "English";
+  return "Other";
+}
+
+/**
+ * Extract the highest-scoring secondary emotion from an analysis record
+ */
+function extractSecondaryEmotion(rec, primaryMood) {
+  let scores = null;
+  if (rec.scores) {
+    if (rec.scores instanceof Map) {
+      scores = {};
+      for (const [k, v] of rec.scores.entries()) {
+        scores[k] = v;
+      }
+    } else if (typeof rec.scores === "object") {
+      scores = rec.scores;
+    }
+  }
+
+  const targetMood = (primaryMood || rec.mood || "").toLowerCase();
+
+  if (scores && typeof scores === "object") {
+    const candidates = Object.entries(scores)
+      .filter(([m, val]) => m.toLowerCase() !== targetMood && Number(val) > 0)
+      .sort((a, b) => Number(b[1]) - Number(a[1]));
+
+    if (candidates.length > 0 && candidates[0][1] > 0) {
+      return candidates[0][0];
+    }
+  }
+
+  // Fallback to classifying lyrics if scores absent on record
+  if (rec.lyrics && typeof rec.lyrics === "string" && rec.lyrics.length > 5) {
+    try {
+      const classified = classifyLyrics(rec.lyrics);
+      if (classified && classified.scores) {
+        const candidates = Object.entries(classified.scores)
+          .filter(([m, val]) => m.toLowerCase() !== targetMood && Number(val) > 0)
+          .sort((a, b) => Number(b[1]) - Number(a[1]));
+
+        if (candidates.length > 0 && candidates[0][1] > 0) {
+          return candidates[0][0];
+        }
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  return null;
+}
+
 // Initial Seed Dataset for Realistic Community Benchmarks
 const SEED_ANALYSES = [
   {
@@ -28,6 +102,7 @@ const SEED_ANALYSES = [
     lyrics: "Walking on sunshine, feeling so alive\nEvery moment sparkles, happiness will thrive\nSmiles all around me, laughter fills the air\nLife is so amazing, not a single care",
     mood: "Happy",
     confidence: 94.5,
+    scores: { Happy: 75, Exciting: 20, "Calm/Chill": 5 },
     explanation: "Identified vibrant joy markers (sunshine, happiness, smiles, laughter) radiating euphoric energy.",
     language: "English",
     daysAgo: 1
@@ -38,6 +113,7 @@ const SEED_ANALYSES = [
     lyrics: "Look at the stars, look how they shine for you\nAnd everything you do, yeah they were all yellow\nI came along, I wrote a song for you\nAnd all the things you do, and it was called Yellow",
     mood: "Romantic",
     confidence: 88.9,
+    scores: { Romantic: 70, "Calm/Chill": 20, Happy: 10 },
     explanation: "Dominant emotional cues characterizing romantic devotion and heartfelt affection.",
     language: "English",
     daysAgo: 2
@@ -48,6 +124,7 @@ const SEED_ANALYSES = [
     lyrics: "Is this the real life? Is this just fantasy?\nCaught in a landslide, no escape from reality\nOpen your eyes, look up to the skies and see\nI'm just a poor boy, I need no sympathy",
     mood: "Calm/Chill",
     confidence: 86.2,
+    scores: { "Calm/Chill": 60, Thrilling: 25, Sad: 15 },
     explanation: "Identified calm reflective pacing with philosophical lyrical nuance.",
     language: "English",
     daysAgo: 3
@@ -58,8 +135,9 @@ const SEED_ANALYSES = [
     lyrics: "Hum tere bin ab reh nahi sakte\nTere bina kya wajood mera\nTujh se juda agar ho jaayenge\nToh khud se hi ho jaayenge juda",
     mood: "Sad",
     confidence: 83.6,
+    scores: { Sad: 75, Romantic: 20, "Calm/Chill": 5 },
     explanation: "Dominant melancholic markers conveying deep sorrow, yearning, and poignant grief.",
-    language: "Hindi (Hinglish)",
+    language: "Hindi",
     daysAgo: 4
   },
   {
@@ -68,6 +146,7 @@ const SEED_ANALYSES = [
     lyrics: "There was a time, I used to look into my father's eyes\nIn a happy home, I was a king, I had a golden throne\nDon't you worry, don't you worry, child\nSee heaven's got a plan for you",
     mood: "Exciting",
     confidence: 91.0,
+    scores: { Exciting: 70, Happy: 20, "Calm/Chill": 10 },
     explanation: "High arousal electric momentum with anthemic festival drops.",
     language: "English",
     daysAgo: 5
@@ -78,6 +157,7 @@ const SEED_ANALYSES = [
     lyrics: "It's just one of those days where you don't wanna wake up\nEverything is messed up, everybody sucks\nYou don't really know why, but you wanna justify rippin' someone's head off",
     mood: "Angry",
     confidence: 92.1,
+    scores: { Angry: 80, Exciting: 15, Thrilling: 5 },
     explanation: "Explosive cathartic wrath and defiant fury driven by high tension.",
     language: "English",
     daysAgo: 6
@@ -88,6 +168,7 @@ const SEED_ANALYSES = [
     lyrics: "Vande Mataram, Vande Mataram\nYahan vahan saara jahan dekh liya\nAb tak bhi tere jaisa koi nahin\nMain ghoom aaya dharati par",
     mood: "Patriotic",
     confidence: 96.0,
+    scores: { Patriotic: 80, Exciting: 15, Happy: 5 },
     explanation: "Stirring homeland devotion, national solidarity, and anthem fervor.",
     language: "Hindi",
     daysAgo: 7
@@ -98,6 +179,7 @@ const SEED_ANALYSES = [
     lyrics: "Oh baby, don't you know I suffer?\nOh baby, can you hear me moan?\nYou caught me under false pretenses\nHow long before you let me go?",
     mood: "Thrilling",
     confidence: 89.4,
+    scores: { Thrilling: 70, Exciting: 20, Angry: 10 },
     explanation: "Cinematic driving tension, mysterious edge-of-seat pacing, and suspense.",
     language: "English",
     daysAgo: 8
@@ -108,6 +190,7 @@ const SEED_ANALYSES = [
     lyrics: "Bells tolling in the dark silence, eerie footsteps approaching through the fog, shadows whisper dread",
     mood: "Horror",
     confidence: 87.5,
+    scores: { Horror: 75, Thrilling: 20, Sad: 5 },
     explanation: "Spine-chilling dark ambient dissonance, supernatural chill, and macabre atmosphere.",
     language: "English",
     daysAgo: 9
@@ -118,6 +201,7 @@ const SEED_ANALYSES = [
     lyrics: "I heard that you're settled down, that you found a girl and you're married now\nI heard that your dreams came true, guess she gave you things I didn't give to you\nNever mind, I'll find someone like you",
     mood: "Sad",
     confidence: 93.2,
+    scores: { Sad: 75, Romantic: 15, "Calm/Chill": 10 },
     explanation: "Introspective acoustic vulnerability, poignant heartbreak, and grief.",
     language: "English",
     daysAgo: 10
@@ -128,6 +212,7 @@ const SEED_ANALYSES = [
     lyrics: "I found a love for me, darling just dive right in and follow my lead\nWell I found a girl, beautiful and sweet\nI never knew you were the someone waiting for me",
     mood: "Romantic",
     confidence: 95.0,
+    scores: { Romantic: 80, Happy: 15, "Calm/Chill": 5 },
     explanation: "Tender acoustic affection and starry-eyed emotional depth.",
     language: "English",
     daysAgo: 11
@@ -138,6 +223,7 @@ const SEED_ANALYSES = [
     lyrics: "Because I'm happy, clap along if you feel like a room without a roof\nBecause I'm happy, clap along if you feel like happiness is the truth",
     mood: "Happy",
     confidence: 92.8,
+    scores: { Happy: 85, Exciting: 15 },
     explanation: "Radiant joy, rhythmic optimism, and feel-good celebration.",
     language: "English",
     daysAgo: 12
@@ -148,6 +234,7 @@ const SEED_ANALYSES = [
     lyrics: "Some of those that work forces are the same that burn crosses\nAnd now you do what they told ya, now you do what they told ya\nI won't do what you tell me!",
     mood: "Angry",
     confidence: 94.0,
+    scores: { Angry: 85, Exciting: 10, Thrilling: 5 },
     explanation: "Uncompromising rebellion, heavy distortion, and anti-authoritarian fury.",
     language: "English",
     daysAgo: 13
@@ -158,6 +245,7 @@ const SEED_ANALYSES = [
     lyrics: "Gentle breeze over the calm shoreline, quiet waves floating softly in the afternoon stillness",
     mood: "Calm/Chill",
     confidence: 88.0,
+    scores: { "Calm/Chill": 85, Happy: 10, Romantic: 5 },
     explanation: "Atmospheric textures, low-arousal harmonic pacing, and tranquil ease.",
     language: "English",
     daysAgo: 14
@@ -168,6 +256,7 @@ const SEED_ANALYSES = [
     lyrics: "Feeling my way through the darkness, guided by a beating heart\nI can't tell where the journey will end, but I know where to start\nSo wake me up when it's all over",
     mood: "Exciting",
     confidence: 90.5,
+    scores: { Exciting: 70, Happy: 20, Patriotic: 10 },
     explanation: "High-tempo acoustic folk-EDM fusion with adrenaline-charged chorus.",
     language: "English",
     daysAgo: 15
@@ -178,6 +267,7 @@ const SEED_ANALYSES = [
     lyrics: "O maai meri kya fikar tujhe, kyon aankh se dariya behta hai\nTu kehti thi tera chaand hoon main, aur chaand hamesha rehta hai\nTeri mitti me mil jawaan, gul banke main khil jawaan",
     mood: "Patriotic",
     confidence: 95.2,
+    scores: { Patriotic: 75, Sad: 15, Romantic: 10 },
     explanation: "Deep reverent sacrifice, love for the homeland soil, and national solidarity.",
     language: "Hindi",
     daysAgo: 16
@@ -188,6 +278,7 @@ const SEED_ANALYSES = [
     lyrics: "Orchestral countdown echoing against the ticking clock, racing pulse of fate and memory",
     mood: "Thrilling",
     confidence: 88.7,
+    scores: { Thrilling: 75, Horror: 15, "Calm/Chill": 10 },
     explanation: "Dramatic cinematic buildup, edge-of-seat suspense, and high-stakes tension.",
     language: "English",
     daysAgo: 17
@@ -198,6 +289,7 @@ const SEED_ANALYSES = [
     lyrics: "Eerie analog synths pulse in the upside down, shadowy creatures lurking in the mist",
     mood: "Horror",
     confidence: 91.3,
+    scores: { Horror: 75, Thrilling: 20, "Calm/Chill": 5 },
     explanation: "Supernatural horror atmosphere, uncanny chills, and dark ambient dread.",
     language: "English",
     daysAgo: 18
@@ -208,6 +300,7 @@ const SEED_ANALYSES = [
     lyrics: "When you try your best, but you don't succeed\nWhen you get what you want, but not what you need\nWhen you feel so tired, but you can't sleep\nTears stream down your face",
     mood: "Sad",
     confidence: 89.6,
+    scores: { Sad: 65, "Calm/Chill": 20, Romantic: 15 },
     explanation: "Comforting sorrow, gentle organ swell, and emotional tears.",
     language: "English",
     daysAgo: 19
@@ -218,9 +311,43 @@ const SEED_ANALYSES = [
     lyrics: "Kesariya tera ishq hai piya, rang jaaun jo main haath lagaun\nDin beete saara teri fikr mein, rain saari teri khair manaun",
     mood: "Romantic",
     confidence: 91.5,
+    scores: { Romantic: 70, Happy: 20, "Calm/Chill": 10 },
     explanation: "Warm romantic affection, soulful acoustic guitar, and poetic devotion.",
     language: "Hindi",
     daysAgo: 20
+  },
+  {
+    title: "Despacito",
+    artist: "Luis Fonsi",
+    lyrics: "Sí, sabes que ya llevo un rato mirándote\nTengo que bailar contigo hoy\nVi que tu mirada ya estaba llamándome\nMuéstrame el camino que yo voy",
+    mood: "Romantic",
+    confidence: 92.0,
+    scores: { Romantic: 65, Happy: 25, Exciting: 10 },
+    explanation: "Passionate Latin romantic melody, buoyant tropical rhythm, and vibrant dance sentiment.",
+    language: "Spanish",
+    daysAgo: 21
+  },
+  {
+    title: "Ami Chini Go Chini",
+    artist: "Rabindranath Tagore",
+    lyrics: "আমি চিনি গো চিনি তোমারে ওগো বিদেশিনী\nতুমি থাক সিন্ধুপারে ওগো বিদেশিনী\nতোমায় দেখেছি শারদপ্রাতে, তোমায় দেখেছি মাধবী রাতে",
+    mood: "Romantic",
+    confidence: 90.5,
+    scores: { Romantic: 60, "Calm/Chill": 25, Sad: 15 },
+    explanation: "Deep poetic devotion, serene acoustic melodic nuances, and ethereal longing.",
+    language: "Bengali",
+    daysAgo: 22
+  },
+  {
+    title: "La Vie En Rose",
+    artist: "Édith Piaf",
+    lyrics: "Des yeux qui font baisser les miens, un rire qui se perd sur sa bouche\nVoilà le portrait sans retouche de l'homme auquel j'appartiens\nQuand il me prend dans ses bras, il me parle tout bas, je vois la vie en rose",
+    mood: "Romantic",
+    confidence: 93.5,
+    scores: { Romantic: 75, Happy: 15, "Calm/Chill": 10 },
+    explanation: "Iconic French romantic ballad, tender acoustic orchestration, and heartfelt devotion.",
+    language: "French",
+    daysAgo: 23
   }
 ];
 
@@ -248,6 +375,7 @@ class AnalyticsService {
             confidence: item.confidence,
             explanation: item.explanation,
             language: item.language,
+            scores: item.scores || {},
             isPublic: true,
             createdAt: new Date(Date.now() - item.daysAgo * 86400000)
           }));
@@ -269,6 +397,7 @@ class AnalyticsService {
                 confidence: item.confidence,
                 explanation: item.explanation,
                 language: item.language,
+                scores: item.scores || {},
                 isPublic: true,
                 createdAt: new Date(Date.now() - item.daysAgo * 86400000).toISOString()
               });
@@ -393,10 +522,27 @@ class AnalyticsService {
           totalAnalyses: 0,
           mostFrequentlyDetectedEmotion: "None",
           mostFrequentCount: 0,
+          mostFrequentSecondaryEmotion: "None",
+          mostFrequentSecondaryCount: 0,
+          totalWithSecondary: 0,
+          topLanguage: "None",
+          topLanguageCount: 0,
           uniqueArtistsCount: 0,
           averageConfidence: 0,
           recentActivity: []
         },
+        languageDistribution: ["English", "Hindi", "Bengali", "Spanish", "French"].map((lang) => ({
+          language: lang,
+          count: 0,
+          percentage: 0,
+          ...LANGUAGE_METADATA[lang]
+        })),
+        secondaryEmotionDistribution: availableMoods.map((m) => ({
+          mood: m,
+          count: 0,
+          percentage: 0,
+          ...MOOD_METADATA[m]
+        })),
         moodDistribution: availableMoods.map((m) => ({
           mood: m,
           count: 0,
@@ -431,6 +577,16 @@ class AnalyticsService {
     const moodCounts = {};
     const artistCounts = {};
     const songCounts = {};
+    const langCounts = {
+      English: 0,
+      Hindi: 0,
+      Bengali: 0,
+      Spanish: 0,
+      French: 0,
+      Other: 0
+    };
+    const secondaryCounts = {};
+    let totalWithSecondary = 0;
     let confidenceSum = 0;
 
     filteredRecords.forEach((rec) => {
@@ -444,6 +600,17 @@ class AnalyticsService {
       songCounts[songKey] = (songCounts[songKey] || 0) + 1;
 
       confidenceSum += Number(rec.confidence) || 0;
+
+      // Language tracking
+      const normalizedLang = normalizeLanguage(rec.language);
+      langCounts[normalizedLang] = (langCounts[normalizedLang] || 0) + 1;
+
+      // Secondary emotion tracking
+      const secMood = extractSecondaryEmotion(rec, m);
+      if (secMood && MOOD_METADATA[secMood]) {
+        secondaryCounts[secMood] = (secondaryCounts[secMood] || 0) + 1;
+        totalWithSecondary += 1;
+      }
     });
 
     // Top Emotion
@@ -456,10 +623,63 @@ class AnalyticsService {
       }
     });
 
+    // Top Secondary Emotion
+    let topSecondaryMood = "None";
+    let topSecondaryCount = 0;
+    Object.entries(secondaryCounts).forEach(([m, c]) => {
+      if (c > topSecondaryCount) {
+        topSecondaryCount = c;
+        topSecondaryMood = m;
+      }
+    });
+
+    // Top Language
+    let topLanguage = "English";
+    let topLanguageCount = 0;
+    Object.entries(langCounts).forEach(([lang, c]) => {
+      if (c > topLanguageCount) {
+        topLanguageCount = c;
+        topLanguage = lang;
+      }
+    });
+
     const averageConfidence = Math.round((confidenceSum / totalAnalyses) * 10) / 10;
     const uniqueArtistsCount = Object.keys(artistCounts).length;
 
-    // 6. Mood Distribution (all 9 classes represented)
+    // 6. Language Distribution
+    const baseLanguages = ["English", "Hindi", "Bengali", "Spanish", "French"];
+    const languageDistribution = baseLanguages.map((lang) => {
+      const count = langCounts[lang] || 0;
+      const percentage = Math.round((count / totalAnalyses) * 100);
+      return {
+        language: lang,
+        count,
+        percentage,
+        ...LANGUAGE_METADATA[lang]
+      };
+    });
+    if (langCounts.Other > 0) {
+      languageDistribution.push({
+        language: "Other",
+        count: langCounts.Other,
+        percentage: Math.round((langCounts.Other / totalAnalyses) * 100),
+        ...LANGUAGE_METADATA.Other
+      });
+    }
+
+    // 7. Secondary Emotion Distribution (all 9 classes represented)
+    const secondaryEmotionDistribution = availableMoods.map((m) => {
+      const count = secondaryCounts[m] || 0;
+      const percentage = Math.round((count / totalAnalyses) * 100);
+      return {
+        mood: m,
+        count,
+        percentage,
+        ...MOOD_METADATA[m]
+      };
+    });
+
+    // 8. Mood Distribution (all 9 classes represented)
     const moodDistribution = availableMoods.map((m) => {
       const count = moodCounts[m] || 0;
       const percentage = Math.round((count / totalAnalyses) * 100);
@@ -656,6 +876,11 @@ class AnalyticsService {
         totalAnalyses,
         mostFrequentlyDetectedEmotion: topMood,
         mostFrequentCount: topMoodCount,
+        mostFrequentSecondaryEmotion: topSecondaryMood,
+        mostFrequentSecondaryCount: topSecondaryCount,
+        totalWithSecondary,
+        topLanguage,
+        topLanguageCount,
         uniqueArtistsCount,
         averageConfidence,
         recentActivity: filteredRecords.slice(0, 5).map((r) => ({
@@ -667,6 +892,8 @@ class AnalyticsService {
           date: r.createdAt
         }))
       },
+      languageDistribution,
+      secondaryEmotionDistribution,
       moodDistribution,
       trends: {
         daily: dailyTrends,

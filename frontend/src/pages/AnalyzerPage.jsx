@@ -261,7 +261,9 @@ export default function AnalyzerPage() {
         mood: data.mood,
         confidence: data.confidence,
         emoji: data.emoji,
-        color: data.color
+        color: data.color,
+        language: data.language || "English",
+        scores: data.scores || null
       });
 
       if (data.mood === "Happy" || data.mood === "Exciting") {
@@ -313,7 +315,10 @@ export default function AnalyzerPage() {
         mood: data.primaryEmotion,
         confidence: data.confidence,
         emoji: data.primaryEmotionMeta?.emoji || "🎵",
-        color: data.primaryEmotionMeta?.color || "#a855f7"
+        color: data.primaryEmotionMeta?.color || "#a855f7",
+        language: data.metadata?.language || "English",
+        scores: data.emotionDistribution || null,
+        secondaryMood: data.secondaryEmotion || null
       });
 
       if (data.primaryEmotion === "Happiness" || data.primaryEmotion === "Excitement") {
@@ -352,7 +357,9 @@ export default function AnalyzerPage() {
       mood: analysisData.mood,
       confidence: analysisData.confidence,
       emoji: analysisData.emoji,
-      color: analysisData.color
+      color: analysisData.color,
+      language: analysisData.language || "English",
+      scores: analysisData.scores || null
     });
 
     if (analysisData.mood === "Happy" || analysisData.mood === "Exciting") {

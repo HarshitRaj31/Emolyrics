@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
@@ -12,7 +12,9 @@ import {
   RotateCcw,
   ExternalLink,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X,
+  Globe
 } from "lucide-react";
 import { api } from "../services/api";
 import { MOOD_DEFINITIONS } from "../data/examples";
@@ -28,35 +30,84 @@ export default function ExplorePage() {
   const [selectedMood, setSelectedMood] = useState("All");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({ total: 0, pages: 1 });
+  const [analyzingId, setAnalyzingId] = useState(null);
 
   const moodsList = ["All", ...Object.keys(MOOD_DEFINITIONS)];
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async (targetPage = page, querySearch = search, moodFilter = selectedMood) => {
     setLoading(true);
     try {
+      const cleanQ = (querySearch || "").trim();
       const res = await api.getAnalyses({
-        mood: selectedMood,
-        search,
-        page,
+        mood: moodFilter,
+        search: cleanQ,
+        page: targetPage,
         limit: 9
       });
-      setAnalyses(res.items || []);
-      setPagination(res.pagination || { total: 0, pages: 1 });
+
+      let items = res.items || [];
+      let total = res.pagination?.total || items.length;
+      let pages = res.pagination?.pages || Math.ceil(total / 9) || 1;
+
+      // Client-side fallback: If user searched a song and 0 items returned from backend analyses,
+      // query MusicBrainz search directly via api.searchMusic to ensure complete consistency with Song Discovery
+      if (cleanQ && items.length === 0) {
+        try {
+          const musicRes = await api.searchMusic(cleanQ, 9);
+          if (musicRes && Array.isArray(musicRes.recordings) && musicRes.recordings.length > 0) {
+            items = musicRes.recordings.map((rec) => ({
+              _id: `global-${rec.id || Math.random().toString(36).slice(2, 9)}`,
+              title: rec.title,
+              artist: rec.artist,
+              album: rec.album || "Single",
+              lyrics: `Global music catalog track from ${rec.provider || "MusicBrainz"}. Click "Analyze Lyrics" to retrieve lyrics and classify emotional sentiment.`,
+              mood: "Catalog",
+              confidence: null,
+              language: "Multilingual",
+              spotifyUrl: rec.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(rec.title + " " + rec.artist)}`,
+              youtubeUrl: rec.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(rec.title + " " + rec.artist + " audio")}`,
+              isGlobalCatalog: true,
+              provider: rec.provider || "MusicBrainz",
+              explanation: `Verified recording from ${rec.provider || "MusicBrainz"} open catalog${rec.album ? ` (${rec.album})` : ""}.`,
+              createdAt: rec.releaseDate || new Date().toISOString()
+            }));
+            total = items.length;
+            pages = 1;
+          }
+        } catch (searchErr) {
+          console.warn("Client fallback search failed:", searchErr);
+        }
+      }
+
+      setAnalyses(items);
+      setPagination({ total, pages, page: targetPage });
     } catch (err) {
       console.error("Failed to fetch analyses:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search, selectedMood]);
 
   useEffect(() => {
-    fetchItems();
+    fetchItems(page, search, selectedMood);
   }, [selectedMood, page]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setPage(1);
-    fetchItems();
+    if (page === 1) {
+      fetchItems(1, search, selectedMood);
+    } else {
+      setPage(1);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearch("");
+    if (page === 1) {
+      fetchItems(1, "", selectedMood);
+    } else {
+      setPage(1);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -69,16 +120,65 @@ export default function ExplorePage() {
     }
   };
 
-  const handleReanalyze = (item) => {
-    navigate("/", {
-      state: {
-        reanalyzeSong: {
-          title: item.title,
-          artist: item.artist,
-          lyrics: item.lyrics
+  const handleReanalyze = async (item) => {
+    // If it already has analyzed lyrics and is not an unanalyzed catalog track
+    if (item.lyrics && !item.isGlobalCatalog) {
+      navigate("/", {
+        state: {
+          reanalyzeSong: {
+            title: item.title,
+            artist: item.artist,
+            lyrics: item.lyrics
+          }
         }
+      });
+      return;
+    }
+
+    // For catalog track: fetch lyrics from authorized provider first
+    try {
+      setAnalyzingId(item._id);
+      const res = await api.getLyrics({
+        title: item.title,
+        artist: item.artist,
+        album: item.album
+      });
+
+      if (res && res.success && res.lyrics) {
+        navigate("/", {
+          state: {
+            reanalyzeSong: {
+              title: item.title,
+              artist: item.artist,
+              lyrics: res.lyrics
+            }
+          }
+        });
+      } else {
+        // Instrumental or lyrics not listed; send song title & artist to discovery mode
+        navigate("/", {
+          state: {
+            reanalyzeSong: {
+              title: item.title,
+              artist: item.artist,
+              album: item.album
+            }
+          }
+        });
       }
-    });
+    } catch (err) {
+      console.warn("Unable to prefetch lyrics for catalog song:", err);
+      navigate("/", {
+        state: {
+          reanalyzeSong: {
+            title: item.title,
+            artist: item.artist
+          }
+        }
+      });
+    } finally {
+      setAnalyzingId(null);
+    }
   };
 
   return (
@@ -106,8 +206,18 @@ export default function ExplorePage() {
             placeholder="Search by song title, artist, or lyric line..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-11 pr-24 py-3 rounded-2xl glass-input text-ink-main text-sm placeholder:text-neutral-500 light:placeholder:text-slate-400"
+            className="w-full pl-11 pr-28 py-3 rounded-2xl glass-input text-ink-main text-sm placeholder:text-neutral-500 light:placeholder:text-slate-400"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={handleClearSearch}
+              className="absolute right-20 top-1/2 -translate-y-1/2 p-1 text-ink-dim hover:text-ink-main transition-colors"
+              title="Clear search"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
           <button
             type="submit"
             className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-semibold transition-colors"
@@ -147,7 +257,7 @@ export default function ExplorePage() {
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20 text-ink-muted">
           <Loader2 className="w-8 h-8 animate-spin text-orange-500 mb-3" />
-          <p className="text-sm">Discovering analyzed tracks...</p>
+          <p className="text-sm">Discovering tracks & lyrical profiles...</p>
         </div>
       ) : analyses.length === 0 ? (
         <div className="text-center py-20 theme-card rounded-3xl p-8 max-w-lg mx-auto">
@@ -156,7 +266,9 @@ export default function ExplorePage() {
             No Tracks Found
           </h3>
           <p className="text-xs text-ink-muted mb-4">
-            Try adjusting your keywords or mood filters to continue exploring the library.
+            {search
+              ? `No tracks found matching "${search}". Try checking the spelling or searching by artist name.`
+              : "Try adjusting your keywords or mood filters to continue exploring the library."}
           </p>
           <button
             onClick={() => {
@@ -175,10 +287,10 @@ export default function ExplorePage() {
             const moodInfo = MOOD_DEFINITIONS[item.mood] || {};
             const moodToken = getEmotionToken(item.mood);
             const moodColor = isDark ? (moodInfo?.color || moodToken.darkText) : moodToken.lightText;
-            const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(
+            const spotifyUrl = item.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(
               (item.title || "") + " " + (item.artist || "")
             )}`;
-            const youtubeUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
+            const youtubeUrl = item.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(
               (item.title || "") + " " + (item.artist || "") + " audio"
             )}`;
 
@@ -191,13 +303,15 @@ export default function ExplorePage() {
                   {/* Top Row: Mood Badge & Confidence */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
-                      <span className="text-2xl">{moodInfo?.emoji || moodToken.emoji || "🎵"}</span>
+                      <span className="text-2xl">
+                        {item.isGlobalCatalog ? "🌐" : (moodInfo?.emoji || moodToken.emoji || "🎵")}
+                      </span>
                       <div>
                         <div
                           className="font-display font-bold text-sm"
-                          style={{ color: moodColor }}
+                          style={{ color: item.isGlobalCatalog ? "#f97316" : moodColor }}
                         >
-                          {item.mood}
+                          {item.isGlobalCatalog ? "Global Catalog" : item.mood}
                         </div>
                         <div className="text-[10px] text-ink-muted">
                           {item.language || "English"}
@@ -205,7 +319,11 @@ export default function ExplorePage() {
                       </div>
                     </div>
                     <div className="px-2.5 py-1 rounded-full bg-white/10 light:bg-slate-200/80 text-xs font-bold text-ink-main font-mono">
-                      {Math.round(item.confidence)}% Conf
+                      {item.confidence != null && !isNaN(item.confidence) && item.confidence > 0
+                        ? `${Math.round(item.confidence)}% Conf`
+                        : item.isGlobalCatalog
+                        ? "Global Track"
+                        : "Verified"}
                     </div>
                   </div>
 
@@ -218,7 +336,7 @@ export default function ExplorePage() {
                   {/* Lyrics Snippet */}
                   <div className="p-3 rounded-xl theme-well mb-4">
                     <p className="text-xs text-ink-secondary italic line-clamp-3 leading-relaxed whitespace-pre-line font-sans">
-                      "{item.lyrics}"
+                      "{item.lyrics || `Track from global music library (${item.album || 'Single'}). Click 'Analyze Lyrics' to extract emotion profile.`}"
                     </p>
                   </div>
 
@@ -255,10 +373,15 @@ export default function ExplorePage() {
                     </a>
                     <button
                       onClick={() => handleReanalyze(item)}
-                      className="py-1 px-2.5 rounded-xl bg-orange-600/20 hover:bg-orange-600/30 light:bg-orange-50 light:hover:bg-orange-100 text-orange-300 light:text-orange-900 border border-orange-500/30 text-[10px] font-semibold flex items-center gap-1 transition-colors"
+                      disabled={analyzingId === item._id}
+                      className="py-1 px-2.5 rounded-xl bg-orange-600/20 hover:bg-orange-600/30 light:bg-orange-50 light:hover:bg-orange-100 text-orange-300 light:text-orange-900 border border-orange-500/30 text-[10px] font-semibold flex items-center gap-1 transition-colors disabled:opacity-50"
                       title="Analyze Lyrics in Studio"
                     >
-                      <Sparkles className="w-3 h-3" />
+                      {analyzingId === item._id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Sparkles className="w-3 h-3" />
+                      )}
                       <span>Analyze Lyrics</span>
                     </button>
                   </div>
@@ -266,8 +389,17 @@ export default function ExplorePage() {
                   {/* Footer details */}
                   <div className="flex items-center justify-between text-[11px] text-ink-dim">
                     <span>
-                      {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "Verified"}
+                      {item.isGlobalCatalog
+                        ? (item.provider || "MusicBrainz")
+                        : item.createdAt
+                        ? new Date(item.createdAt).toLocaleDateString()
+                        : "Verified"}
                     </span>
+                    {item.album && (
+                      <span className="truncate max-w-[140px] text-right" title={item.album}>
+                        {item.album}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

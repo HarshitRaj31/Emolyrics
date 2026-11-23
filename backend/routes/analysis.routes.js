@@ -5,6 +5,7 @@ const { advancedEmotionService } = require("../services/advancedEmotionService")
 const { multilingualMLService } = require("../services/multilingualMLService");
 const { getIsConnected, memoryStore } = require("../db");
 const Analysis = require("../models/Analysis");
+const musicBrainzAdapter = require("../plugins/adapters/musicbrainzAdapter");
 const { optionalJWT, authenticateJWT } = require("../middleware/auth.middleware");
 
 const router = express.Router();
@@ -292,30 +293,92 @@ router.get("/analyses", optionalJWT, async (req, res, next) => {
     const { mood, search, page = 1, limit = 12 } = req.query;
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
+    const cleanSearch = (typeof search === "string" ? search : "").trim();
 
     if (getIsConnected()) {
       const filter = {};
       if (mood && mood !== "All") {
         filter.mood = mood;
       }
-      if (search) {
+      if (cleanSearch) {
         filter.$or = [
-          { title: { $regex: search, $options: "i" } },
-          { artist: { $regex: search, $options: "i" } },
-          { lyrics: { $regex: search, $options: "i" } }
+          { title: { $regex: cleanSearch, $options: "i" } },
+          { artist: { $regex: cleanSearch, $options: "i" } },
+          { lyrics: { $regex: cleanSearch, $options: "i" } }
         ];
       }
 
-      const total = await Analysis.countDocuments(filter);
-      const items = await Analysis.find(filter)
+      let total = await Analysis.countDocuments(filter);
+      let items = await Analysis.find(filter)
         .sort({ createdAt: -1 })
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum)
         .lean();
 
+      // If search query is provided and local results don't fill the requested limit,
+      // augment with recordings from global music catalog (MusicBrainz / LRCLIB fallback)
+      if (cleanSearch && items.length < limitNum) {
+        try {
+          const mbResult = await musicBrainzAdapter.searchRecordings(cleanSearch, limitNum);
+          if (mbResult && Array.isArray(mbResult.recordings) && mbResult.recordings.length > 0) {
+            const existingKeys = new Set(
+              items.map(it => `${(it.title || "").trim().toLowerCase()}:::${(it.artist || "").trim().toLowerCase()}`)
+            );
+
+            for (const rec of mbResult.recordings) {
+              if (items.length >= limitNum) break;
+
+              const recKey = `${(rec.title || "").trim().toLowerCase()}:::${(rec.artist || "").trim().toLowerCase()}`;
+              if (existingKeys.has(recKey)) continue;
+              existingKeys.add(recKey);
+
+              // Check if this recording already exists in DB
+              const existingAnalysis = await Analysis.findOne({
+                title: { $regex: `^${rec.title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+                artist: { $regex: `^${rec.artist.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" }
+              }).lean();
+
+              if (existingAnalysis) {
+                if (!mood || mood === "All" || existingAnalysis.mood?.toLowerCase() === mood.toLowerCase()) {
+                  items.push(existingAnalysis);
+                }
+              } else {
+                if (!mood || mood === "All" || total === 0) {
+                  items.push({
+                    _id: `global-${rec.id || Math.random().toString(36).slice(2, 9)}`,
+                    title: rec.title,
+                    artist: rec.artist,
+                    album: rec.album || "Single",
+                    lyrics: `Global music catalog track from ${rec.provider || "MusicBrainz"}. Click "Analyze Lyrics" to retrieve lyrics and classify emotional sentiment.`,
+                    mood: "Catalog",
+                    confidence: null,
+                    language: "Multilingual",
+                    spotifyUrl: rec.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(rec.title + " " + rec.artist)}`,
+                    youtubeUrl: rec.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(rec.title + " " + rec.artist + " audio")}`,
+                    isGlobalCatalog: true,
+                    provider: rec.provider || "MusicBrainz",
+                    explanation: `Verified recording from ${rec.provider || "MusicBrainz"} open catalog${rec.album ? ` (${rec.album})` : ""}.`,
+                    createdAt: rec.releaseDate || new Date().toISOString()
+                  });
+                }
+              }
+            }
+            total = Math.max(total, items.length);
+          }
+        } catch (mbErr) {
+          console.warn("[Analyses Route] Global music search warning:", mbErr.message);
+        }
+      }
+
+      const enrichedItems = items.map(item => ({
+        ...item,
+        spotifyUrl: item.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(((item.title || "") + " " + (item.artist || "")).trim())}`,
+        youtubeUrl: item.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(((item.title || "") + " " + (item.artist || "")).trim() + " audio")}`
+      }));
+
       return res.json({
         success: true,
-        items,
+        items: enrichedItems,
         pagination: {
           total,
           page: pageNum,
@@ -325,13 +388,14 @@ router.get("/analyses", optionalJWT, async (req, res, next) => {
       });
     } else {
       // Memory Store Filter
-      let items = [...memoryStore.analyses];
+      let allItems = [...memoryStore.analyses];
+      let filtered = allItems;
       if (mood && mood !== "All") {
-        items = items.filter(a => a.mood.toLowerCase() === mood.toLowerCase());
+        filtered = filtered.filter(a => a.mood && a.mood.toLowerCase() === mood.toLowerCase());
       }
-      if (search) {
-        const q = search.toLowerCase();
-        items = items.filter(
+      if (cleanSearch) {
+        const q = cleanSearch.toLowerCase();
+        filtered = filtered.filter(
           a =>
             a.title?.toLowerCase().includes(q) ||
             a.artist?.toLowerCase().includes(q) ||
@@ -339,12 +403,73 @@ router.get("/analyses", optionalJWT, async (req, res, next) => {
         );
       }
 
-      const total = items.length;
-      const paginated = items.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+      let total = filtered.length;
+      let items = filtered.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+
+      // If search query is provided and memoryStore results don't fill the limit,
+      // augment with recordings from global music catalog
+      if (cleanSearch && items.length < limitNum) {
+        try {
+          const mbResult = await musicBrainzAdapter.searchRecordings(cleanSearch, limitNum);
+          if (mbResult && Array.isArray(mbResult.recordings) && mbResult.recordings.length > 0) {
+            const existingKeys = new Set(
+              items.map(it => `${(it.title || "").trim().toLowerCase()}:::${(it.artist || "").trim().toLowerCase()}`)
+            );
+
+            for (const rec of mbResult.recordings) {
+              if (items.length >= limitNum) break;
+
+              const recKey = `${(rec.title || "").trim().toLowerCase()}:::${(rec.artist || "").trim().toLowerCase()}`;
+              if (existingKeys.has(recKey)) continue;
+              existingKeys.add(recKey);
+
+              const existingAnalysis = memoryStore.analyses.find(
+                a =>
+                  a.title?.toLowerCase() === rec.title?.toLowerCase() &&
+                  a.artist?.toLowerCase() === rec.artist?.toLowerCase()
+              );
+
+              if (existingAnalysis) {
+                if (!mood || mood === "All" || existingAnalysis.mood?.toLowerCase() === mood.toLowerCase()) {
+                  items.push(existingAnalysis);
+                }
+              } else {
+                if (!mood || mood === "All" || total === 0) {
+                  items.push({
+                    _id: `global-${rec.id || Math.random().toString(36).slice(2, 9)}`,
+                    title: rec.title,
+                    artist: rec.artist,
+                    album: rec.album || "Single",
+                    lyrics: `Global music catalog track from ${rec.provider || "MusicBrainz"}. Click "Analyze Lyrics" to retrieve lyrics and classify emotional sentiment.`,
+                    mood: "Catalog",
+                    confidence: null,
+                    language: "Multilingual",
+                    spotifyUrl: rec.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(rec.title + " " + rec.artist)}`,
+                    youtubeUrl: rec.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(rec.title + " " + rec.artist + " audio")}`,
+                    isGlobalCatalog: true,
+                    provider: rec.provider || "MusicBrainz",
+                    explanation: `Verified recording from ${rec.provider || "MusicBrainz"} open catalog${rec.album ? ` (${rec.album})` : ""}.`,
+                    createdAt: rec.releaseDate || new Date().toISOString()
+                  });
+                }
+              }
+            }
+            total = Math.max(total, items.length);
+          }
+        } catch (mbErr) {
+          console.warn("[Analyses Route] Global music search warning:", mbErr.message);
+        }
+      }
+
+      const enrichedItems = items.map(item => ({
+        ...item,
+        spotifyUrl: item.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(((item.title || "") + " " + (item.artist || "")).trim())}`,
+        youtubeUrl: item.youtubeUrl || `https://www.youtube.com/results?search_query=${encodeURIComponent(((item.title || "") + " " + (item.artist || "")).trim() + " audio")}`
+      }));
 
       return res.json({
         success: true,
-        items: paginated,
+        items: enrichedItems,
         pagination: {
           total,
           page: pageNum,
