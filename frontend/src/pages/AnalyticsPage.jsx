@@ -364,7 +364,8 @@ function computeLocalAnalytics(items) {
     confidenceAnalytics: {
       averageConfidence: avgConf,
       distribution: confidenceDistribution,
-      individualPoints: items.slice(0, 10).map((it) => ({
+      individualPoints: items.slice(0, 10).map((it, idx) => ({
+        id: it.id || it._id || `${it.title}-${it.artist}-${idx}`,
         title: it.title,
         artist: it.artist,
         mood: it.mood,

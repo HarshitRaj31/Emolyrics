@@ -55,7 +55,7 @@ export default function ConfidenceAnalyticsSection({ confidenceAnalytics = {} })
 
           <div className="space-y-3 theme-well p-4 rounded-2xl">
             {distribution.map((item, idx) => (
-              <div key={idx} className="space-y-1 text-xs">
+              <div key={item.range || `confidence-range-${idx}`} className="space-y-1 text-xs">
                 <div className="flex items-center justify-between">
                   <span className="text-ink-secondary font-medium">{item.range}</span>
                   <div className="flex items-center gap-2 font-mono">
@@ -93,11 +93,12 @@ export default function ConfidenceAnalyticsSection({ confidenceAnalytics = {} })
             </div>
           ) : (
             <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-              {individualPoints.map((song) => {
+              {individualPoints.map((song, idx) => {
                 const moodDef = MOOD_DEFINITIONS[song.mood];
+                const songKey = song.id || song._id || `${song.title || "song"}-${song.artist || "artist"}-${song.mood || "mood"}-${song.confidence ?? idx}`;
                 return (
                   <div
-                    key={song.id}
+                    key={songKey}
                     className="p-2.5 rounded-xl theme-well flex items-center justify-between text-xs"
                   >
                     <div className="flex items-center gap-2.5 truncate max-w-[280px]">

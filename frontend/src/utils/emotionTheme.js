@@ -110,11 +110,35 @@ const LEGACY_ALIAS_MAP = {
   Horror: "Fear"
 };
 
+// Safe neutral fallback for unknown, null, or missing emotion values
+export const NEUTRAL_EMOTION_TOKEN = {
+  emoji: "🎵",
+  color: "#a1a1aa",
+  darkText: "#d4d4d8",
+  lightText: "#52525b",
+  darkBg: "rgba(161, 161, 170, 0.15)",
+  lightBg: "rgba(161, 161, 170, 0.12)",
+  gradient: "from-zinc-500 via-neutral-600 to-stone-700"
+};
+
 export function getEmotionToken(emotionName) {
-  if (!emotionName) return EMOTION_THEME_TOKENS.Happiness;
-  if (EMOTION_THEME_TOKENS[emotionName]) return EMOTION_THEME_TOKENS[emotionName];
-  const alias = LEGACY_ALIAS_MAP[emotionName];
-  return (alias && EMOTION_THEME_TOKENS[alias]) || EMOTION_THEME_TOKENS.Happiness;
+  if (!emotionName || typeof emotionName !== "string") return NEUTRAL_EMOTION_TOKEN;
+  const trimmed = emotionName.trim();
+  if (EMOTION_THEME_TOKENS[trimmed]) return EMOTION_THEME_TOKENS[trimmed];
+  if (LEGACY_ALIAS_MAP[trimmed]) return EMOTION_THEME_TOKENS[LEGACY_ALIAS_MAP[trimmed]];
+
+  // Case-insensitive lookup
+  const lower = trimmed.toLowerCase();
+  for (const [key, token] of Object.entries(EMOTION_THEME_TOKENS)) {
+    if (key.toLowerCase() === lower) return token;
+  }
+  for (const [alias, targetKey] of Object.entries(LEGACY_ALIAS_MAP)) {
+    if (alias.toLowerCase() === lower && EMOTION_THEME_TOKENS[targetKey]) {
+      return EMOTION_THEME_TOKENS[targetKey];
+    }
+  }
+
+  return NEUTRAL_EMOTION_TOKEN;
 }
 
 export function getEmotionBadgeStyle(emotionName, isDark = true) {

@@ -19,7 +19,7 @@ import {
 import { api } from "../services/api";
 import { MOOD_DEFINITIONS } from "../data/examples";
 import { useTheme } from "../context/ThemeContext";
-import { getEmotionToken } from "../utils/emotionTheme";
+import { getEmotionToken, getEmotionBadgeStyle } from "../utils/emotionTheme";
 
 export default function ExplorePage() {
   const { isDark } = useTheme();
@@ -287,7 +287,7 @@ export default function ExplorePage() {
           {analyses.map((item) => {
             const moodInfo = MOOD_DEFINITIONS[item.mood] || {};
             const moodToken = getEmotionToken(item.mood);
-            const moodStyle = getEmotionBadgeStyle(item.mood);
+            const moodStyle = getEmotionBadgeStyle(item.mood, isDark);
             const spotifyUrl = item.spotifyUrl || `https://open.spotify.com/search/${encodeURIComponent(
               (item.title || "") + " " + (item.artist || "")
             )}`;
