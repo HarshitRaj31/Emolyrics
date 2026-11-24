@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -39,6 +39,7 @@ import MoodRecommendations from "../components/MoodRecommendations";
 import AdvancedMoodAnalysis from "../components/analysis/AdvancedMoodAnalysis";
 import EmotionDashboard from "../components/dashboard/EmotionDashboard";
 import PdfDownloadButton from "../components/dashboard/PdfDownloadButton";
+import EditorialJournalHome from "../components/dashboard/EditorialJournalHome";
 import { MOOD_DEFINITIONS, EXAMPLE_LYRICS } from "../data/examples";
 import { api } from "../services/api";
 import { usePersonalization } from "../context/PersonalizationContext";
@@ -119,7 +120,10 @@ const PLATFORM_FEATURES = [
 
 export default function AnalyzerPage() {
   const { isDark } = useTheme();
+  const navigate = useNavigate();
   const { addAnalyzedSong } = usePersonalization();
+  const [dashboardTab, setDashboardTab] = useState("Playlist");
+  const [dashboardSearch, setDashboardSearch] = useState("");
   const [inputMode, setInputMode] = useState("discovery"); // "discovery" | "custom"
   const [lyrics, setLyrics] = useState("");
   const [title, setTitle] = useState("");
@@ -225,6 +229,20 @@ export default function AnalyzerPage() {
       scrollToWorkbench();
     }
   }, [location.state]);
+
+  const handleSelectTrackForAnalysis = (track) => {
+    if (!track) return;
+    setTitle(track.title || "");
+    setArtist(track.artist || "");
+    if (track.lyrics) {
+      setLyrics(track.lyrics);
+      setInputMode("custom");
+      handleAnalyze(track.lyrics);
+    } else {
+      setInputMode("discovery");
+    }
+    scrollToWorkbench();
+  };
 
   // Trigger celebration confetti
   const triggerConfetti = () => {
@@ -468,151 +486,31 @@ export default function AnalyzerPage() {
       </AnimatePresence>
 
       {/* ============================================================ */}
-      {/* 1. PREMIUM LANDING HERO SECTION */}
+      {/* 1. EDITORIAL JOURNAL HOME SECTION */}
       {/* ============================================================ */}
-      {/* 1. PREMIUM LANDING HERO SECTION */}
-      {/* ============================================================ */}
-      <section className="relative pt-12 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="text-center max-w-4xl mx-auto space-y-6">
-          {/* Animated Header Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 dark:bg-white/5 light:bg-orange-100/80 border border-white/10 dark:border-white/10 light:border-orange-200 text-xs font-semibold text-neutral-300 dark:text-neutral-300 light:text-orange-900 shadow-sm backdrop-blur-md">
-            <span className="flex items-center gap-1">
-              <span className="w-1.5 h-3 bg-orange-500 rounded-full soundwave-bar" />
-              <span className="w-1.5 h-4 bg-amber-400 rounded-full soundwave-bar [animation-delay:-0.2s]" />
-              <span className="w-1.5 h-2 bg-emerald-400 rounded-full soundwave-bar [animation-delay:-0.4s]" />
-            </span>
-            <span>Next-Generation Music Emotion Intelligence</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500/20 light:bg-orange-200 text-orange-400 light:text-orange-900 font-mono font-bold">
-              AI Powered
-            </span>
-          </div>
-
-          {/* Hero Main Heading */}
-          <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-ink-main leading-[1.1]">
-            <span className="gradient-text-orange">Analyze. Feel. Discover.</span>
-          </h1>
-
-          {/* Subtitle */}
-          <p className="text-base sm:text-xl font-semibold text-ink-main max-w-2xl mx-auto leading-relaxed font-display">
-            Transform lyrics into deep emotional insights with AI-powered mood detection and personalized music recommendations.
-          </p>
-
-          {/* Master Description */}
-          <p className="text-xs sm:text-sm text-ink-muted max-w-2xl mx-auto leading-relaxed font-sans">
-            Understand the emotions behind every song, explore sentiment patterns, and discover music that shares the same emotional signature.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button
-              onClick={scrollToWorkbench}
-              className="py-3.5 px-6 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-400 hover:to-orange-500 text-white font-bold text-sm sm:text-base flex items-center gap-2 shadow-xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:scale-102 transition-all"
-            >
-              <Sparkles className="w-4 h-4 text-amber-200" />
-              <span>Analyze Lyrics</span>
-            </button>
-
-            <Link
-              to="/assistant"
-              className="py-3.5 px-6 rounded-2xl bg-white/10 light:bg-white hover:bg-white/15 light:hover:bg-slate-100 text-ink-main font-bold text-sm sm:text-base flex items-center gap-2 border border-white/15 light:border-slate-300 hover:scale-102 transition-all shadow-md"
-            >
-              <Bot className="w-4 h-4 text-orange-400 light:text-orange-600" />
-              <span>Ask AI</span>
-            </Link>
-
-            <Link
-              to="/explore"
-              className="py-3.5 px-5 rounded-2xl bg-white/5 light:bg-white hover:bg-white/10 light:hover:bg-slate-100 text-ink-secondary font-semibold text-sm flex items-center gap-1.5 border border-white/10 light:border-slate-200 transition-colors"
-            >
-              <Compass className="w-4 h-4 text-sky-400 light:text-sky-600" />
-              <span>Explore Mood Matches</span>
-            </Link>
-          </div>
-
-          {/* Proof Badges Bar */}
-          <div className="pt-6 flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-xs text-ink-muted font-medium">
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>10 Emotion Spectrums</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>5 Languages & Scripts</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>Global Song Catalog</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 light:text-emerald-600" />
-              <span>Ethical & Transparent AI</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <EditorialJournalHome
+        onSelectTrackForAnalysis={handleSelectTrackForAnalysis}
+      />
 
       {/* ============================================================ */}
-      {/* 2. HOW IT WORKS 3-STEP SECTION */}
-      {/* ============================================================ */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-y border-white/5 light:border-slate-200/80">
-        <div className="text-center max-w-2xl mx-auto mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider text-orange-400 light:text-orange-600 mb-1.5">
-            How EmoLyrics Works
-          </div>
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-ink-main">
-            Three Steps to Deeper Musical Understanding
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {HOW_IT_WORKS_STEPS.map((s, idx) => {
-            const Icon = s.icon;
-            return (
-              <div
-                key={idx}
-                className="relative p-6 rounded-3xl theme-card shadow-lg group hover:border-orange-500/40 transition-all hover:-translate-y-1"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md"
-                    style={{ backgroundColor: `${s.color}20`, border: `1px solid ${s.color}40` }}
-                  >
-                    <Icon className="w-6 h-6" style={{ color: s.color }} />
-                  </div>
-                  <span className="font-mono text-2xl font-black text-neutral-700 light:text-slate-300">
-                    {s.step}
-                  </span>
-                </div>
-                <h3 className="font-display font-bold text-lg text-ink-main mb-2">
-                  {s.title}
-                </h3>
-                <p className="text-xs text-ink-muted leading-relaxed">
-                  {s.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ============================================================ */}
-      {/* 3. MAIN INTERACTIVE ANALYZER WORKBENCH */}
+      {/* 2. THE EMOTION LAB WORKBENCH */}
       {/* ============================================================ */}
       <section
         id="analyzer-workbench"
         ref={workbenchRef}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16"
+        className="pt-14 mt-14 border-t border-[var(--border-subtle)]"
       >
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 light:bg-orange-50 border border-white/10 light:border-orange-200 text-xs font-semibold text-ink-secondary light:text-orange-800 mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-orange-400 light:text-orange-600" />
-            <span>Interactive Lyrics Studio</span>
+        <div className="flex flex-col gap-2 max-w-2xl mb-8">
+          <div className="flex items-center gap-2">
+            <span className="editorial-kicker text-[10px]">The Emotion Lab</span>
+            <span className="text-[var(--border-strong)]">•</span>
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">Real-Time ML Inference</span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-            AI-Powered Lyrics Analysis
+          <h2 className="editorial-title text-3xl sm:text-4xl text-[var(--text-main)]">
+            Lyrical Sentiment & Emotion Classifier
           </h2>
-          <p className="text-xs sm:text-sm text-ink-muted mt-1">
-            Uncover emotional patterns, lyrical sentiment, and the heart of every track with cutting-edge AI.
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] font-sans">
+            Submit verses in English, Hindi, Bengali, Spanish, or French to classify the dominant sentiment and compute calibrated emotion probability vectors.
           </p>
         </div>
 

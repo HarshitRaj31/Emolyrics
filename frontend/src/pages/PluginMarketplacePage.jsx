@@ -158,7 +158,7 @@ export default function PluginMarketplacePage() {
       </section>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <div className="w-full mt-6">
         {/* Search & Status Tabs Bar */}
         <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between mb-6">
           {/* Debounced Search Bar */}

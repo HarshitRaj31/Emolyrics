@@ -385,7 +385,7 @@ export default function PlaylistsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 font-sans">
+    <div className="w-full space-y-8 font-sans">
       {/* Toast Notification */}
       {actionSuccessMessage && (
         <div className="fixed top-20 right-6 z-50 px-4 py-2.5 rounded-2xl bg-emerald-500 text-black font-semibold text-xs shadow-2xl flex items-center gap-2 animate-fadeIn">
@@ -395,17 +395,18 @@ export default function PlaylistsPage() {
       )}
 
       {/* Header & Overview */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-white/10 light:border-slate-200">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[var(--border-subtle)]">
         <div>
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 light:text-amber-700 mb-2">
-            <ListMusic className="w-4 h-4" />
-            <span>AI Music Intelligence</span>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="editorial-kicker text-[10px]">Anthologies & Soundscapes</span>
+            <span className="text-[var(--border-strong)]">•</span>
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">Emotion Clusters</span>
           </div>
-          <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-ink-main">
-            Smart Mood Playlists
+          <h1 className="editorial-title text-3xl sm:text-4xl lg:text-5xl text-[var(--text-main)]">
+            Collections of Emotion
           </h1>
-          <p className="text-sm text-ink-muted mt-1 max-w-2xl leading-relaxed">
-            Craft personalized soundtracks that mirror your emotional state or guide you toward the mood you want to feel.
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-2 max-w-2xl font-sans leading-relaxed">
+            Curate, generate, and explore anthologies of songs clustered around lyrical sentiment, poetic themes, and mood spectrums.
           </p>
         </div>
 
@@ -416,53 +417,50 @@ export default function PlaylistsPage() {
               setActiveTab("studio");
               window.scrollTo({ top: 220, behavior: "smooth" });
             }}
-            className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2 group transition-all"
+            className="px-4 py-2.5 rounded-xl bg-[var(--accent-editorial)] hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-sm flex items-center gap-2 transition-all"
           >
-            <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform text-amber-200" />
-            <span>Create Playlist</span>
+            <Sparkles className="w-4 h-4" />
+            <span>Compose Anthology</span>
           </button>
         </div>
       </div>
 
       {/* Primary Tab Switcher */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 theme-card rounded-2xl w-fit">
+      <div className="flex flex-wrap items-center gap-1.5 p-1 editorial-card rounded-xl w-fit">
         <button
           onClick={() => setActiveTab("presets")}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
             activeTab === "presets"
-              ? "bg-white light:bg-slate-900 text-black light:text-white shadow-md font-bold"
-              : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
+              ? "bg-[var(--accent-editorial)] text-white shadow-sm font-bold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-well)]"
           }`}
         >
-          <Compass className="w-4 h-4" />
-          <span>Curated Mood Mixes ({presetPlaylists.length})</span>
+          <Compass className="w-3.5 h-3.5" />
+          <span>Curated Anthologies ({presetPlaylists.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab("studio")}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
             activeTab === "studio"
-              ? "bg-purple-600 text-white shadow-md font-bold"
-              : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
+              ? "bg-[var(--accent-editorial)] text-white shadow-sm font-bold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-well)]"
           }`}
         >
-          <Sparkles className="w-4 h-4 text-amber-300" />
-          <span>Playlist Studio</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 light:text-amber-700 light:bg-amber-100 border border-amber-400/30">
-            Multi-Emotion
-          </span>
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Generator Studio</span>
         </button>
 
         <button
           onClick={() => setActiveTab("mine")}
-          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-2 transition-all ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition-all ${
             activeTab === "mine"
-              ? "bg-white light:bg-slate-900 text-black light:text-white shadow-md font-bold"
-              : "text-ink-muted hover:text-ink-main hover:bg-white/5 light:hover:bg-slate-100"
+              ? "bg-[var(--accent-editorial)] text-white shadow-sm font-bold"
+              : "text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-well)]"
           }`}
         >
-          <FolderPlus className="w-4 h-4" />
-          <span>My Playlists ({myPlaylists.length})</span>
+          <FolderPlus className="w-3.5 h-3.5" />
+          <span>My Collections ({myPlaylists.length})</span>
         </button>
       </div>
 

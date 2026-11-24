@@ -389,31 +389,29 @@ export default function AssistantPage() {
       )}
 
       {/* Assistant Header */}
-      <div className="shrink-0 border-b border-white/10 light:border-slate-200/80 bg-neutral-900/80 light:bg-white/90 backdrop-blur-md z-20 transition-colors">
-        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="shrink-0 border-b border-[var(--border-subtle)] bg-[var(--bg-surface)] backdrop-blur-md z-20 transition-colors">
+        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-500 p-0.5 shadow-lg shadow-purple-500/20">
-              <div className="w-full h-full bg-neutral-950 light:bg-white rounded-[14px] flex items-center justify-center">
-                <Bot className="w-5 h-5 text-purple-400 light:text-purple-600" />
-              </div>
+            <div className="w-10 h-10 rounded-xl bg-[var(--bg-well)] border border-[var(--border-subtle)] flex items-center justify-center">
+              <Bot className="w-5 h-5 text-[var(--accent-editorial)]" />
             </div>
 
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base sm:text-lg font-bold text-ink-main leading-none">
-                  AI Music Assistant
+                <h1 className="editorial-title text-xl sm:text-2xl text-[var(--text-main)] leading-none">
+                  AI Music Critic & Assistant
                 </h1>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 light:bg-emerald-50 text-emerald-400 light:text-emerald-700 border border-emerald-500/30 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 light:bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Active
                 </span>
-                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-500/15 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-purple-400 light:text-purple-600" />
-                  {isStreaming ? "Streaming Live" : "AI Intelligence"}
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[var(--accent-editorial)]/10 text-[var(--accent-editorial)] border border-[var(--accent-editorial)]/20 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-[var(--accent-editorial)]" />
+                  {isStreaming ? "Streaming Live" : "Conversational Critic"}
                 </span>
               </div>
-              <p className="text-[11px] text-ink-muted hidden sm:block mt-0.5">
-                Your conversational companion for emotional music exploration, lyrical interpretation, and personalized recommendations.
+              <p className="text-xs text-[var(--text-muted)] hidden sm:block mt-1">
+                Your editorial companion for lyrical interpretation, sentiment deconstruction, and custom playlist curations.
               </p>
             </div>
           </div>

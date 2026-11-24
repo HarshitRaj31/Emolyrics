@@ -4,74 +4,78 @@
 
 :root,
 html.dark {
-  --rgb-page: 17 24 39;
-  --rgb-surface: 31 41 55;
-  --rgb-card: 31 41 55;
-  --rgb-well: 55 65 81;
-  --rgb-text-main: 243 244 246;
-  --rgb-text-secondary: 209 213 219;
-  --rgb-text-muted: 156 163 175;
-  --rgb-text-dim: 107 114 128;
+  --rgb-page: 13 14 18;
+  --rgb-surface: 24 26 34;
+  --rgb-card: 28 30 40;
+  --rgb-well: 38 41 54;
+  --rgb-text-main: 247 244 236;
+  --rgb-text-secondary: 218 214 204;
+  --rgb-text-muted: 145 148 161;
+  --rgb-text-dim: 102 105 118;
 
-  --bg-page: #111827;
-  --bg-surface: rgba(31, 41, 55, 0.88);
-  --bg-surface-solid: #1f2937;
-  --bg-card: rgba(31, 41, 55, 0.94);
-  --bg-well: rgba(55, 65, 81, 0.45);
-  --bg-well-hover: rgba(55, 65, 81, 0.75);
-  --border-subtle: rgba(156, 163, 175, 0.16);
-  --border-hover: rgba(249, 115, 22, 0.6);
-  --border-strong: rgba(156, 163, 175, 0.32);
-  --text-main: #f3f4f6;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --bg-page: #0d0e12;
+  --bg-surface: rgba(24, 26, 34, 0.92);
+  --bg-surface-solid: #181a22;
+  --bg-card: rgba(28, 30, 40, 0.95);
+  --bg-well: rgba(38, 41, 54, 0.6);
+  --bg-well-hover: rgba(50, 54, 70, 0.8);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(184, 51, 77, 0.5);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text-main: #f7f4ec;
+  --text-secondary: #dad6cc;
+  --text-muted: #9194a1;
+  --text-dim: #666976;
+  --accent-editorial: #b8334d;
+  --accent-editorial-hover: #cf405e;
 
-  --shadow-card: 0 8px 24px -12px rgba(0, 0, 0, 0.7);
-  --shadow-elevated: 0 24px 48px -14px rgba(0, 0, 0, 0.9);
-  --chart-grid: rgba(156, 163, 175, 0.12);
-  --chart-track: rgba(55, 65, 81, 0.4);
-  --chart-axis: #9ca3af;
-  --chart-guide: rgba(243, 244, 246, 0.3);
-  --accent-chart: #f97316;
-  --scrollbar-thumb: rgba(156, 163, 175, 0.35);
-  --scrollbar-thumb-hover: rgba(249, 115, 22, 0.7);
+  --shadow-card: 0 4px 20px -6px rgba(0, 0, 0, 0.5);
+  --shadow-elevated: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+  --chart-grid: rgba(255, 255, 255, 0.06);
+  --chart-track: rgba(255, 255, 255, 0.08);
+  --chart-axis: #9194a1;
+  --chart-guide: rgba(247, 244, 236, 0.25);
+  --accent-chart: #b8334d;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.15);
+  --scrollbar-thumb-hover: rgba(184, 51, 77, 0.6);
   color-scheme: dark;
 }
 
 html.light {
-  --rgb-page: 243 244 246;
+  --rgb-page: 251 248 243;
   --rgb-surface: 255 255 255;
   --rgb-card: 255 255 255;
-  --rgb-well: 229 231 235;
-  --rgb-text-main: 17 24 39;
-  --rgb-text-secondary: 55 65 81;
-  --rgb-text-muted: 107 114 128;
-  --rgb-text-dim: 156 163 175;
+  --rgb-well: 242 237 228;
+  --rgb-text-main: 24 25 31;
+  --rgb-text-secondary: 64 66 76;
+  --rgb-text-muted: 108 110 120;
+  --rgb-text-dim: 155 157 168;
 
-  --bg-page: #f3f4f6;
-  --bg-surface: rgba(255, 255, 255, 0.92);
+  --bg-page: #fbf8f3;
+  --bg-surface: rgba(255, 255, 255, 0.95);
   --bg-surface-solid: #ffffff;
-  --bg-card: rgba(255, 255, 255, 0.96);
-  --bg-well: rgba(55, 65, 81, 0.06);
-  --bg-well-hover: rgba(55, 65, 81, 0.12);
-  --border-subtle: rgba(55, 65, 81, 0.12);
-  --border-hover: rgba(249, 115, 22, 0.5);
-  --border-strong: rgba(55, 65, 81, 0.22);
-  --text-main: #111827;
-  --text-secondary: #374151;
-  --text-muted: #6b7280;
-  --text-dim: #9ca3af;
+  --bg-card: #ffffff;
+  --bg-well: rgba(0, 0, 0, 0.04);
+  --bg-well-hover: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-hover: rgba(139, 29, 54, 0.4);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --text-main: #18191f;
+  --text-secondary: #40424c;
+  --text-muted: #6c6e78;
+  --text-dim: #9b9da8;
+  --accent-editorial: #8b1d36;
+  --accent-editorial-hover: #a32644;
 
-  --shadow-card: 0 6px 20px -10px rgba(17, 24, 39, 0.12), 0 1px 3px rgba(17, 24, 39, 0.06);
-  --shadow-elevated: 0 24px 48px -12px rgba(17, 24, 39, 0.2), 0 4px 12px rgba(17, 24, 39, 0.08);
-  --chart-grid: rgba(55, 65, 81, 0.1);
-  --chart-track: rgba(55, 65, 81, 0.08);
-  --chart-axis: #4b5563;
-  --chart-guide: rgba(17, 24, 39, 0.28);
-  --accent-chart: #f97316;
-  --scrollbar-thumb: rgba(107, 114, 128, 0.35);
-  --scrollbar-thumb-hover: rgba(249, 115, 22, 0.6);
+  --shadow-card: 0 2px 12px -4px rgba(24, 25, 31, 0.06), 0 1px 3px rgba(24, 25, 31, 0.04);
+  --shadow-elevated: 0 16px 32px -10px rgba(24, 25, 31, 0.12);
+  --chart-grid: rgba(0, 0, 0, 0.06);
+  --chart-track: rgba(0, 0, 0, 0.06);
+  --chart-axis: #6c6e78;
+  --chart-guide: rgba(24, 25, 31, 0.2);
+  --accent-chart: #8b1d36;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.18);
+  --scrollbar-thumb-hover: rgba(139, 29, 54, 0.5);
   color-scheme: light;
 }
 
@@ -85,16 +89,17 @@ html.light {
   body {
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     overflow-x: hidden;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  h1, h2, h3, h4, h5, h6, .font-display {
-    font-family: 'Outfit', sans-serif;
+  h1, h2, h3, h4, h5, h6, .font-display, .font-serif, .editorial-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.015em;
   }
 
   /* Accessible focus indicators */
   *:focus-visible {
-    outline: 2px solid #f97316;
+    outline: 2px solid var(--accent-editorial);
     outline-offset: 2px;
   }
 }
@@ -195,7 +200,57 @@ html.light {
   }
 }
 
-/* Subtle Gradient Text Utility matching user's #F97316 orange & #F3F4F6 palette */
+/* Editorial Design Language Utilities */
+.editorial-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.editorial-italic {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.editorial-kicker {
+  font-size: 0.6875rem;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-editorial);
+}
+
+.editorial-border {
+  border-color: var(--border-subtle);
+}
+
+.editorial-divider {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.editorial-divider-double {
+  border-top: 3px double var(--border-strong);
+}
+
+.editorial-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.editorial-card:hover {
+  border-color: var(--border-strong);
+}
+
+.editorial-well {
+  background-color: var(--bg-well);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Subtle Gradient Text Utility matching user's palette */
 .gradient-text-purple,
 .gradient-text-orange {
   background: linear-gradient(135deg, #f97316 0%, #fb923c 45%, #fed7aa 100%);
@@ -230,6 +285,68 @@ html.light .gradient-text-amber {
 
 .soundwave-bar {
   animation: soundwave 1.2s ease-in-out infinite;
+}
+
+/* Ambient Modern Player Theme Classes */
+.app-ambient-bg {
+  background-color: #0b0c10;
+  background-image:
+    /* Warm floor lamp glow on the right, matching reference image */
+    radial-gradient(circle at 94% 34%, rgba(251, 191, 36, 0.22) 0%, rgba(245, 158, 11, 0.12) 20%, transparent 48%),
+    radial-gradient(circle at 92% 52%, rgba(217, 119, 6, 0.10) 0%, transparent 42%),
+    /* Soft atmospheric rose glow on the left */
+    radial-gradient(circle at 10% 75%, rgba(244, 63, 94, 0.08) 0%, transparent 45%),
+    /* Cozy warm interior floor reflection at the bottom */
+    radial-gradient(ellipse at 50% 100%, rgba(55, 40, 32, 0.45) 0%, transparent 65%),
+    /* Deep dark room vignette */
+    radial-gradient(circle at 50% 40%, rgba(22, 23, 29, 0.98) 0%, #08090c 100%);
+  background-attachment: fixed;
+}
+
+html.light .app-ambient-bg {
+  background-color: #f1f2f6;
+  background-image:
+    radial-gradient(circle at 85% 25%, rgba(249, 115, 22, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 15% 75%, rgba(59, 130, 246, 0.06) 0%, transparent 45%),
+    linear-gradient(135deg, #f8fafc 0%, #edf0f5 100%);
+  background-attachment: fixed;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+html.light .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+html.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Range input styling */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
 }
 
 /* Respect user's reduced motion preference */

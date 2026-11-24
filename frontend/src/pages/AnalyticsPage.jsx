@@ -503,7 +503,7 @@ export default function AnalyticsPage() {
     : null;
 
   return (
-    <div className="min-h-[calc(100vh-65px)] pb-24 pt-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8 font-sans">
+    <div className="w-full space-y-8 font-sans">
       {/* 1. Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -512,22 +512,21 @@ export default function AnalyticsPage() {
       >
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-purple-500/20 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30">
-              Music Intelligence Dashboard
-            </span>
-            <span className="text-xs text-ink-dim font-mono">
-              {scope === "local" ? "Guest-First Browser Storage" : scope === "admin" ? "Platform Telemetry" : "Global Collective Insights"}
+            <span className="editorial-kicker text-[10px]">Data Journalism & Empirical Sentiment</span>
+            <span className="text-[var(--border-strong)]">•</span>
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">
+              {scope === "local" ? "Browser History" : "Platform Index"}
             </span>
           </div>
-          <h1 className="font-display font-extrabold text-3xl sm:text-4xl text-ink-main tracking-tight">
-            {scope === "admin" ? "Platform Administration & Telemetry" : "Emotional Insights & Mood Trends"}
+          <h1 className="editorial-title text-3xl sm:text-4xl lg:text-5xl text-[var(--text-main)]">
+            {scope === "admin" ? "Platform Telemetry & System Health" : "The Emotional Index of Song"}
           </h1>
-          <p className="text-xs sm:text-sm text-ink-muted mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-[var(--text-muted)] mt-2 max-w-2xl font-sans leading-relaxed">
             {scope === "local"
-              ? "Your personal analysis history stored safely on this browser. Isolated to your device with zero account requirements."
+              ? "Your personal analysis record compiled on this device with zero tracking and full data sovereignty."
               : scope === "admin"
-              ? "System performance, infrastructure health, database connection state, and anonymized aggregate telemetry."
-              : "Explore anonymized platform-wide mood distributions, lyrical sentiment benchmarks, and emotional classification patterns."}
+              ? "Infrastructure health, database latency, and system telemetry across all classification nodes."
+              : "Empirical breakdown of lyrical emotion frequencies, language distributions, and classification certainty."}
           </p>
         </div>
 

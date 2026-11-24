@@ -10,8 +10,10 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Manrope", "sans-serif"],
-        display: ["Outfit", "sans-serif"]
+        sans: ["Manrope", "-apple-system", "sans-serif"],
+        serif: ["'Playfair Display'", "Georgia", "serif"],
+        display: ["'Playfair Display'", "Georgia", "serif"],
+        editorial: ["'Playfair Display'", "Georgia", "serif"]
       },
       colors: {
         surface: {
@@ -25,6 +27,15 @@ export default {
           secondary: "rgb(var(--rgb-text-secondary) / <alpha-value>)",
           muted: "rgb(var(--rgb-text-muted) / <alpha-value>)",
           dim: "rgb(var(--rgb-text-dim) / <alpha-value>)"
+        },
+        editorial: {
+          wine: "#96283d",
+          burgundy: "#b8334d",
+          coral: "#d64a66",
+          charcoal: "#0d0e12",
+          paper: "#faf8f4",
+          ivory: "#f5f2eb",
+          graphite: "#181a22"
         },
         palette: {
           dark: "#111827",

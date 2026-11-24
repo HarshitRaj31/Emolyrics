@@ -268,35 +268,30 @@ export default function RecommendationsPage() {
   }, [recommendations, searchQuery]);
 
   return (
-    <div className="py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-10">
+    <div className="w-full space-y-8">
       {/* 1. HERO HEADER BANNER */}
-      <div className="relative rounded-3xl p-6 sm:p-10 overflow-hidden theme-card shadow-2xl">
-        <div
-          className="absolute -top-24 -right-24 w-80 h-80 rounded-full blur-3xl opacity-20 light:opacity-15 pointer-events-none transition-colors duration-500"
-          style={{ backgroundColor: activeMoodMeta.color }}
-        />
-
+      <div className="relative rounded-2xl p-6 sm:p-10 overflow-hidden editorial-card">
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-purple-500/20 light:bg-purple-50 text-purple-300 light:text-purple-700 border border-purple-500/30 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400 light:text-purple-600" />
-              <span>Music Intelligence</span>
+            <span className="editorial-kicker text-[10px]">
+              Mood-Based Discovery & Resonance
             </span>
-            <span className="text-xs font-mono px-3 py-1 rounded-full theme-well text-ink-secondary">
+            <span className="text-[var(--border-strong)]">•</span>
+            <span className="text-[11px] font-mono text-[var(--text-muted)]">
               10-Emotion Spectrum
             </span>
             {seedTitle && (
-              <span className="text-xs font-mono px-3 py-1 rounded-full bg-sky-500/20 light:bg-sky-50 text-sky-300 light:text-sky-700 border border-sky-500/30">
+              <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--accent-editorial)]/15 text-[var(--accent-editorial)] border border-[var(--accent-editorial)]/25">
                 Seeded: {seedTitle}
               </span>
             )}
           </div>
 
-          <h1 className="font-display text-3xl sm:text-5xl font-black text-ink-main tracking-tight">
-            Discover Similar Songs & Mood Matches
+          <h1 className="editorial-title text-3xl sm:text-5xl text-[var(--text-main)]">
+            Discover Music by Emotional Resonance
           </h1>
-          <p className="text-sm sm:text-base text-ink-secondary leading-relaxed font-sans">
-            Explore curated tracks that share the emotional heartbeat and sonic sentiment of your favorite music.
+          <p className="text-sm sm:text-base text-[var(--text-muted)] leading-relaxed font-sans">
+            Explore tracks sharing the emotional heartbeat and poetic sentiment of your favorite music.
             Matched through AI natural language lyrics analysis and emotional valence.
           </p>
 
@@ -307,18 +302,18 @@ export default function RecommendationsPage() {
                 setPlaylistEmotions([selectedMood]);
                 setPlaylistDrawerOpen(true);
               }}
-              className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 shadow-lg hover:opacity-95 transition-all"
+              className="px-4 py-2.5 rounded-xl bg-[var(--accent-editorial)] text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-sm hover:opacity-95 transition-all"
             >
               <ListPlus className="w-4 h-4" />
-              <span>Create Playlist</span>
+              <span>Compose Playlist</span>
             </button>
 
             <Link
               to="/"
-              className="px-4 py-2.5 rounded-2xl theme-well hover:border-purple-500/40 text-ink-main font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
+              className="px-4 py-2.5 rounded-xl bg-[var(--bg-well)] hover:border-[var(--accent-editorial)] border border-[var(--border-subtle)] text-[var(--text-main)] font-semibold text-xs sm:text-sm flex items-center gap-2 transition-colors"
             >
-              <Compass className="w-4 h-4 text-purple-400 light:text-purple-600" />
-              <span>Analyze Lyrics</span>
+              <Compass className="w-4 h-4 text-[var(--accent-editorial)]" />
+              <span>Analyze in The Lab</span>
             </Link>
           </div>
         </div>
